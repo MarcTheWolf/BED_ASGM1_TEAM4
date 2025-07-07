@@ -1,0 +1,158 @@
+body {
+  background-color: rgb(255, 255, 255);
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+.nav-logo img {
+  height: 40px;
+  filter: drop-shadow(0 0 3px white);
+}
+
+.logo {
+    font-weight: bold;
+    color: #1d3557;
+    font-size: 1.2rem;
+}
+
+.nav-links {
+    list-style: none;
+    position: relative;
+    display: flex;
+    gap: 35px;
+    margin: 0;
+    padding: 0;
+    margin-right: 50px;
+    top: 8px;
+    font-size: 1.3rem;
+}
+
+.nav-links li {
+    cursor: pointer;
+    color: #333;
+}
+
+.hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #eafaf7;
+    padding: 30px 20px;
+
+    margin-top: 70px; /* adjust to match navbar height */
+}
+
+.hero-text h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #1d3557;
+}
+
+.hero-text button {
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #00b894;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.hero-image img {
+    height: 150px;
+    border-radius: 50%;
+}
+
+.categories {
+    padding: 20px;
+}
+
+.category-buttons {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.category {
+    padding: 10px 15px;
+    background-color: #dfe6e9;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    flex: 1;
+    min-width: 150px;
+}
+
+.activities {
+    padding: 20px;
+}
+
+.date-tag {
+    background-color: #e0f7fa;
+    padding: 5px 10px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.activity {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.medication {
+    border-left: 5px solid #d63031;
+}
+
+.event {
+        border-left: 5px solid #30d6c0;
+}
+
+.activity.past {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+}
+
+.spending {
+    padding: 20px;
+    text-align: left;
+}
+
+.spending img {
+    display: block;
+    margin: 0 auto;
+    width: 30%;
+}
+
+.emoji {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+
+.section-header {
+    display: block;
+    padding: 10px;
+    border-left: 20px solid #81C7BE;
+}

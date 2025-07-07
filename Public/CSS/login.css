@@ -1,0 +1,282 @@
+body {
+  background-color: rgb(234,248,246);
+  overflow-x: hidden;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+html {
+  scrollbar-width: none;
+  scrollbar-color: transparent transparent;
+}
+
+.navbar {
+  width: 100%;
+  height: 30px;
+  position: fixed;
+  z-index: 9999;
+  background-color: rgb(255, 255, 255);
+  padding: 10px 0;
+}
+
+.navbar nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+.nav-logo {
+  position: absolute;
+  top: 10%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.nav-logo img {
+  height: 40px;
+  filter: drop-shadow(0 0 3px white);
+}
+
+/*////////////////////////////////////////////*/
+
+.login-section {
+  box-sizing: border-box;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  flex-direction: column;
+  font-family: "poppins", sans-serif;
+  height: 100vh;
+
+}
+
+.login-container {
+  height: 400px;
+  width: 600px;
+  overflow: hidden;
+  position: relative; 
+  border-radius: 20px;
+}
+
+.background-vid {
+  position: absolute; 
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 1;
+
+  z-index: 0;
+
+}
+
+.slider {
+  background-color: white;
+  width: 50%;
+  height: 500px;
+  transition: right 1.5s;
+  overflow: hidden;
+}
+
+.left-slider {
+  position: relative;
+  top: -400px;
+  right: 300px;
+}
+
+.right-slider {
+  position: relative;
+  top: -900px;
+  right: -300px;
+
+}
+
+.left-slider.register {
+  right: 0px;
+}
+
+.right-slider.register {
+  right: -600px;
+}
+
+.signin-form, .register-form {
+  background-color: transparent;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  padding-top: 50px;
+  position: relative;
+  left: -10px;
+
+  text-align: center;
+  transition: left 1s ease-in-out;
+  z-index: 1000;
+}
+
+.register-form {
+  padding-top: 8px;
+  position: relative;
+  left: 500px;
+
+  transition: left 1s ease-in-out;
+}
+
+.signin-form input, .register-form input {
+  width: 80%;
+  margin: 10px 0;
+  border-radius: 20px;
+  height: 40px;
+  padding-left: 15px;
+
+
+  border: none;
+  border-bottom: 3px solid rgb(0, 0, 0);
+  background-color: transparent;
+}
+
+.signin-form input::placeholder, .register-form input::placeholder {
+  padding: 10px;
+  font-style: italic;
+}
+
+
+.signin-form button, .register-form button{
+  margin-top: 20px;
+  width: 80%;
+  height: 40px;
+  border-radius: 20px;
+
+  background-color:  rgb(129, 199, 190);
+}
+
+.signin-form button:hover , .register-form button:hover{
+  letter-spacing: 1px;
+  height: 45px;
+  width: calc(80% + 5px);
+  background-color:  rgb(175, 224, 218);
+  cursor: pointer;
+}
+
+.login-section input:focus {
+  border-bottom: 3px solid rgba(0, 0, 0, 0.233);
+  outline: none;
+}
+
+
+.register .signin-form {
+  position: relative;
+  left: -500px;
+  transition: left 1s ease-in-out;
+}
+
+.register .register-form {
+  position: relative;
+  left: -10px;
+  transition: left 1s ease-in-out;
+}
+
+.signin-text, .register-text {
+  color: black;
+
+  position: relative;
+  text-align: center;
+  width: 45%;
+  margin: 20px;
+  transition: left 1s ease-in-out, opacity 0.5s ease-in-out;
+  opacity: 1
+}
+
+
+.register-text {
+  left: 48%;
+  top: 90px;
+}
+
+.signin-text {
+  top: -80px;
+  left:0;
+}
+
+
+
+.registerbtn,.signinbtn {
+  height: 40px;
+  padding: 0 10px;
+  background-color: #ffffff46;
+  border-radius: 20px;
+
+  margin-top: 20px;
+  
+}
+
+.registerbtn:hover,.signinbtn:hover {
+  cursor: pointer;
+}
+
+.signin-text.move {
+  left: 600px;
+  opacity: 0;
+}
+
+.register-text.move {
+  left: -400px;
+  opacity: 0;
+}
+
+@media (max-width: 576px){
+.login-container {
+  height: 100vh;
+  overflow: hidden;
+  position: relative; 
+  border-radius: 20px;
+}
+
+.slider {
+  background-color: rgba(82, 82, 82, 0.295);
+  color: white;
+  border-radius: 20px;
+  width: 260px;
+  margin-top: 10px;
+  height: 550px;
+  transition: right 1.5s;
+  overflow: hidden;
+}
+
+.left-slider {
+  position: relative;
+  top: -40px;
+  right: -170px;
+  background-color: transparent;
+}
+
+.right-slider {
+  position: relative;
+  border: 2px solid black;
+  top: -540px;
+  right: -170px;
+
+}
+
+.left-slider.register {
+  top: -40px;
+  right: -170px;
+}
+
+.right-slider.register {
+  top: -540px;
+  right: -170px;
+}
+
+.signin-form input::placeholder, .register-form input::placeholder {
+  padding: 10px;
+  font-style: italic;
+  color: white;
+}
+}

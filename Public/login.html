@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link href="CSS/login.css" rel="stylesheet">
+    <title>SeniorSync</title>
+</head>
+<header class="navbar">
+  <nav>
+    <div class="nav-left"></div>
+    <div class="nav-logo">
+      <img src="Assets/logo.png" alt="SeniorSync Logo">
+    </div>
+    <div class="nav-right"></div>
+  </nav>
+</header>
+<body>
+    
+    <div class="login-section">
+        <div class="login-container">
+            <video autoplay muted loop class= "background-vid">
+                <source src="Assets/loginBackground.mp4">
+            </video>
+
+            <div class="register-text move">
+                <h2>Join SeniorSync Today</h2>
+                <p>Register to connect with caregivers, loved ones, and helpful tools</p>
+                <button class="signinbtn">Already have an account?</button>
+            </div>
+
+            <div class="signin-text">
+                <h2>Welcome Back!</h2>
+                    <p>We’re glad to have you here.</p>
+                    <p>Log in to stay connected and supported.</p>
+                <button class="registerbtn">Don't have an account?</button>
+            </div>
+
+            <div class="slider left-slider">
+                
+                <div class="register-form">
+                    <form>
+                        <h2>Register</h2>
+                        <input id="register_phone_number" type="text" name="phone_number" placeholder="Phone Number">
+                        <input id="register_password" type="password" name="password" placeholder="Password">
+                        <input id="register_cfpassword" type="password" name="cfmpassword" placeholder="Confirm Password">
+            
+                        <button class="register-btn">Get Started</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="slider right-slider">
+                <div class="signin-form">
+                    <form>
+                        <h2>Login</h2>
+                        <input id="login_phone_number" type="text" name="phone_number" placeholder="Phone Number">
+                        <input id="login_password" type="password" name="password" placeholder="Password">
+            
+                        <button class="login-btn">Let's Go</button>
+                    </form>
+                    <p class="forgot-password">
+                    <a href="forgot-password.html">Forgot Password?</a>
+                    </p>
+                </div>
+            </div>
+    
+        </div>
+    </div>
+    <script src="JS/login.js"></script>
+</body>
+
+<footer class="footer">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <div class="footer-container">
+      <div class="footer-column">
+        <img src="Assets/logo.png"Logo" class="footer-logo">
+        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Account</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>Stanley House<br>
+           Masterlord Village,<br>
+           West Rd, Ipswich<br>
+           9SX</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</footer>
+</html>
