@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     console.log(localStorage.getItem("user"));
     medicationData = await fetchMedicationData();
     eventData = await fetchEventData();
-    await getFinancePieChart();
+    await getFinanceBarChart();
     consolidateAndDisplayActivities();
     activityClicks();
 });
@@ -49,7 +49,7 @@ async function fetchEventData() {
     }
 }
 
-async function getFinancePieChart() {
+async function getFinanceBarChart() {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user || !user.id) {
         console.error("User not found in localStorage.");
@@ -57,62 +57,97 @@ async function getFinancePieChart() {
     }
 
     try {
-        // Fetch expenditure goal
-        const goalRes = await fetch(`/getExpenditureGoalByID/${user.id}`);
-        const goalData = await goalRes.json();
-        const goal = goalData.monthly_goal || 0;
+        // Fetch monthly expenditure breakdown
+        const response = await fetch(`/getMonthlyExpenditureByID/${user.id}`);
+        const data = await response.json();
+        console.log("Monthly expenditure data:", data);
 
-        // Fetch total expenditure
-        const spentRes = await fetch(`/getTotalExpenditureByID/${user.id}`);
-        const spentData = await spentRes.json();
-        const spent = spentData.total || 0;
+        if (!Array.isArray(data)) {
+            console.error("Invalid data format:", data);
+            return;
+        }
 
-        const remaining = Math.max(goal - spent, 0);
+        // 🔽 Sort by date and get the last 5 months
+        const recentData = data
+            .sort((a, b) => a.month.localeCompare(b.month))
+            .slice(-6);
 
-        const chartData = {
-        type: 'doughnut',
-        data: {
-            labels: ['Spent', 'Remaining'],
-            datasets: [{
-            data: [spent, remaining],
-            backgroundColor: ['#496884', '#B0D9FF']
-            }]
-        },
-        options: {
-            rotation: 185,
-            cutout: '100%',
-            plugins: {
-            title: {
-                display: true,
-                text: 'Monthly Budget Usage'
-            },
-            legend: {
-                position: 'bottom'
-            },
-            doughnutlabel: {
-                labels: [
-                {
-                    text: `S$${spent.toFixed(2)}`,
-                    font: {
-                    size: 24,
-                    weight: 'bold'
-                    }
-                },
-                {
-                    text: `of S$${goal.toFixed(2)}`,
-                    font: {
-                    size: 18
-                    }
-                }
-                ]
-            }
-            }
-        },
-        plugins: ['datalabels', 'doughnutlabel']
+        // Convert '2025-04' → 'April' Conver Date number format to name string
+        const monthLabels = recentData.map(entry => {
+            const [year, month] = entry.month.split('-');
+            return new Date(`${year}-${month.padStart(2, '0')}-01`).toLocaleString('default', { month: 'long' });
+        });
+
+        const amounts = recentData.map(entry => entry.total);
+
+        // Compute Y-axis scale
+        const minValue = Math.min(...amounts);
+        const maxValue = Math.max(...amounts);
+        const yMin = Math.max(0, Math.floor(minValue * 0.8)); // extra bottom space
+
+        // Color gradient based on value (lower = lighter, but not too light)
+        const getShade = (value) => {
+            const ratioLinear = (value - minValue) / (maxValue - minValue || 1);
+            const easedRatio = Math.pow(ratioLinear, 2.5); // less dark in middle
+
+            const lightBase = 200;
+            const darkBase = 40;
+
+            const shade = Math.floor(lightBase - (lightBase - darkBase) * easedRatio);
+            return `rgb(${shade}, ${shade + 20}, ${shade + 50})`;
         };
 
+        const backgroundColors = amounts.map(getShade);
 
-        const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData));
+        const chartData = {
+            type: 'bar',
+            data: {
+                labels: monthLabels,
+                datasets: [{
+                    label: 'Monthly Expenditure (S$)',
+                    data: amounts,
+                    backgroundColor: backgroundColors,
+                    borderRadius: 20,
+                    borderSkipped: false // allows full bar rounding
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Monthly Spending Overview (Last 5 Months)'
+                    },
+                    legend: {
+                        display: false
+                    }
+                },
+                layout: {
+                    padding: {
+                        bottom: 10
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: false,
+                        min: yMin,
+                        max: Math.ceil(maxValue * 1.05),
+                        title: {
+                            display: true,
+                            text: 'Amount (S$)'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'Month'
+                        }
+                    }
+                }
+            }
+        };
+
+        const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData)) + '&version=3';
         const chartImg = document.getElementById('spending-chart');
 
         if (chartImg) {
@@ -122,9 +157,10 @@ async function getFinancePieChart() {
         }
 
     } catch (error) {
-        console.error("Error fetching financial data:", error);
+        console.error("Error fetching monthly expenditure data:", error);
     }
 }
+
 
 function consolidateAndDisplayActivities() {
     if (!medicationData || !eventData) return;

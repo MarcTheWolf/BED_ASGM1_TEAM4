@@ -52,6 +52,7 @@ loginbtn.addEventListener("click", async function (e) {
             alert("Login successful!");
             console.log("User logged in:", data.account_id);
             var account_id = data.account_id;
+            var token = data.token;
 
             fetch(`/getAccountById/${account_id}`)
             .then(res => {
@@ -61,6 +62,7 @@ loginbtn.addEventListener("click", async function (e) {
                 return res.json();
             })
             .then(userDetails => {
+                userDetails.token = token;
                 localStorage.setItem("user", JSON.stringify(userDetails));
                 console.log("User details:", userDetails);
                 window.location.href = "e-home.html";

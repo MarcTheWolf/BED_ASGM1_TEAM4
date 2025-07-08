@@ -46,8 +46,9 @@ async function createAccount(phone_number, password) {
 
   try {
     connection = await sql.connect(dbConfig);
-    const request = connection.request();
+    const request = connection.request  ();
     request.input("phone_number", sql.VarChar, phone_number);
+
     request.input("password", sql.VarChar, password);
 
     const result = await request.query(
