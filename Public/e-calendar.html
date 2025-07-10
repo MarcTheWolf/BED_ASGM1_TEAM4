@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SeniorSync Calendar</title>
+  <link rel="stylesheet" href="CSS/e-calendar.css" />
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo" /></div>
+      <ul class="nav-links">
+        <li>Calendar</li>
+        <li>Finance</li>
+        <li>Events</li>
+        <li>Notifications</li>
+        <li>Profile</li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="calendar-page">
+    <div class="calendar-header">
+      <h2><span class="left-bar"></span>Calendar</h2>
+      <h3>August 2025</h3>
+    </div>
+
+    <div class="calendar-grid">
+      <!-- Day names -->
+      <div class="day-name">MON</div>
+      <div class="day-name">TUE</div>
+      <div class="day-name">WED</div>
+      <div class="day-name">THU</div>
+      <div class="day-name">FRI</div>
+      <div class="day-name">SAT</div>
+      <div class="day-name">SUN</div>
+
+      <!-- Week 1 -->
+      <div class="day-box"></div>
+      <div class="day-box"></div>
+      <div class="day-box"></div>
+      <div class="day-box"></div>
+      <div class="day-box">
+        <span class="date-number">1</span>
+        <div class="event-bar bar-blue"></div>
+        <div class="event-bar bar-red"></div>
+      </div>
+      <div class="day-box"><span class="date-number">2</span></div>
+      <div class="day-box"><span class="date-number">3</span></div>
+
+      <!-- Week 2 -->
+      <div class="day-box"><span class="date-number">4</span></div>
+      <div class="day-box"><span class="date-number">5</span></div>
+      <div class="day-box">
+        <span class="date-number">6</span>
+        <div class="event-bar bar-red"></div>
+        <div class="event-bar bar-blue"></div>
+      </div>
+      <div class="day-box">
+        <span class="date-number">7</span>
+        <div class="event-bar bar-red"></div>
+        <div class="event-bar bar-blue"></div>
+        <div class="event-bar bar-green"></div>
+      </div>
+      <div class="day-box"><span class="date-number">8</span></div>
+      <div class="day-box"><span class="date-number">9</span></div>
+      <div class="day-box"><span class="date-number">10</span></div>
+
+      <!-- Week 3 -->
+      <div class="day-box"><span class="date-number">11</span></div>
+      <div class="day-box"><span class="date-number">12</span></div>
+      <div class="day-box"><span class="date-number">13</span></div>
+      <div class="day-box"><span class="date-number">14</span></div>
+      <div class="day-box">
+        <span class="date-number">15</span>
+        <div class="event-bar bar-blue"></div>
+        <div class="event-bar bar-green"></div>
+      </div>
+      <div class="day-box"><span class="date-number">16</span></div>
+      <div class="day-box"><span class="date-number">17</span></div>
+
+      <!-- Week 4 -->
+      <div class="day-box"><span class="date-number">18</span></div>
+      <div class="day-box"><span class="date-number">19</span></div>
+      <div class="day-box"><span class="date-number">20</span></div>
+      <div class="day-box"><span class="date-number">21</span></div>
+      <div class="day-box"><span class="date-number">22</span></div>
+      <div class="day-box"><span class="date-number">23</span></div>
+      <div class="day-box"><span class="date-number">24</span></div>
+
+      <!-- Week 5 -->
+      <div class="day-box"><span class="date-number">25</span></div>
+      <div class="day-box"><span class="date-number">26</span></div>
+      <div class="day-box"><span class="date-number">27</span></div>
+      <div class="day-box"><span class="date-number">28</span></div>
+      <div class="day-box"><span class="date-number">29</span></div>
+      <div class="day-box"><span class="date-number">30</span></div>
+      <div class="day-box"><span class="date-number">31</span></div>
+    </div>
+
+    <div class="task-controls">
+      <button class="add-task">Add Task ➕</button>
+      <button class="delete-task">Delete ❌</button>
+    </div>
+
+    <div class="tasks-today">
+      <h4>Today</h4>
+
+      <div class="task-card medication">
+        <div class="task-content">
+          <strong>Medication Time (8:30)</strong>
+          <span>Lisinopril (2 pills)</span>
+        </div>
+        <input type="checkbox" />
+      </div>
+
+      <div class="task-card medication">
+        <div class="task-content">
+          <strong>Medication Time (12:30)</strong>
+          <span>Lisinopril (2 pills)</span>
+        </div>
+        <input type="checkbox" />
+      </div>
+
+      <div class="task-card event">
+        <div class="task-content">
+          <strong>Upcoming Event (14:30)</strong>
+          <span>Fitness Class @ Marymount CC</span>
+        </div>
+        <input type="checkbox" />
+      </div>
+    </div>
+
+    <div class="tasks-tomorrow">
+      <h4>Tomorrow</h4>
+
+      <div class="task-card medication">
+        <div class="task-content">
+          <strong>Medication Time (8:30)</strong>
+          <span>Lisinopril (2 pills)</span>
+        </div>
+        <input type="checkbox" />
+      </div>
+
+      <div class="task-card medication">
+        <div class="task-content">
+          <strong>Medication Time (12:30)</strong>
+          <span>Lisinopril (2 pills)</span>
+        </div>
+        <input type="checkbox" />
+      </div>
+    </div>
+  </main>
+
+  <footer class="footer">
+    <link rel="stylesheet" href="CSS/footer.css" />
+    <div class="footer-container">
+      <div class="footer-column">
+        <img src="Assets/logo.png" alt="Logo" class="footer-logo" />
+        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+      <div class="footer-column">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Account</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>Stanley House<br />Masterlord Village,<br />West Rd, Ipswich<br />9SX</p>
+      </div>
+      <div class="footer-column">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+  </footer>
+</body>
+</html>
