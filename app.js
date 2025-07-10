@@ -32,6 +32,7 @@ app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
 
 app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
+app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
 
 
 

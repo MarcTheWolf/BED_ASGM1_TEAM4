@@ -10,9 +10,10 @@
   "license": "ISC",
   "description": "Authenticates a user's login credentials. The server checks if the phone number exists in the database and verifies the provided password. If both match, it returns the account ID.",
   "dependencies": {
-    "dotenv": "^16.6.1",
+    "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "joi": "^17.13.3",
+    "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1",
     "path": "^0.12.7"
   },

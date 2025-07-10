@@ -71,7 +71,7 @@ async function createAccount(user) {
 
         if (data.account_id) {
             console.log("User registered:", data.account_id);
-            return data.account_id; // ✅ Now this return works
+            return data.account_id;
         } else if (data.error) {
             alert(data.error);
             return null;

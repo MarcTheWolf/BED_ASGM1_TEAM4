@@ -7,7 +7,7 @@ Body `{"phone_number": "string", "password": "string"}`
 
 <u>Result:</u>  
 Successful authentication:  
-Status Code `200 OK` - Body `{"message":"Password match.","account_id":1}`  
+Status Code `200 OK` - Body `{"message":"Password match.","account_id":1, "token":"EXAMPLE_TOKEN_GENERATED"}`  
   
 Phone number does not exist in the database:  
 Status Code `404 Not Found` - Body `{"error":"Account not found."}`    
