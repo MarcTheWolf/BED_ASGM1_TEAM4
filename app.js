@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 
 
 const accountController = require("./Controllers/accountController.js");
-const medicationController = require("./Controllers/medicationController.js");
+const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 
