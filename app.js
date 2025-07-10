@@ -23,7 +23,7 @@ const authorization = require("./Middlewares/authorization.js");
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", accountController.getAccountById);
+app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 
@@ -34,8 +34,8 @@ app.get("/getMedicalConditionByAccountID/:id", authorization.verifyJWT, medicalI
 app.post("/createMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.createMedicalCondition);
 
 
-app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
-app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
+app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
 
 app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
