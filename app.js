@@ -16,6 +16,9 @@ const medicationController = require("./Controllers/medicationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 
+
+const authorization = require("./Middlewares/authorization.js");
+
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
@@ -24,8 +27,12 @@ app.get("/getAccountById/:id", accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 
-app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
-app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
+app.get("/getMedicationByAccountID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByAccountID);
+app.get("/getMedicationByID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByID);
+app.get("/getMedicalConditionByAccountID/:id", authorization.verifyJWT, medicalInformationController.getMedicalConditionByAccountID);
+//app.post("/createMedication", authorization.verifyJWT, medicalInformationController.createMedication);
+app.post("/createMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.createMedicalCondition);
+
 
 app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);

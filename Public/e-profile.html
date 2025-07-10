@@ -21,14 +21,11 @@
     </header>
 
   <section class="profile-section">
-    <h2>Welcome xxx</h2>
+    <h2 id="display-shortname">Welcome xxx</h2>
     <div class="profile-box">
       <div class="profile-left">
         <img src="https://via.placeholder.com/80" alt="Avatar" class="avatar">
-        <div>
-          <h3>Alexa Rawles</h3>
-          <p>alexarawles@gmail.com</p>
-        </div>
+        <p id="display-name"><strong>Full Name:</strong> Alexa Rawles</p>
       </div>
       <div class="profile-right">
         <button class="edit-btn">Edit</button>
@@ -37,12 +34,12 @@
     </div>
 
     <div class="profile-details">
-      <p><strong>Full Name:</strong> Alexa Rawles</p>
-      <p><strong>Gender:</strong> Female</p>
-      <p><strong>Phone Number:</strong> 89187210</p>
-      <p><strong>Date of Birth:</strong> 27/06/1950</p>
-      <p><strong>Email:</strong> alexarawles@gmail.com</p>
-      <p><strong>Preferred Language:</strong> English, Chinese</p>
+      <p id="display-gender"><strong>Gender:</strong> Female</p>
+      <p id="display-phone"><strong>Phone Number:</strong> 89187210</p>
+      <p id="display-dob"><strong>Date of Birth:</strong> 27/06/1950</p>
+      <p id="display-email"><strong>Email:</strong> alexarawles@gmail.com</p>
+      <p id="display-language"><strong>Preferred Language:</strong> English</p>
+      <p id="display-address"><strong>My Address:</strong> Bishan</p>
     </div>
   </section>
 
@@ -55,6 +52,19 @@
       <div class="card">🌬️<br><strong>Oxygen</strong><br>92 SpO₂</div>
     </div>
     <button class="report-btn">Click to view Detailed Health Report</button>
+  </div>
+  </section>
+
+  <section class="medical-list">
+        <div class="container">
+    <div class="toggle-bar">
+      <button id="btn-medical" class="toggle-btn active">Medical Conditions</button>
+      <button id="btn-medication" class="toggle-btn">Medications</button>
+    </div>
+
+    <div id="content-section">
+      <!-- This will be filled dynamically -->
+    </div>
   </section>
 
   <section class="care-taker">
@@ -78,6 +88,70 @@
       </div>
     </div>
   </section>
+
+  <!-- Medical Condition Popup Form -->
+  <!-- Medical Condition Popup Form -->
+  <div id="medical-popup" class="popup-form">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('medical-popup')">&times;</span>
+      <h3>Add Medical Condition</h3>
+      <form id="medical-form">
+        <label for="medc-name">Condition Name:</label>
+        <input type="text" name="name" id="medc-name" required>
+
+        <label for="medc-descr">Description:</label>
+        <textarea name="descr" id="medc-descr" rows="3" placeholder="Optional"></textarea>
+
+        <label for="medc-date">Prescription Date:</label>
+        <input type="date" name="prescription_date" id="medc-date" required>
+
+        <!-- Optional: Hidden fields for acc_id and mod_id -->
+        <input type="hidden" name="acc_id" id="medc-acc-id">
+        <input type="hidden" name="mod_id" id="medc-mod-id">
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+  <div id="medication-popup" class="popup-form">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('medication-popup')">&times;</span>
+      <h3>Add Medication</h3>
+      <form id="medication-form">
+        <label for="med-name">Medication Name:</label>
+        <input type="text" name="name" id="med-name" required>
+
+        <label for="med-desc">Description:</label>
+        <textarea name="description" id="med-desc" rows="2" placeholder="Optional"></textarea>
+
+        <label for="med-dosage">Dosage:</label>
+        <input type="text" name="dosage" id="med-dosage" required>
+
+        <label for="med-time">Time to Take:</label>
+        <input type="time" name="time" id="med-time">
+
+        <label for="med-frequency">Frequency:</label>
+        <select name="frequency" id="med-frequency" required>
+          <option value="D">Daily</option>
+          <option value="W">Weekly</option>
+          <option value="M">Monthly</option>
+          <option value="WR">When Required</option>
+        </select>
+
+        <label for="med-start-date">Start Date:</label>
+        <input type="date" name="start_date" id="med-start-date" required>
+
+        <!-- Hidden field for account_id -->
+        <input type="hidden" name="account_id" id="med-account-id">
+
+        <button type="submit">Submit</button>
+      </form>
+    </div>
+  </div>
+
+
+
 
   <footer class="footer">
     <link rel="stylesheet" href="CSS/footer.css">
@@ -122,5 +196,7 @@
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </footer>
+    <script src="JS/e-role.js"></script>
+    <script src="JS/e-profile.js"></script>
 </body>
 </html>

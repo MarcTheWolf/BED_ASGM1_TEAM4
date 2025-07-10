@@ -1,6 +1,7 @@
 
 var medicationData = [];
 var eventData = [];
+const user = JSON.parse(localStorage.getItem("user")); // Parse the stored user JSON
 
 document.addEventListener("DOMContentLoaded", async function () {
     const user = JSON.parse(localStorage.getItem("user"));
@@ -25,11 +26,29 @@ document.addEventListener("DOMContentLoaded", async function () {
     activityClicks();
 });
 
+function autoLogout(response) {
+if (response.status = 403) {
+        alert("Session expired. Please log in again.");
+        localStorage.removeItem("user");
+        window.location.href = "login.html";
+        return;
+    }
+}
+
 async function fetchMedicationData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicationByAccountID/${user.id}`);
-        if (!response.ok) throw new Error("Network response was not ok");
+        const response = await fetch(`/getMedicationByAccountID/${user.id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+        }
+        });
+        if (!response.ok) {
+            autoLogout(response);
+            return [];
+        }
         return await response.json();
     } catch (error) {
         console.error("Error fetching medication data:", error);
@@ -40,8 +59,19 @@ async function fetchMedicationData() {
 async function fetchEventData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getEventRegisteredByID/${user.id}`);
-        if (!response.ok) throw new Error("Network response was not ok");
+        const response = await fetch(`/getEventRegisteredByID/${user.id}`, {
+        method: "GET",
+        headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${user.token}`
+        }
+        });
+        if (!response.ok) {
+            autoLogout(response);
+            const errText = await response.text();
+            console.error("Failed to fetch event data:", errText);
+            return [];
+        }
         return await response.json();
     } catch (error) {
         console.error("Error fetching event data:", error);
@@ -50,115 +80,51 @@ async function fetchEventData() {
 }
 
 async function getFinanceBarChart() {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user || !user.id) {
-        console.error("User not found in localStorage.");
-        return;
+  const userRaw = localStorage.getItem("user");
+
+  if (!userRaw) {
+    console.error("User not found in localStorage.");
+    return;
+  }
+
+  let user;
+  try {
+    user = JSON.parse(userRaw);
+  } catch (err) {
+    console.error("Failed to parse user from localStorage:", err);
+    return;
+  }
+
+  if (!user.id || !user.token) {
+    console.error("User object is missing 'id' or 'token':", user);
+    return;
+  }
+
+  try {
+    const response = await fetch(`/getExpenditureByMonthBarChart/${user.id}`, {
+      headers: {
+        "Authorization": `Bearer ${user.token}`
+      }
+    });
+
+    if (!response.ok) {
+    autoLogout(response);
+      const errText = await response.text();
+      console.error("Failed to fetch chart URL:", errText);
+      return;
     }
 
-    try {
-        // Fetch monthly expenditure breakdown
-        const response = await fetch(`/getMonthlyExpenditureByID/${user.id}`);
-        const data = await response.json();
-        console.log("Monthly expenditure data:", data);
+    const result = await response.json();
+    const chartImg = document.getElementById("spending-chart");
 
-        if (!Array.isArray(data)) {
-            console.error("Invalid data format:", data);
-            return;
-        }
-
-        // 🔽 Sort by date and get the last 5 months
-        const recentData = data
-            .sort((a, b) => a.month.localeCompare(b.month))
-            .slice(-6);
-
-        // Convert '2025-04' → 'April' Conver Date number format to name string
-        const monthLabels = recentData.map(entry => {
-            const [year, month] = entry.month.split('-');
-            return new Date(`${year}-${month.padStart(2, '0')}-01`).toLocaleString('default', { month: 'long' });
-        });
-
-        const amounts = recentData.map(entry => entry.total);
-
-        // Compute Y-axis scale
-        const minValue = Math.min(...amounts);
-        const maxValue = Math.max(...amounts);
-        const yMin = Math.max(0, Math.floor(minValue * 0.8)); // extra bottom space
-
-        // Color gradient based on value (lower = lighter, but not too light)
-        const getShade = (value) => {
-            const ratioLinear = (value - minValue) / (maxValue - minValue || 1);
-            const easedRatio = Math.pow(ratioLinear, 2.5); // less dark in middle
-
-            const lightBase = 200;
-            const darkBase = 40;
-
-            const shade = Math.floor(lightBase - (lightBase - darkBase) * easedRatio);
-            return `rgb(${shade}, ${shade + 20}, ${shade + 50})`;
-        };
-
-        const backgroundColors = amounts.map(getShade);
-
-        const chartData = {
-            type: 'bar',
-            data: {
-                labels: monthLabels,
-                datasets: [{
-                    label: 'Monthly Expenditure (S$)',
-                    data: amounts,
-                    backgroundColor: backgroundColors,
-                    borderRadius: 20,
-                    borderSkipped: false // allows full bar rounding
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Monthly Spending Overview (Last 5 Months)'
-                    },
-                    legend: {
-                        display: false
-                    }
-                },
-                layout: {
-                    padding: {
-                        bottom: 10
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: false,
-                        min: yMin,
-                        max: Math.ceil(maxValue * 1.05),
-                        title: {
-                            display: true,
-                            text: 'Amount (S$)'
-                        }
-                    },
-                    x: {
-                        title: {
-                            display: true,
-                            text: 'Month'
-                        }
-                    }
-                }
-            }
-        };
-
-        const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData)) + '&version=3';
-        const chartImg = document.getElementById('spending-chart');
-
-        if (chartImg) {
-            chartImg.src = chartUrl;
-        } else {
-            console.error('Element with id="spending-chart" not found');
-        }
-
-    } catch (error) {
-        console.error("Error fetching monthly expenditure data:", error);
+    if (chartImg && result.chartUrl) {
+      chartImg.src = result.chartUrl;
+    } else {
+      console.error("Chart image element or chartUrl missing.");
     }
+  } catch (error) {
+    console.error("Error fetching monthly expenditure chart:", error);
+  }
 }
 
 
@@ -264,7 +230,6 @@ function consolidateAndDisplayActivities() {
                         <p><strong>Medication Time (${formatTime(item.time)})</strong></p>
                         <p>${item.name} (${item.dosage})</p>
                     `;
-                    console.log(entry.getAttribute("data-ID"));
 
                 
                 } else if (item.type === "event") {
@@ -275,7 +240,6 @@ function consolidateAndDisplayActivities() {
                         <p><strong>Upcoming Event (${formatTime(item.time)})</strong></p>
                         <p>${item.name} @ ${item.location}</p>
                     `;
-                    console.log(entry.getAttribute("data-ID"));
                     
                 }
 
@@ -352,9 +316,18 @@ async function activityClicks() {
             const medId = item.getAttribute("data-ID");
             var medData
 
-            await fetch(`/getMedicationByID/${medId}`)
+            await fetch(`/getMedicationByID/${medId}`, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            }
+            })
             .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
+                if (!response.ok) {
+                    autoLogout(response);
+                    throw new Error("Network response was not ok");
+                }
                 return response.json();
             })
             .then(data => {
@@ -378,9 +351,18 @@ async function activityClicks() {
             const eventId = item.getAttribute("data-ID");
             var eventData;
 
-            await fetch(`/getEventDetailsByID/${eventId}`)
+            await fetch(`/getEventDetailsByID/${eventId}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${user.token}`
+                }
+            })
             .then(response => {
-                if (!response.ok) throw new Error("Network response was not ok");
+                if (!response.ok) {
+                    autoLogout(response);
+                    throw new Error("Network response was not ok");
+                }
                 return response.json();
             })
             .then(data => {
