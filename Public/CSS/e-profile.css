@@ -141,6 +141,10 @@ body {
   margin-bottom: 10px;
 }
 
+.card-content {
+  line-height: 1.5; /* or try 2 for more spacing */
+}
+
 .card.card-flex {
   display: flex;
   justify-content: space-between;
@@ -158,7 +162,7 @@ body {
 }
 
 .card-btn {
-  padding: 6px 12px;
+  padding: 10px 12px;
   border: none;
   border-radius: 6px;
   font-size: 13px;

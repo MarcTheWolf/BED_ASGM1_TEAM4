@@ -137,7 +137,9 @@ function loadMedical() {
 
   MedicalCondition.forEach(item => {
   const card = document.createElement('div');
-  card.className = 'card card-flex'; // Add new layout class
+  card.className = 'card card-flex card-content';
+  card.setAttribute('data-id', item.medc_id);
+  card.setAttribute('data-medType', 'medicalCondition');
 
   let modified = item.updated_at
     ? `<div class="card-info"><strong>${item.name}</strong><br>Last modified: ${formatDate(item.updated_at)}</div>`
@@ -146,8 +148,8 @@ function loadMedical() {
   card.innerHTML = `
     ${modified}
     <div class="card-actions">
-      <button class="card-btn update-btn" data-id="${item.medc_id}">Update</button>
-      <button class="card-btn delete-btn" data-id="${item.medc_id}">Delete</button>
+      <button class="card-btn update-btn" data-id="${item.medc_id}" data-medType = "Medical Condition">Update</button>
+      <button class="card-btn delete-btn" data-id="${item.medc_id}" data-medType = "Medical Condition">Delete</button>
     </div>
   `;
 
@@ -163,10 +165,34 @@ function loadMedication() {
   addBtn.onclick = () => openPopup('medication-popup'); // Attach openPopup
   contentSection.appendChild(addBtn);
 
+    function getFrequencyLabel(code) {
+      switch (code) {
+        case 'D': return 'daily';
+        case 'W': return 'weekly';
+        case 'M': return 'monthly';
+        case 'WR': return 'as needed';
+        default: return 'on an unknown schedule';
+      }
+    }
+
   Medication.forEach(item => {
     const card = document.createElement('div');
-    card.className = 'card';
-    card.innerHTML = `<strong>${item.name}</strong><br>Dosage: ${item.dosage}<br>`;
+    card.className = 'card card-flex'; // Add new layout class
+    card.setAttribute('data-id', item.med_id);
+    card.setAttribute('data-medType', 'medication')
+    card.innerHTML = `
+
+      <div class="card-content">
+        <strong>${item.name}</strong><br>
+        Dosage: ${item.dosage}<br>
+        Take ${item.dosage} ${getFrequencyLabel(item.frequency)}
+      </div>
+      <div class="card-actions">
+        <button class="card-btn update-btn" data-id="${item.med_id}" data-medType = "Medication">Update</button>
+        <button class="card-btn delete-btn" data-id="${item.med_id}" data-medType = "Medication">Delete</button>
+      </div>
+
+    `;
     contentSection.appendChild(card);
   });
 }
@@ -252,5 +278,107 @@ medicalForm.addEventListener('submit', async (event) => {
   } catch (err) {
     console.error(err);
     alert('Network or server error');
+  }
+});
+const medicationForm = document.getElementById('medication-form');
+
+medicationForm.addEventListener('submit', async (event) => {
+  event.preventDefault(); // Prevent default form submission
+
+  var user = JSON.parse(localStorage.getItem("user"));
+  const formData = new FormData(medicationForm);
+  
+  const payload = {
+    name: formData.get('name'),
+    description: formData.get('description'),
+    dosage: formData.get('dosage'),
+    time: formData.get('time'),
+    frequency: formData.get('frequency'),
+    start_date: formData.get('start_date'),
+    account_id: user.id
+  };
+
+  try {
+    const response = await fetch(`/createMedication/${user.id}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    if (response.ok) {
+      alert('Medication added successfully!');
+      closePopup('medication-popup');
+      medicationForm.reset();
+      await retrieveMedicationData();
+      loadMedication(); 
+    } else {
+      const error = await response.json();
+      alert(`Error: ${error.message || 'Failed to submit medication'}`);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Network or server error');
+  }
+});
+
+
+let deleteId = null;
+let medType = null;
+
+
+document.addEventListener('click', async function (event) {
+  // Check if a delete button was clicked
+  const user = JSON.parse(localStorage.getItem("user"));
+  if (event.target.classList.contains('delete-btn')) {
+    deleteId = event.target.getAttribute('data-id');
+    medType = event.target.getAttribute('data-medType');
+
+    console.log(`Delete ID: ${deleteId}, Type: ${medType}`);
+
+      document.getElementById('delete-message').textContent = 
+    `Are you sure you want to delete your ${medType} record?`;
+    openPopup('delete-confirmation-popup');
+  }
+
+  // Confirm delete
+  if (event.target.id === 'confirm-delete-btn' && deleteId !== null) {
+    if (medType == "Medical Condition") {
+        url = `/deleteMedicalCondition/${deleteId}`;
+      } else if (medType == "Medication") {
+        url = `/deleteMedication/${deleteId}`;
+      } else {
+        alert('Unknown record type.');
+        return;
+      }
+    fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${user.token}`
+      }
+    })
+    .then(async response => {
+      if (response.ok) {
+        alert("Record deleted successfully.");
+        closePopup('delete-confirmation-popup');
+        deleteId = null;
+
+        await retrieveMedicalConditionData();
+        await retrieveMedicationData();
+        loadMedication();
+        loadMedical(); 
+      } else {
+        return response.json().then(data => {
+          throw new Error(data.message || 'Delete failed.');
+        });
+      }
+    })
+    .catch(error => {
+      console.error(error);
+      alert("Failed to delete record.");
+      closePopup('delete-confirmation-popup');
+    });
   }
 });
