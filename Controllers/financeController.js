@@ -48,8 +48,104 @@ async function getMonthlyExpenditureByID(req, res) {
     }
 }
 
+async function getExpenditureByMonthBarChart(req, res) {
+  try {
+    const userId = req.params.id;
+    const data = await accountModel.getMonthlyExpenditureByID(userId);
+
+    if (!Array.isArray(data)) {
+      return res.status(500).json({ message: "Invalid data format from DB" });
+    }
+
+    const recentData = data
+      .sort((a, b) => a.month.localeCompare(b.month))
+      .slice(-6);
+
+    const monthLabels = recentData.map(entry => {
+      const [year, month] = entry.month.split('-');
+      return new Date(`${year}-${month.padStart(2, '0')}-01`).toLocaleString('default', { month: 'long' });
+    });
+
+    const amounts = recentData.map(entry => entry.total);
+    const minValue = Math.min(...amounts);
+    const maxValue = Math.max(...amounts);
+    const yMin = Math.max(0, Math.floor(minValue * 0.8));
+
+    // Gradient shade generator
+    const getShade = (value) => {
+      const ratioLinear = (value - minValue) / (maxValue - minValue || 1);
+      const easedRatio = Math.pow(ratioLinear, 2.5);
+      const lightBase = 200;
+      const darkBase = 40;
+      const shade = Math.floor(lightBase - (lightBase - darkBase) * easedRatio);
+      return `rgb(${shade}, ${shade + 20}, ${shade + 50})`;
+    };
+
+    const backgroundColors = amounts.map(getShade);
+
+    const chartData = {
+      type: 'bar',
+      data: {
+        labels: monthLabels,
+        datasets: [{
+          label: 'Monthly Expenditure (S$)',
+          data: amounts,
+          backgroundColor: backgroundColors,
+          borderRadius: 20,
+          borderSkipped: false
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: 'Monthly Spending Overview (Last 5 Months)'
+          },
+          legend: {
+            display: false
+          }
+        },
+        layout: {
+          padding: { bottom: 10 }
+        },
+        scales: {
+          y: {
+            beginAtZero: false,
+            min: yMin,
+            max: Math.ceil(maxValue * 1.05),
+            title: {
+              display: true,
+              text: 'Amount (S$)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Month'
+            }
+          }
+        }
+      }
+    };
+
+    const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData)) + '&version=3';
+
+    // Option 1: Send chart URL
+    res.json({ chartUrl });
+
+    // Option 2 (Alternative): Direct image redirect
+    // res.redirect(chartUrl);
+
+  } catch (error) {
+    console.error("Error generating chart:", error);
+    res.status(500).json({ message: "Failed to generate chart" });
+  }
+}
+
 module.exports = {
     getExpenditureGoalByID,
     getTotalExpenditureByID,
-    getMonthlyExpenditureByID
+    getMonthlyExpenditureByID,
+    getExpenditureByMonthBarChart
 };
