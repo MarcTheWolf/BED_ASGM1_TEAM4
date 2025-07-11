@@ -19,10 +19,14 @@ const financeController = require("./Controllers/financeController.js");
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
+//Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", accountController.getAccountById);
+app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
+app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
