@@ -30,9 +30,10 @@ app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
 app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
 
-app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
-app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
-app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
+app.get("/getExpenditureGoalByID/:id", authorization.verifyJWT, financeController.getExpenditureGoalByID);
+app.get("/getTotalExpenditureByID/:id", authorization.verifyJWT, financeController.getTotalExpenditureByID);
+app.get("/getMonthlyExpenditureByID/:id", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
+app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
 
 
 
