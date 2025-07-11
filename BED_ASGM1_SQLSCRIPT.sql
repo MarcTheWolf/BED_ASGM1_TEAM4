@@ -1,4 +1,5 @@
--- Create AccountPassword table
+-- Create AccountPassword table\
+drop database BED_ASGM1;
 create database BED_ASGM1
 
 
@@ -11,11 +12,11 @@ CREATE TABLE AccountPassword (
 
 -- Insert users into AccountPassword
 INSERT INTO AccountPassword (phone_number, password) VALUES
-('11111111', 'pass123'),
-('22222222', 'pass123'),
-('33333333', 'pass123'),
-('44444444', 'pass123!'),
-('90001111', 'test@123');
+('11111111', '$2a$10$nF0zTxDmSHQgevJ/8IJhuepjAvPr8iEpBuMaiLjRdO7TgMiBsw.TC'),
+('22222222', '$2a$10$nF0zTxDmSHQgevJ/8IJhuepjAvPr8iEpBuMaiLjRdO7TgMiBsw.TC'),
+('33333333', '$2a$10$nF0zTxDmSHQgevJ/8IJhuepjAvPr8iEpBuMaiLjRdO7TgMiBsw.TC'),
+('44444444', '$2a$10$nF0zTxDmSHQgevJ/8IJhuepjAvPr8iEpBuMaiLjRdO7TgMiBsw.TC'),
+('90001111', '$2a$10$nF0zTxDmSHQgevJ/8IJhuepjAvPr8iEpBuMaiLjRdO7TgMiBsw.TC');
 
 -- Create AccountProfile table
 CREATE TABLE AccountProfile (
@@ -27,16 +28,18 @@ CREATE TABLE AccountProfile (
     date_of_birth DATE NOT NULL,
     preferred_language VARCHAR(30) NOT NULL,
     pfp_link VARCHAR(300) NULL,
+	address VARCHAR(255) NULL,
+
     FOREIGN KEY (id) REFERENCES AccountPassword(id)
 );
 
 -- Insert profiles into AccountProfile
-INSERT INTO AccountProfile (id, name, account_type, email, gender, date_of_birth, preferred_language, pfp_link) VALUES
-(1, 'Marcus Ong', 'e', 'marcusong@gmail.com', 'M', '2007-09-02', 'English', 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1751283571/IMG20250601231047_mvcbjb.jpg'),
-(2, 'Belle Chong', 'c', 'bellechong@gmail.com', 'F', '2007-05-14', 'Mandarin', 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1751284201/IMG-20250630-WA0006_jpmbkv.jpg'),
-(3, 'ActiveSG.ORG', 'o', 'activeSG@connect.sg', 'O', '2014-04-01', 'English', NULL),
-(4, 'Dylan Lee', 'o', 'dylan.lee@email.com', 'M', '1990-01-15', 'English', NULL),
-(5, 'Grace Koh', 'c', 'grace.koh@email.com', 'F', '1985-11-05', 'Tamil', NULL);
+INSERT INTO AccountProfile (id, name, account_type, email, gender, date_of_birth, preferred_language, address, pfp_link) VALUES
+(1, 'Marcus Ong', 'e', 'marcusong@gmail.com', 'M', '2007-09-02', 'English', 'Bishan', 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1751283571/IMG20250601231047_mvcbjb.jpg'),
+(2, 'Belle Chong', 'c', 'bellechong@gmail.com', 'F', '2007-05-14', 'Mandarin', 'Marsling', 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1751284201/IMG-20250630-WA0006_jpmbkv.jpg'),
+(3, 'ActiveSG.ORG', 'o', 'activeSG@connect.sg', 'O', '2014-04-01', 'English', Null, NULL),
+(4, 'Ansleigh Ong', 'e', 'ansleighong@gmail.com', 'M', '2007-08-02', 'English', 'Clementi', 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1751978834/Screenshot_2025-07-08_204529_nlnlmv.png'),
+(5, 'Grace Koh', 'c', 'grace.koh@email.com', 'F', '1985-11-05', 'Tamil', 'Toa Payoh', NULL);
 
 -- Create MedicationList table
 CREATE TABLE MedicationList (
@@ -46,17 +49,25 @@ CREATE TABLE MedicationList (
     description VARCHAR(200) NULL,
     dosage VARCHAR(50) NOT NULL,
     time TIME NULL,
-    frequency VARCHAR(2) NOT NULL CHECK (frequency IN ('D', 'W', 'M', 'WR')),
+    frequency VARCHAR(2) NOT NULL CHECK (frequency IN ('D', 'W', 'M', 'WR')), -- D for daily, W for weekly, M for Monthly, WR for When Required
     start_date DATE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES AccountPassword(id)
 );
 
 -- Insert medications for account_id = 1
 INSERT INTO MedicationList (account_id, name, description, dosage, time, frequency, start_date) VALUES
-(1, 'Lisinopril', 'Used to treat high blood pressure', '2 pills', '08:00', 'D', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
-(1, 'Alendronate', 'Bone strength supplement, once every Monday', '1 tablet', '07:00', 'W', '2025-06-01'),
-(1, 'Metformin', 'Blood sugar control', '1 pill', '20:00', 'D', '2025-06-01');
+-- For acc_id 1
+(1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
+(1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', '21:00', 'D', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38ï¿½C', '1 tablet', NULL, 'WR', '2025-06-01'),
+
+-- For acc_id 4
+(4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),
+(4, 'Salbutamol Inhaler', 'Relief inhaler for Asthma symptoms', '2 puffs', NULL, 'WR', '2025-07-01'),
+(4, 'Paracetamol', 'For joint pain associated with Osteoarthritis', '1 tablet', '13:00', 'D', '2025-07-01'),
+(4, 'Losartan', 'Kidney protection for Chronic Kidney Disease', '1 tablet', '09:00', 'D', '2025-07-01');
+
+
 
 -- Create EventList table
 CREATE TABLE EventList (
@@ -69,38 +80,46 @@ CREATE TABLE EventList (
     org_id INT NOT NULL,
     weekly BIT NOT NULL,
     equipment_required VARCHAR(300) NULL,
-    FOREIGN KEY (org_id) REFERENCES AccountProfile(id)
+	canceled BIT NOT NULL DEFAULT '0',
+	banner_image VARCHAR(255) NULL
+
+    FOREIGN KEY (org_id) REFERENCES AccountPassword(id)
 );
 
 -- Insert events by org_id = 3 (ActiveSG.ORG)
-INSERT INTO EventList (name, description, date, time, location, org_id, weekly, equipment_required) VALUES
+INSERT INTO EventList (name, description, date, time, location, org_id, weekly, equipment_required, banner_image) VALUES
 ('Morning Tai Chi', 
  'Join us for a refreshing Tai Chi session in the park to improve flexibility and balance.', 
  '2025-07-01', '07:30', 
- 'Marymount Community Centre Garden', 3, 1, NULL),
+ 'Marymount Community Centre Garden', 3, 1, NULL,
+ 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1752113567/Screenshot_2025-07-10_101147_flxjb6.png'),
 
 ('Health Talk: Managing Blood Pressure', 
  'A short seminar led by a certified nurse about controlling high blood pressure through lifestyle.', 
  '2025-07-10', '10:00', 
  'Community Hall A, Marymount CC', 3, 0, 
- 'Pen & Paper (for taking notes and simple activities)'),
+ 'Pen & Paper (for taking notes and simple activities)',
+ 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1752113642/Screenshot_2025-07-10_101350_ua29m4.png'),
 
 ('Creative Art Class', 
  'Weekly creative workshop with painting, drawing, and crafts. Materials provided.', 
  '2025-07-03', '14:00', 
  'Studio Room, Marymount CC', 3, 1, 
- 'Art materials (eg. brushes, crayons, paint (if you have))'),
+ 'Art materials (eg. brushes, crayons, paint (if you have))',
+ 'https://res.cloudinary.com/dmnipl0gl/image/upload/v1752113812/Screenshot_2025-07-10_101646_hni1nn.png'),
 
 ('Bingo Night', 
  'Fun evening event with prizes, snacks, and socializing. All seniors welcome!', 
  '2025-07-15', '18:00', 
- 'Event Hall, Marymount CC', 3, 0, NULL),
+ 'Event Hall, Marymount CC', 3, 0, NULL,
+ ''),
 
 ('Chair Yoga for Seniors', 
  'Gentle seated yoga exercises to promote mobility and calm the mind. Led by a certified instructor.', 
  '2025-07-05', '09:00', 
  'Activity Room B, Marymount CC', 3, 1, 
- 'Comfortable clothing and water bottle');
+ 'Comfortable clothing and water bottle',
+ '');
 
 -- Create RegisteredList table
 CREATE TABLE RegisteredList (
@@ -118,6 +137,33 @@ INSERT INTO RegisteredList (account_id, event_id) VALUES
 (1, 3),
 (1, 5);
 
+Create table MedicalConditionList(
+	medc_id INT PRIMARY KEY IDENTITY(1,1),
+	name VARCHAR(50) NOT NULL,
+	descr VARCHAR(255) NULL,
+	acc_id INT NOT NULL,
+	prescription_date DATE NOT NULL,
+	created_at DATETIME DEFAULT GETDATE(),
+	updated_at DATETIME NULL,
+	mod_id INT NOT NULL
+
+	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id),
+	FOREIGN KEY (mod_id) REFERENCES AccountPassword(id)
+)
+
+INSERT INTO MedicalConditionList (name, descr, acc_id, prescription_date, updated_at, mod_id) VALUES 
+-- For acc_id 1
+('Hypertension', 'High blood pressure requiring daily monitoring and medication.', 1, '2025-06-01', GETDATE(), 2),
+('Dementia', 'Progressive memory loss; requires supervision and memory-supporting medication.', 1, '2024-10-15', GETDATE(), 2),
+
+-- For acc_id 4
+('Type 2 Diabetes', 'Requires insulin and blood sugar monitoring. Diagnosed in 2023.', 4, '2023-11-12', GETDATE(), 2),
+('Asthma', 'Chronic condition affecting breathing; uses inhaler as needed.', 4, '2022-05-20', GETDATE(), 2),
+('Osteoarthritis', 'Joint pain and stiffness, especially in knees. Requires physio and pain relief meds.', 4, '2021-08-10', GETDATE(), 2),
+('Chronic Kidney Disease', 'Stage 2; requires dietary control and kidney-protective medication.', 4, '2024-03-18', GETDATE(), 2);
+
+
+
 Create table MonthlyExpenseGoal(
 	id INT PRIMARY KEY,
 	monthly_goal DECIMAL(10, 2)
@@ -129,27 +175,107 @@ Insert INTO MonthlyExpenseGoal(id, monthly_goal)
 VALUES
 (1, 5000)
 
-
 Create table ExpensesList(
 	entry_id INT PRIMARY KEY IDENTITY(1,1),
 	name VARCHAR(50) NOT NULL,
 	description VARCHAR(500) NULL,
 	amount DECIMAL(10,2) NOT NULL,
 	acc_id INT NOT NULL,
-
+	date DATE NOT NULL,
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
-INSERT INTO ExpensesList (name, description, amount, acc_id)
+-- JANUARY
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
 VALUES 
-('Groceries', 'Weekly grocery shopping at Tesco', 120.50, 1),
-('Electric Bill', 'June 2025 TNB bill', 75.20, 1),
-('Fuel', 'Petrol for commuting', 60.00, 1),
-('Dining', 'Dinner at a local restaurant', 45.90, 1),
-('Internet', 'Unifi monthly plan', 89.99, 1),
-('Gym', 'Monthly membership fee', 110.00, 1),
-('Stationery', 'Office supplies from Popular', 25.30, 1),
-('Streaming', 'Netflix monthly subscription', 55.00, 1);
+('Groceries', 'Tesco weekly groceries', 150.00, 1, '2025-01-05'),
+('Electric Bill', 'January bill', 70.25, 1, '2025-01-10'),
+('Fuel', 'Petrol', 60.00, 1, '2025-01-18');
+
+-- FEBRUARY
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Groceries', 'Monthly groceries', 140.00, 1, '2025-02-03'),
+('Dining', 'Dinner at KFC', 50.00, 1, '2025-02-10'),
+('Internet', 'Unifi monthly', 89.99, 1, '2025-02-11');
+
+-- MARCH
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Groceries', 'Groceries at AEON', 160.00, 1, '2025-03-02'),
+('Electric Bill', 'March TNB bill', 72.00, 1, '2025-03-12'),
+('Streaming', 'Netflix', 55.00, 1, '2025-03-20');
+
+-- APRIL
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Fuel', 'Petrol refuel', 70.00, 1, '2025-04-01'),
+('Dining', 'Birthday dinner', 90.00, 1, '2025-04-15'),
+('Internet', 'April internet bill', 89.99, 1, '2025-04-11');
+
+-- MAY
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Groceries', 'Groceries at Giant', 130.00, 1, '2025-05-05'),
+('Gym', 'Gym subscription', 110.00, 1, '2025-05-07'),
+('Stationery', 'Bought office supplies', 40.00, 1, '2025-05-15');
+
+-- JUNE
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Fuel', 'Fuel top-up', 65.00, 1, '2025-06-06'),
+('Dining', 'Cafe with friends', 85.00, 1, '2025-06-10'),
+('Electric Bill', 'June bill', 75.20, 1, '2025-06-15');
+
+SELECT *
+FROM ExpensesList
+WHERE acc_id = 1 AND MONTH(date) = 6 AND YEAR(date) = 2025;
+
+-- JULY
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Groceries', 'Groceries at Lotus', 145.00, 1, '2025-07-01'),
+('Streaming', 'July Netflix', 55.00, 1, '2025-07-03'),
+('Internet', 'Unifi July', 89.99, 1, '2025-07-05');
 
 
-select * from MedicationList;
+-- FOR ACC_ID 4
+-- JANUARY (Low spending)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Dining', 'Fast food', 25.00, 4, '2025-01-15'),
+('Electric Bill', 'Low usage', 30.00, 4, '2025-01-20');
+
+-- FEBRUARY (No data)
+
+-- MARCH (High spending)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Travel', 'Flight tickets', 450.00, 4, '2025-03-10'),
+('Lodging', 'Hotel booking', 300.00, 4, '2025-03-12'),
+('Dining', 'Buffet dinner', 120.00, 4, '2025-03-13');
+
+-- APRIL (Medium spending)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Groceries', 'Monthly groceries', 180.00, 4, '2025-04-05'),
+('Fuel', 'Car petrol', 90.00, 4, '2025-04-10');
+
+-- MAY (Very low)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Internet', 'May bill', 89.99, 4, '2025-05-03');
+
+-- JUNE (Very high)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Shopping', 'New phone', 1200.00, 4, '2025-06-01'),
+('Dining', 'Anniversary dinner', 200.00, 4, '2025-06-06');
+
+-- JULY (Low)
+INSERT INTO ExpensesList (name, description, amount, acc_id, date)
+VALUES 
+('Fuel', 'Top-up petrol', 70.00, 4, '2025-07-04'),
+('Streaming', 'Disney+', 49.99, 4, '2025-07-07');
+
+
