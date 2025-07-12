@@ -27,8 +27,12 @@ app.post("/initializeAccountDetails/:id", accountController.initializeAccountDet
 app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
 
-app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
-app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
+//Events Endpoints (By Ansleigh) (endpoints for events)
+app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
+app.get("/getAllEvents", authorization.verifyJWT, eventController.getAllEvents);
+app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
+app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventController.unregisterEvent);
 
 app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);

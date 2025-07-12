@@ -58,7 +58,78 @@ async function getEventDetailsByID(id) {
     }
 }
 
+async function getAllEvents() {
+    let connection;
+
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+
+        const result = await request.query("SELECT * FROM EventList");
+
+        return result.recordset; // Return all events
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
+async function registerEvent(accountId, eventId) {
+    let connection;
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+        request.input("accountId", sql.Int, accountId);
+        request.input("eventId", sql.Int, eventId);
+
+        const result = await request.query(`
+            INSERT INTO RegisteredList (account_id, event_id)
+            VALUES (@accountId, @eventId);
+        `);
+
+        return result.rowsAffected > 0; // Return true if insert was successful
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
+async function unregisterEvent(accountId, eventId) {
+    let connection;
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+        request.input("accountId", sql.Int, accountId);
+        request.input("eventId", sql.Int, eventId);
+
+        const result = await request.query(`
+            DELETE FROM RegisteredList
+            WHERE account_id = @accountId AND event_id = @eventId;
+        `);
+
+        return result.rowsAffected > 0; // Return true if delete was successful
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
 module.exports = {
     getEventRegisteredByID,
-    getEventDetailsByID
+    getEventDetailsByID,
+    getAllEvents,
+    registerEvent,
+    unregisterEvent
 }
