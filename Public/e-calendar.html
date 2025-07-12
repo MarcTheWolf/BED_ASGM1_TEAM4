@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SeniorSync Calendar</title>
   <link rel="stylesheet" href="CSS/e-calendar.css" />
+  <link rel="stylesheet" href="CSS/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 <body>
   <header>
@@ -106,7 +108,6 @@
 
     <div class="tasks-today">
       <h4>Today</h4>
-
       <div class="task-card medication">
         <div class="task-content">
           <strong>Medication Time (8:30)</strong>
@@ -134,7 +135,6 @@
 
     <div class="tasks-tomorrow">
       <h4>Tomorrow</h4>
-
       <div class="task-card medication">
         <div class="task-content">
           <strong>Medication Time (8:30)</strong>
@@ -143,7 +143,7 @@
         <input type="checkbox" />
       </div>
 
-      <div class="task-card medication">
+      <div class="task-card medication" onclick="openEditModal('Medication Time (12:30)', '2025-07-17', '12:00 – 13:00', 'Lisinopril (2 pills)')">
         <div class="task-content">
           <strong>Medication Time (12:30)</strong>
           <span>Lisinopril (2 pills)</span>
@@ -153,8 +153,50 @@
     </div>
   </main>
 
+  <!-- Modals as siblings -->
+  <div class="modal" id="addModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="back-btn" onclick="toggleModal('addModal')">&larr;</button>
+      </div>
+      
+      <label for="taskName">Task Name</label>
+      <input id="taskName" type="text" placeholder="Task Title" />
+      <label for="taskDate">Date</label>
+      <input id="taskDate" type="date" value="2025-07-17" />
+      <label for="taskTime">Time</label>
+      <select id="taskTime">
+        <option>12:00 - 13:00</option>
+        <option>13:00 - 14:00</option>
+      </select>
+      
+      <label for="taskDesc">Description</label>
+      <textarea id="taskDesc" placeholder="Enter your description"></textarea>
+      
+      <button id="createTaskBtn" class="btn-create">Create</button>
+    </div>
+  </div>
+
+  <div class="modal" id="editModal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button class="close-btn" onclick="toggleModal('editModal')">&times;</button>
+      </div>
+      <label>Task</label>
+      <input type="text" value="Task Title" />
+      <label>Date</label>
+      <input type="date" value="2025-07-17" disabled />
+      <label>Time</label>
+      <input type="text" value="12:00 – 13:00" disabled />
+      <textarea disabled>Lisinopril (2 pills)</textarea>
+      <div class="btn-group">
+        <button class="btn-delete">Delete</button>
+        <button class="btn-save">Save</button>
+      </div>
+    </div>
+  </div>
+
   <footer class="footer">
-    <link rel="stylesheet" href="CSS/footer.css" />
     <div class="footer-container">
       <div class="footer-column">
         <img src="Assets/logo.png" alt="Logo" class="footer-logo" />
@@ -188,7 +230,8 @@
         </ul>
       </div>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   </footer>
+
+  <script src="JS/e-calendar.js"></script>
 </body>
 </html>
