@@ -225,7 +225,7 @@ body::-webkit-scrollbar {
   transition: background-color 0.2s ease;
 }
 
-/* ---------- MODALS ---------- */
+/* MODALS */
 
 .modal {
   display: none; /* Hidden by default */
@@ -244,8 +244,11 @@ body::-webkit-scrollbar {
   background-color: white;
   padding: 20px 25px;
   border-radius: 10px;
-  width: 90%;
-  max-width: 400px;
+  width: 95%;           /* Wider */
+  max-width: 600px;     /* Increase from 400px */
+  max-height: 80vh;     /* Limit height */
+  overflow-y: auto;    /* Enable scroll if content overflows */
+  border: 3px solid #81C7BE;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   position: relative;
   animation: fadeIn 0.3s ease-in-out;

@@ -190,25 +190,31 @@ html, body {
 }
 
 .modal-content {
-  background-color: #fff;
+  background-color: white;
   margin: 10% auto;
   padding: 20px;
+  border: 4px solid #81C7BE;
+  border-radius: 10px;
   width: 80%;
-  max-width: 500px;
-  border-radius: 8px;
-  position: relative;
+  max-width: 600px;
+  max-height: 70vh;          /* Limits the vertical height */
+  overflow-y: auto;          /* Scrolls if content overflows */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .close {
-  position: absolute;
-  top: 10px; right: 15px;
-  font-size: 24px;
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
   cursor: pointer;
+  transition: color 0.3s ease;
 }
 
 .close:hover,
 .close:focus {
   color: #000;
+  text-decoration: none;
 }
 
 /* Final Note */
