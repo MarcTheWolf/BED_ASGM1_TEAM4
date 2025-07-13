@@ -87,6 +87,29 @@ app.get("/getBudgetExpenditureDoughnutChart/:month/:id", financeController.getBu
 
 
 app.post("/postImage", authorization.verifyJWT); //WIP
+
+
+//Calendar Endpoints (Calendar API endpoints using existing EventList) (By Yuxuan)
+app.get("/calendar/events", eventController.getEventsByMonth);
+app.get("/calendar/events/today", eventController.getTodayEvents);
+app.get("/calendar/events/tomorrow", eventController.getTomorrowEvents);
+app.get("/calendar/events/:date", eventController.getEventsByDate);
+
+app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
+app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
+app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
+app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
+
+// Task management API endpoints (By Yuxuan)
+app.post("/tasks", authorization.verifyJWT, taskController.addTask);
+app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask);
+app.put("/tasks/:task_id", authorization.verifyJWT, taskController.updateTask);
+app.get("/tasks", authorization.verifyJWT, taskController.getAllTasks);
+app.get("/tasks/:task_id", authorization.verifyJWT, taskController.getTaskById);
+app.get("/tasks/month", authorization.verifyJWT, taskController.getTasksByMonth);
+app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByDate);
+app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
+app.post("/tasks/initialize", taskController.initializeTaskTable);
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
