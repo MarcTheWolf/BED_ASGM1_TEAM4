@@ -27,8 +27,12 @@ app.post("/initializeAccountDetails/:id", accountController.initializeAccountDet
 app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
 
+//Events Endpoints (By Ansleigh) (endpoints for events)
 app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
+app.get("/getAllEvents", eventController.getAllEvents);
+app.post("/registerEvent/:event_id", eventController.registerEvent);
+app.delete("/unregisterEvent/:event_id", eventController.unregisterEvent);
 
 app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
@@ -43,7 +47,7 @@ app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditur
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Index page: http://localhost:${port}/login.html`);
+  console.log(`Index page: http://localhost:${port}/e-events.html`);
 });
 
 // Graceful shutdown
