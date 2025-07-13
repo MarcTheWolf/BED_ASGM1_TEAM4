@@ -12,13 +12,23 @@ app.use(express.urlencoded({ extended: true }));
 
 
 const accountController = require("./Controllers/accountController.js");
-const medicationController = require("./Controllers/medicationController.js");
+const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
+
+
+const authorization = require("./Middlewares/authorization.js");
+
+const {
+  validateMedication,
+  validateMedicalCondition,
+} = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
+
 
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
+
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
 app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
@@ -28,18 +38,7 @@ app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.g
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
-app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
-
-app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
-app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
-
-app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
-app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
-app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
-
-
-
+app.post("/postImage", authorization.verifyJWT); //WIP
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////

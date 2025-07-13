@@ -23,7 +23,7 @@ async function authenticateAccount(req, res) {
       id: account.id,
       role: account.account_type,
       };
-      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || "3600s"});
+      const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
       return res.status(200).json({
         message: "Password match.",
         account_id: account.id,
@@ -74,12 +74,10 @@ async function createAccount(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const accountId = await accountModel.createAccount(phone_number, hashedPassword);
-
-    payload = {
+    const payload = {
       id: accountId,
     };
-
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: process.env.JWT_EXPIRATION || "3600s" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
     
     res.status(201).json({ message: "Account created successfully.", account_id: accountId, token: token});
   } catch (error) {
@@ -128,8 +126,6 @@ async function getPhoneByAccountID(req, res) {
     res.status(500).json({ error: "Server error." });
   }
 }
-
-
 
 module.exports = {
   authenticateAccount,
