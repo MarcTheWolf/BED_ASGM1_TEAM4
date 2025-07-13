@@ -35,9 +35,21 @@ app.get("/getAllEvents",authorization.verifyJWT, eventController.getAllEvents);
 app.post("/registerEvent/:event_id",authorization.verifyJWT, eventController.registerEvent);
 app.delete("/unregisterEvent/:event_id",authorization.verifyJWT, eventController.unregisterEvent);
 
-app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
-app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
-app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
+//Finance Endpoints (By Belle)
+app.get("/getExpenditureGoalByID/:id", authorization.verifyJWT, financeController.getExpenditureGoalByID);
+app.get("/getTotalExpenditureByID/:id", authorization.verifyJWT, financeController.getTotalExpenditureByID);
+app.get("/getMonthlyExpenditureByID/:id", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
+app.get("/getAllTransactionsByID/:id", authorization.verifyJWT, financeController.getAllTransactionsByID);
+
+app.post("/addTransactionToAccount/:id", authorization.verifyJWT, financeController.addTransactionToAccount);
+
+
+
+//Use of External API from backend (By Belle)
+app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
+app.get("/getBudgetExpenditureDoughnutChart/:month/:id", financeController.getBudgetExpenditureDoughnutChart);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
