@@ -15,6 +15,7 @@ const accountController = require("./Controllers/accountController.js");
 const medicationController = require("./Controllers/medicationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
+const { JsonWebTokenError } = require("jsonwebtoken");
 
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
@@ -27,8 +28,12 @@ app.post("/initializeAccountDetails/:id", accountController.initializeAccountDet
 app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
 
-app.get("/getEventRegisteredByID/:id", eventController.getEventRegisteredByID);
-app.get("/getEventDetailsByID/:id", eventController.getEventDetailsByID);
+//Events Endpoints (By Ansleigh) (endpoints for events)
+app.get("/getEventRegisteredByID/:id",authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventDetailsByID/:id",authorization.verifyJWT, eventController.getEventDetailsByID);
+app.get("/getAllEvents",authorization.verifyJWT, eventController.getAllEvents);
+app.post("/registerEvent/:event_id",authorization.verifyJWT, eventController.registerEvent);
+app.delete("/unregisterEvent/:event_id",authorization.verifyJWT, eventController.unregisterEvent);
 
 //Finance Endpoints (By Belle)
 app.get("/getExpenditureGoalByID/:id", authorization.verifyJWT, financeController.getExpenditureGoalByID);
@@ -55,7 +60,7 @@ app.get("/getBudgetExpenditureDoughnutChart/:month/:id", financeController.getBu
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Index page: http://localhost:${port}/login.html`);
+  console.log(`Index page: http://localhost:${port}/e-events.html`);
 });
 
 // Graceful shutdown
