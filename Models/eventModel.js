@@ -17,7 +17,8 @@ async function getEventRegisteredByID(id) {
                     e.location,
                     e.org_id,
                     e.weekly,
-                    e.equipment_required
+                    e.equipment_required,
+                    e.banner_image
                 FROM RegisteredList r
                 JOIN EventList e ON r.event_id = e.id
                 WHERE r.account_id = @account_id
