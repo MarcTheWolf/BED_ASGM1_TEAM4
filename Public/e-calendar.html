@@ -5,24 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>SeniorSync Calendar</title>
   <link rel="stylesheet" href="CSS/e-calendar.css" />
-  <link rel="stylesheet" href="CSS/footer.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 <body>
   <header>
     <link rel="stylesheet" href="CSS/e-navbar.css">
     <nav class="navbar">
-
-
-      <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo" /></div>
-      <ul class="nav-links">
-        <li><a href="e-calendar.html">Calendar</a></li>
-        <li><a href="e-finance.html">Finance</a></li>
-        <li><a href="e-events.html">Events</a></li>
-        <li><a href="e-notifications.html">Notifications</a></li>
-        <li><a href="e-profile.html">Profile</a></li>
-      </ul>
-
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="e-calendar.html">Calendar</a></li>
+            <li><a href="e-finance.html">Finance</a></li>
+            <li><a href="e-events.html">Events</a></li>
+            <li><a href="e-notifications.html">Notifications</a></li>
+            <li><a href="e-profile.html">Profile</a></li>
+        </ul>
     </nav>
 </header>
 
@@ -112,6 +107,7 @@
 
     <div class="tasks-today">
       <h4>Today</h4>
+
       <div class="task-card medication">
         <div class="task-content">
           <strong>Medication Time (8:30)</strong>
@@ -139,6 +135,7 @@
 
     <div class="tasks-tomorrow">
       <h4>Tomorrow</h4>
+
       <div class="task-card medication">
         <div class="task-content">
           <strong>Medication Time (8:30)</strong>
@@ -147,7 +144,7 @@
         <input type="checkbox" />
       </div>
 
-      <div class="task-card medication" onclick="openEditModal('Medication Time (12:30)', '2025-07-17', '12:00 – 13:00', 'Lisinopril (2 pills)')">
+      <div class="task-card medication">
         <div class="task-content">
           <strong>Medication Time (12:30)</strong>
           <span>Lisinopril (2 pills)</span>
@@ -157,54 +154,11 @@
     </div>
   </main>
 
-  <!-- Modals as siblings -->
-  <div class="modal" id="addModal" style="display:none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button class="back-btn" onclick="toggleModal('addModal')">&times;</button>
-      </div>
-      
-      <label for="taskName">Task Name</label>
-      <input id="taskName" type="text" placeholder="Task Title" />
-      <label for="taskDate">Date</label>
-      <input id="taskDate" type="date" value="2025-07-17" />
-      <label for="taskTime">Time</label>
-      <select id="taskTime">
-        <option>12:00 - 13:00</option>
-        <option>13:00 - 14:00</option>
-      </select>
-      
-      <label for="taskDesc">Description</label>
-      <textarea id="taskDesc" placeholder="Enter your description"></textarea>
-      
-      <button id="createTaskBtn" class="btn-create">Create</button>
-    </div>
-  </div>
-
-  <div class="modal" id="editModal" style="display:none;">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button class="close-btn" onclick="toggleModal('editModal')">&times;</button>
-      </div>
-      <label>Task</label>
-      <input type="text" value="Task Title" />
-      <label>Date</label>
-      <input type="date" value="2025-07-17" disabled />
-      <label>Time</label>
-      <input type="text" value="12:00 – 13:00" disabled />
-      <textarea disabled>Lisinopril (2 pills)</textarea>
-      <div class="btn-group">
-        <button class="btn-delete">Delete</button>
-        <button class="btn-save">Save</button>
-      </div>
-    </div>
-  </div>
-
   <footer class="footer">
-    <img src="Assets/logo-icon.png" alt="Logo Icon" class="footer-icon">
+    <link rel="stylesheet" href="CSS/footer.css" />
     <div class="footer-container">
       <div class="footer-column">
-        <img src="Assets/logo.png" alt="Logo" class="footer-logo">
+        <img src="Assets/logo.png" alt="Logo" class="footer-logo" />
         <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
         <div class="social-icons">
           <a href="#"><i class="fab fa-facebook-f"></i></a>
@@ -224,10 +178,7 @@
       </div>
       <div class="footer-column">
         <h4>Contact</h4>
-        <p>Stanley House<br>
-           Masterlord Village,<br>
-           West Rd, Ipswich<br>
-           9SX</p>
+        <p>Stanley House<br />Masterlord Village,<br />West Rd, Ipswich<br />9SX</p>
       </div>
       <div class="footer-column">
         <h4>Legal</h4>
@@ -238,12 +189,7 @@
         </ul>
       </div>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   </footer>
-  <script src="JS/e-calendar.js"></script>
 </body>
 </html>
-
-
-
-
-
