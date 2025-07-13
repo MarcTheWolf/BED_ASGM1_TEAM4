@@ -12,45 +12,32 @@ app.use(express.urlencoded({ extended: true }));
 
 
 const accountController = require("./Controllers/accountController.js");
-const medicationController = require("./Controllers/medicationController.js");
+const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 const { JsonWebTokenError } = require("jsonwebtoken");
 
+
+const authorization = require("./Middlewares/authorization.js");
+
+const {
+  validateMedication,
+  validateMedicalCondition,
+} = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
+
+
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
+
+//Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", accountController.getAccountById);
+app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
-
-app.get("/getMedicationByAccountID/:id", medicationController.getMedicationByAccountID);
-app.get("/getMedicationByID/:id", medicationController.getMedicationByID);
-
-//Events Endpoints (By Ansleigh) (endpoints for events)
-app.get("/getEventRegisteredByID/:id",authorization.verifyJWT, eventController.getEventRegisteredByID);
-app.get("/getEventDetailsByID/:id",authorization.verifyJWT, eventController.getEventDetailsByID);
-app.get("/getAllEvents",authorization.verifyJWT, eventController.getAllEvents);
-app.post("/registerEvent/:event_id",authorization.verifyJWT, eventController.registerEvent);
-app.delete("/unregisterEvent/:event_id",authorization.verifyJWT, eventController.unregisterEvent);
-
-//Finance Endpoints (By Belle)
-app.get("/getExpenditureGoalByID/:id", authorization.verifyJWT, financeController.getExpenditureGoalByID);
-app.get("/getTotalExpenditureByID/:id", authorization.verifyJWT, financeController.getTotalExpenditureByID);
-app.get("/getMonthlyExpenditureByID/:id", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
-app.get("/getAllTransactionsByID/:id", authorization.verifyJWT, financeController.getAllTransactionsByID);
-
-app.post("/addTransactionToAccount/:id", authorization.verifyJWT, financeController.addTransactionToAccount);
-
-
-
-//Use of External API from backend (By Belle)
-app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
-app.get("/getBudgetExpenditureDoughnutChart/:month/:id", financeController.getBudgetExpenditureDoughnutChart);
+app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 
 
 ////////////////////////////////////////////////////

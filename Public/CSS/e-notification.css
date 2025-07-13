@@ -1,0 +1,229 @@
+html, body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* 🔒 Prevents full-page horizontal scroll */
+  width: 100%;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+}
+
+.nav-logo img {
+  height: 40px;
+  filter: drop-shadow(0 0 3px white);
+}
+
+.logo {
+    font-weight: bold;
+    color: #1d3557;
+    font-size: 1.2rem;
+}
+
+.nav-links {
+    list-style: none;
+    position: relative;
+    display: flex;
+    gap: 35px;
+    margin: 0;
+    padding: 0;
+    margin-right: 50px;
+    top: 8px;
+    font-size: 1.3rem;
+}
+
+.nav-links li {
+    cursor: pointer;
+    color: #333;
+}
+
+.nav-links li a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/*  Notification Page Layout  */
+.notification-page {
+  padding: 120px 30px 60px;  /* extra top padding to clear fixed navbar */
+  max-width: 850px;
+  margin: auto;
+  font-family: 'Segoe UI', sans-serif;
+  color: #333;
+  box-sizing: border-box; /* prevents padding from overflowing */
+  overflow-x: hidden;
+}
+
+/*  Page Header */
+.notification-header h1 {
+  font-size: 2rem;
+  margin-bottom: 6px;
+  color: #000;
+}
+
+.notification-header p {
+  color: #555;
+  font-size: 0.95rem;
+  margin-bottom: 30px;
+}
+
+/*  Date Grouping  */
+.notification-group {
+  margin-bottom: 30px;
+}
+
+.notification-group h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  color: #000;
+}
+
+/*  Notification Card  */
+.notification-card {
+  position: relative;
+  background-color: #fff;
+  padding: 16px 20px;
+  border-left: 2px solid #ccc;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  margin-bottom: 10px;
+}
+
+/* Time Label */
+.notification-card .time-label {
+  font-size: 0.9rem;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+/* Category Badge */
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  font-size: 0.7rem;
+  font-weight: bold;
+  border-radius: 10px;
+  color: white;
+  margin-bottom: 10px;
+}
+
+.badge.event {
+  background-color: #8bd3c7;
+  color: black;
+}
+
+.badge.announcement {
+  background-color: #a3a6af;
+  color: black;
+}
+
+.badge.calendar {
+  background-color: #d89fa6;
+  color: black;
+}
+
+.badge.finance {
+  background-color: #f0c795;
+  color: #333;
+}
+
+/* Notification Text */
+.notification-card p {
+  font-size: 0.95rem;
+  margin-top: 4px;
+  line-height: 1.5;
+}
+
+/* Emoji Icon */
+.emoji-icon {
+  width: 34px;
+  position: absolute;
+  top: 10px;
+  right: 16px;
+}
+
+.view-more {
+  position: absolute;
+  right: 20px;
+  bottom: 16px;  
+  font-size: 1.2rem;
+  color: #aaa;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.view-more:hover {
+  color: #333;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  z-index: 1000;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: #444;
+  border-bottom: 2px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.modal-content {
+  background-color: white;
+  margin: 10% auto;
+  padding: 20px;
+  border: 4px solid #81C7BE;
+  border-radius: 10px;
+  width: 80%;
+  max-width: 600px;
+  max-height: 70vh;          /* Limits the vertical height */
+  overflow-y: auto;          /* Scrolls if content overflows */
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+  color: #000;
+  text-decoration: none;
+}
+
+/* Final Note */
+.footer-note {
+  text-align: center;
+  color: #888;
+  margin-top: 40px;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+
+
