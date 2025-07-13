@@ -49,12 +49,19 @@ loginbtn.addEventListener("click", async function (e) {
     .then(data => {
         if (data.account_id) {
             localStorage.setItem("account_id", data.account_id);
-            alert("Login successful!");
-            console.log("User logged in:", data.account_id);
             var account_id = data.account_id;
             var token = data.token;
+            console.log("Token:", token);
+            alert("Login successful!");
+            console.log("User logged in:", data.account_id);
 
-            fetch(`/getAccountById/${account_id}`)
+            fetch(`/getAccountById/${account_id}`, {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                }
+            })
             .then(res => {
                 if (!res.ok) {
                 throw new Error("Failed to fetch user details.");

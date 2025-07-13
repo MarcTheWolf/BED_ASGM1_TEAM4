@@ -15,6 +15,7 @@ const accountController = require("./Controllers/accountController.js");
 const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
+const taskController = require("./Controllers/taskController.js");
 
 
 const authorization = require("./Middlewares/authorization.js");
@@ -110,6 +111,9 @@ app.get("/tasks/month", authorization.verifyJWT, taskController.getTasksByMonth)
 app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByDate);
 app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
 app.post("/tasks/initialize", taskController.initializeTaskTable);
+
+
+
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
