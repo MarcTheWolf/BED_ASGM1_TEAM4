@@ -172,15 +172,15 @@ body::-webkit-scrollbar {
 }
 
 .bar-red {
-  background-color: #C78181; /* Medication */
+  background-color: #C78181;
 }
 
 .bar-blue {
-  background-color: #5498C6; /* Fitness Class */
+  background-color: #5498C6;
 }
 
 .bar-green {
-  background-color: #92BD91; /* Appointments or other events */
+  background-color: #92BD91; 
 }
 
 
@@ -200,7 +200,7 @@ body::-webkit-scrollbar {
   width: 18px;
   height: 18px;
   cursor: pointer;
-  accent-color: #81C7BE; /* checkbox color to match theme */
+  accent-color: #81C7BE;
   flex-shrink: 0;
 }
 
@@ -210,7 +210,6 @@ body::-webkit-scrollbar {
   gap: 2px;
 }
 
-/* Medication and Event coloring (already defined) */
 .task-card.medication {
   border-left: 5px solid #C78181;
 }
@@ -219,8 +218,70 @@ body::-webkit-scrollbar {
   border-left: 5px solid #5498C6;
 }
 
-/* Hover effect for interactivity */
 .task-card:hover {
   background-color: #f5fefe;
   transition: background-color 0.2s ease;
+}
+
+/* Task-related styles */
+.task-card.task {
+  border-left: 5px solid #81C7BE;
+}
+
+.task-card.task.high {
+  border-left-color: #C78181;
+}
+
+.task-card.task.medium {
+  border-left-color: #F0C795;
+}
+
+.task-card.task.low {
+  border-left-color: #92BD91;
+}
+
+.task-card .task-content.completed {
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.task-card .task-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.task-card .delete-task-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+  padding: 2px;
+  border-radius: 3px;
+  transition: background-color 0.2s;
+}
+
+.task-card .delete-task-btn:hover {
+  background-color: #ffebee;
+}
+
+/* Priority indicators */
+.priority-indicator {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  margin-right: 8px;
+}
+
+.priority-high {
+  background-color: #C78181;
+}
+
+.priority-medium {
+  background-color: #F0C795;
+}
+
+.priority-low {
+  background-color: #92BD91;
 }

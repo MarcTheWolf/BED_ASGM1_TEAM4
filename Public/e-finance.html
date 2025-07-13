@@ -8,33 +8,25 @@
     <link rel='stylesheet' type='text/css' media='screen' href='CSS/e-finance.css'>
 </head>
 <body>
-<header>
-    <link rel="stylesheet" href="CSS/e-navbar.css">
-    <nav class="navbar">
-        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
-        <ul class="nav-links">
-            <li><a href="e-calendar.html">Calendar</a></li>
-            <li><a href="e-finance.html">Finance</a></li>
-            <li><a href="e-events.html">Events</a></li>
-            <li><a href="e-notifications.html">Notifications</a></li>
-            <li><a href="e-profile.html">Profile</a></li>
-        </ul>
-    </nav>
-    <script src="JS/e-navbar.js"></script>
-</header>
+    <header>
+        <nav class="navbar">
+            <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+            <ul class="nav-links">
+                <li><a href="e-calendar.html">Calendar</a></li>
+                <li><a href="e-finance.html">Finance</a></li>
+                <li><a href="e-events.html">Events</a></li>
+                <li><a href="e-notifications.html">Notifications</a></li>
+                <li><a href="e-profile.html">Profile</a></li>
+            </ul>
+        </nav>
+    </header>
 <!-- Title header-->
     <div class="finance-title-container">
         <span class="highlight-box"></span>
         <h1 class="finance-title">Financial Details</h1>
     </div>
 
-
-    <div class="budget-section">
-        <h2>Spendings This Month</h2>
-        <img src="" alt="Finance Breakdown" class="finance-pie-chart">
-        <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
-    </div>
-
+    <!--Missing Graphs Etc-->
 
     <!-- Transaction Records Section-->
     <div class = "transaction-records-container">
@@ -74,7 +66,7 @@
         <input type="text" id="description" name="description" placeholder="e.g. Transport" required>
 
         <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
+        <input type="number" id="amount" name="amount" placeholder="0.00" required>
 
         <label for="category">Category</label>
         <select id="category" name="category" required>
@@ -88,11 +80,11 @@
         </select>
 
         <button type="submit" class="add-record-button">Add Record</button>
-        <button type="button" id="cancel-transaction">Cancel</button>
         </form>
     </div>
 
-
+    <!--Edit Budget Amount Form-->
+    <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button> <!-- Button to open budget form *Change placement*-->
     <div id="form-container-budget" class="form-container" hidden>
         <form id="budget-form" class="budget-form">
             <h2>Update Monthly Budget</h2>
@@ -157,6 +149,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </footer>
 </body>
-    <script src='JS/e-finance.js'></script>
+    <script src='JS/finance.js'></script>
 
 </html>

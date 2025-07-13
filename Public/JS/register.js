@@ -35,7 +35,6 @@ document.getElementById("profileForm").addEventListener("submit", async function
     console.log("New User Account:", newUserAccount);
     if (newUserAccount) {
         const newUserId = await createAccount(newUserAccount)
-        console.log("New User ID:", newUserId);
         await fetch(`/initializeAccountDetails/${newUserId}`, {
             method: "POST",
             headers: {
@@ -47,7 +46,7 @@ document.getElementById("profileForm").addEventListener("submit", async function
         .then(data => {
             if (data.success) {
                 alert("Account created successfully!");
-                window.location.href = "login.html";
+                window.location.href = "index.html";
             } else {
                 alert("Error initializing account details: " + data.error);
             }
@@ -69,7 +68,7 @@ async function createAccount(user) {
             body: user
         });
         const data = await res.json();
-        console.log("Response from createAccount:", data);
+
         if (data.account_id) {
             console.log("User registered:", data.account_id);
             return data.account_id;

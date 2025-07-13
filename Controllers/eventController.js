@@ -79,10 +79,96 @@ async function unregisterEvent(req, res) {
     }
 }
 
+// Calendar-related functions
+async function getEventsByMonth(req, res) {
+    const { month, year } = req.query;
+    const accountId = req.user ? req.user.id : null;
+
+    if (!month || !year) {
+        return res.status(400).json({ 
+            success: false,
+            message: "Month and year parameters are required" 
+        });
+    }
+
+    try {
+        const events = await accountModel.getEventsByMonth(accountId, month, year);
+        res.status(200).json({
+            success: true,
+            data: events
+        });
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+}
+
+async function getTodayEvents(req, res) {
+    const accountId = req.user ? req.user.id : null;
+
+    try {
+        const events = await accountModel.getTodayEvents(accountId);
+        res.status(200).json({
+            success: true,
+            data: events
+        });
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+}
+
+async function getTomorrowEvents(req, res) {
+    const accountId = req.user ? req.user.id : null;
+
+    try {
+        const events = await accountModel.getTomorrowEvents(accountId);
+        res.status(200).json({
+            success: true,
+            data: events
+        });
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+}
+
+async function getEventsByDate(req, res) {
+    const { date } = req.params;
+    const accountId = req.user ? req.user.id : null;
+
+    try {
+        const events = await accountModel.getEventsByDate(accountId, date);
+        res.status(200).json({
+            success: true,
+            data: events
+        });
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ 
+            success: false,
+            message: "Internal server error" 
+        });
+    }
+}
+
 module.exports = {
     getEventRegisteredByID,
     getEventDetailsByID,
     getAllEvents,
     registerEvent,
-    unregisterEvent
+    unregisterEvent,
+    getEventsByMonth,
+    getTodayEvents,
+    getTomorrowEvents,
+    getEventsByDate
 };

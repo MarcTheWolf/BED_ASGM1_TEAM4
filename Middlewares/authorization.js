@@ -15,7 +15,6 @@ function verifyJWT(req, res, next) {
       return res.status(403).json({ message: "Invalid token" }); // Token invalid or expired
     }
 
-    req.user = decoded; // Attach decoded token to request object
     next(); // Continue to next middleware/route
   });
 }

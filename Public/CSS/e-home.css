@@ -14,7 +14,7 @@ body::-webkit-scrollbar {
     background-color: #eafaf7;
     padding: 30px 20px;
 
-    margin-top: 65px; /* adjust to match navbar height */
+    margin-top: 70px; /* adjust to match navbar height */
 }
 
 .hero-text h2 {
@@ -34,9 +34,8 @@ body::-webkit-scrollbar {
 }
 
 .hero-image img {
-    height: 450px;
-    position: relative;
-    bottom: -30px;
+    height: 150px;
+    border-radius: 50%;
 }
 
 .categories {
