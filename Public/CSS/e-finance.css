@@ -1,0 +1,235 @@
+body{
+    height: 100%;
+    margin: 0;
+    width: 100%;
+}
+
+.finance-title-container {
+    display: flex;
+    flex-direction: row;
+    text-align: left;
+    margin-top: 80px;
+    align-items: center;
+    background-color: #EAF8F6;
+}
+
+.finance-title {
+    font-size: 2rem;
+    color: #1d3557;
+}
+
+.budget-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 2rem auto;
+    text-align: center;
+}
+
+.finance-pie-chart {
+    max-width: 40%;
+    height: auto;
+    margin-bottom: 1rem;
+}
+
+.edit-budget-btn {
+    padding: 0.75rem 1.5rem;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+.edit-budget-btn:hover {
+    background-color: #45a049;
+}
+
+.highlight-box {
+    width: 20px;
+    height: 50px;
+    background-color: #81C7BE;
+    margin: 10px;
+    border-radius: 10px;
+}
+
+.transaction-records-header {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin: 20px 0;
+}
+
+
+.transaction-records-container {
+    margin: 20px;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+}
+
+.circle {
+    width: 40px;
+    height: 40px;
+    background-color: #81C7BE;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    outline: none;
+}
+
+.circle:hover {
+    background-color: #6ab8a7;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.transaction-record-list{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.transaction-record {
+    display: flex;
+    padding: 10px;
+    border-bottom: 4px;
+    background-color: #EAF8F6;
+    border-radius: 5px;
+}
+
+.transaction-month-header {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #ccc;
+  background-color: #f8f9fa;
+  padding: 8px 12px;
+  border-radius: 4px;
+}
+
+.transaction-date {
+    font-weight: bold;
+}
+
+.transaction-category {
+    margin-left: 10px;
+    overflow-x: hidden;
+    font-weight: bold;
+}
+
+.transaction-description {
+    margin-left: 10px;
+    overflow-x: hidden;
+}
+
+.transaction-amount {
+    margin-left: auto;
+    color: #171c19;
+}
+
+.transaction-records-footer {
+    display: flex;
+    justify-content: right;
+    margin-top: 20px;
+}
+
+.transaction-records-footer .see-more-button {
+    color: rgb(96, 96, 96);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+.transaction-records-footer .see-more-button:hover {
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    transform: translateY(-2px);
+}
+
+.budget-form {
+    display: flex;
+    flex-direction: column;
+    width: 400px;
+    padding: 1.5rem 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+    font-family: Arial, sans-serif;
+
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.budget-form h2 {
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #333;
+}
+
+.budget-form label {
+  display: block;
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 600;
+  color: #555;
+}
+
+.budget-form input,
+.budget-form select {
+  width: 100%;
+  padding: 0.5rem 0.75rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  transition: border-color 0.3s ease;
+}
+
+.budget-form input:focus,
+.budget-form select:focus {
+  outline: none;
+  border-color: #007BFF;
+  box-shadow: 0 0 3px #007BFF;
+}
+
+.budget-form button {
+  margin-top: 1.5rem;
+  width: 100%;
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background-color: #007BFF;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.budget-form button:hover {
+  background-color: #0056b3;
+}
+
+.form-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 1rem;
+}
+
+.edit-budget-btn {
+  background-color: #6ab8a7;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
+  cursor: pointer;
+}

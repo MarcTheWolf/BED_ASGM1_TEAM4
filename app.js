@@ -15,6 +15,16 @@ const accountController = require("./Controllers/accountController.js");
 const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
+const { JsonWebTokenError } = require("jsonwebtoken");
+
+
+const authorization = require("./Middlewares/authorization.js");
+
+const {
+  validateMedication,
+  validateMedicalCondition,
+} = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
+
 
 
 const authorization = require("./Middlewares/authorization.js");
@@ -28,11 +38,15 @@ const {
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
 ////////////////////////////////////////////////////
+
+//Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
 app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 
+  
+  
 //Medical Information Endpoints (By Marcus)
 app.get("/getMedicationByAccountID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByID);
@@ -56,6 +70,9 @@ app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.get
 app.get("/getExpenditureGoalByID/:id", financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID/:id", financeController.getTotalExpenditureByID);
 app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditureByID);
+app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -66,7 +83,7 @@ app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditur
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Index page: http://localhost:${port}/login.html`);
+  console.log(`Index page: http://localhost:${port}/e-events.html`);
 });
 
 // Graceful shutdown

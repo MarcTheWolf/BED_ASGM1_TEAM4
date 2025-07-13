@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SeniorSync Calendar</title>
+  <link rel="stylesheet" href="CSS/e-notification.css" />
+  <link rel="stylesheet" href="CSS/footer.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+</head>
+<body>
+  <header>
+    <nav class="navbar">
+      <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo" /></div>
+      <ul class="nav-links">
+        <li><a href="e-calendar.html">Calendar</a></li>
+        <li><a href="e-finance.html">Finance</a></li>
+        <li><a href="e-events.html">Events</a></li>
+        <li><a href="e-notifications.html">Notifications</a></li>
+        <li><a href="e-profile.html">Profile</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="notification-page">
+  <section class="notification-header">
+    <h1>Notifications</h1>
+    <p>All your notifications here in this mailbox, never miss an opportunity to forget things.</p>
+  </section>
+
+  <section class="notification-group">
+    <h2>3 Aug 2025</h2>
+    <div class="notification-card">
+      <div class="time-label">08.30am</div>
+      <span class="badge event">EVENT</span>
+      <p>
+        You have booked a Community Physical Activity Programme, Zumba tomorrow 4 Aug 2025 from 7am to 8am. 
+        Please remember to attend, cancel your booking if you are unable to make it. Thank you!
+      </p>
+      <a href="#" class="view-more">&gt;</a>
+    </div>
+  </section>
+
+  <section class="notification-group">
+    <h2>30 Jul 2025</h2>
+    <div class="notification-card">
+      <div class="time-label">05.30pm</div>
+      <span class="badge announcement">ANNOUNCEMENT</span>
+      <p>
+        Feeling stressed? Feeling burn out? Feeling exhausted? Fret not, you are not alone. 
+        Join us for a session of stress relief and pick up techniques to avoid feeling those emotions. 
+        Walk away with a peaceful mind!
+      </p>
+      <a href="#" class="view-more" id="openModalBtn30Jul">&gt;</a>    
+    </div>
+  </section>
+
+  <section class="notification-group">
+    <h2>27 Jul 2025</h2>
+    <div class="notification-card">
+      <div class="time-label">07.30am</div>
+      <span class="badge calendar">CALENDAR</span>
+      <p>
+        You have a medication to take at 12.30pm, do remember to take it and a reminder will be sent again when the time is nearer.
+      </p>
+      <a href="#" class="view-more">&gt;</a>
+    </div>
+  </section>
+
+  <section class="notification-group">
+    <h2>24 Jul 2025</h2>
+    <div class="notification-card">
+      <div class="time-label">05.30pm</div>
+      <span class="badge finance">FINANCE</span>
+      <p>
+        Your July finance statement has been released, check your spendings and savings for this month.
+      </p>
+      <a href="#" class="view-more">&gt;</a>
+    </div>
+  </section>
+  <p class="footer-note">You have caught up all your notifications, have a nice day!</p>
+</main>
+
+  <footer class="footer">
+    <img src="Assets/logo-icon.png" alt="Logo Icon" class="footer-icon">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <div class="footer-container">
+        <div class="footer-column">
+            <img src="Assets/logo.png"Logo" class="footer-logo">
+            <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
+            <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        <div class="footer-column">
+            <h4>Information</h4>
+            <ul>
+            <li><a href="#">About</a></li>
+            <li><a href="#">Contact us</a></li>
+            <li><a href="#">FAQs</a></li>
+            <li><a href="#">Account</a></li>
+            </ul>
+        </div>
+        <div class="footer-column">
+            <h4>Contact</h4>
+            <p>Stanley House<br>
+            Masterlord Village,<br>
+            West Rd, Ipswich<br>
+            9SX</p>
+        </div>
+        <div class="footer-column">
+            <h4>Legal</h4>
+            <ul>
+            <li><a href="#">Cookie Policy</a></li>
+            <li><a href="#">Privacy Policy</a></li>
+            <li><a href="#">Terms of Use</a></li>
+            </ul>
+        </div>
+        </div>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    </footer>
+
+<!-- Popup Modal -->
+<div id="announcementModal" class="modal">
+  <div class="modal-content">
+    <span class="close">&times;</span>
+    
+    <!-- announcement  header -->
+    <div class="modal-header">
+      Announcement
+    </div>
+
+    <h2>Quick stress fixes you can use anytime, anyway</h2>
+    <p>Overwhelmed by deadlines, demands and never-ending to-do lists? Don't worry take a deep breathe phew, you are not alone.</p>
+    <p>Join our event and walk away with a peaceful mind with us by learning strategies that fit into even the busiest schedules.</p>
+    <ul>
+      <li>learn how stress affects your body and mind</li>
+      <li>master smart time-management habits</li>
+      <li>Pick up 3-4 stress relief techniques you can use anytime, anywhere</li>
+    </ul>
+    <p><strong>Details:</strong><br>
+      Name: Walk away with a peaceful mind<br>
+      Date: 31 July 2025<br>
+      Time: 12pm - 2pm
+    </p>
+    <p><em>Limited slots are available, sign up now!<br>
+    Go to Events ➡️ Search “Walk away with a peaceful mind”</em></p>
+  </div>
+</div>
+<script src="JS/e-notifications.js"></script>
+</body>
+</html>

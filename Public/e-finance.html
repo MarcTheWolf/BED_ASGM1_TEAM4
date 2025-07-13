@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8'>
+    <meta http-equiv='X-UA-Compatible' content='IE=edge'>
+    <title>Finance Page</title>
+    <meta name='viewport' content='width=device-width, initial-scale=1'>
+    <link rel='stylesheet' type='text/css' media='screen' href='CSS/e-finance.css'>
+</head>
+<body>
+    <header>
+    <link rel="stylesheet" href="CSS/e-navbar.css">
+    <nav class="navbar">
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="e-calendar.html">Calendar</a></li>
+            <li><a href="e-finance.html">Finance</a></li>
+            <li><a href="e-events.html">Events</a></li>
+            <li><a href="e-notifications.html">Notifications</a></li>
+            <li><a href="e-profile.html">Profile</a></li>
+        </ul>
+    </nav>
+</header>
+<!-- Title header-->
+    <div class="finance-title-container">
+        <span class="highlight-box"></span>
+        <h1 class="finance-title">Financial Details</h1>
+    </div>
+
+
+    <div class="budget-section">
+        <h2>Spendings This Month</h2>
+        <img src="" alt="Finance Breakdown" class="finance-pie-chart">
+        <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+    </div>
+
+
+    <!-- Transaction Records Section-->
+    <div class = "transaction-records-container">
+        <div class="transaction-records-header">
+            <h2 class="transaction-records-title">Transaction Records</h2>
+            <button id="add-transaction-btn" class="circle">+</button>
+        </div>
+
+        <div class="transaction-records-list">
+            <!--Example trans record-->
+            <div class="transaction-record">
+                <span class="transaction-date">2023-01-01</span>
+                <span class="transaction-name">Groceries</span>
+                <span class="transaction-amount">$50.00</span>
+            </div>
+
+            <div class="transaction-record">
+                <span class="transaction-date">2023-01-02</span>
+                <span class="transaction-name">Utilities</span>
+                <span class="transaction-amount">$150.00</span>
+            </div>
+        </div>
+        <!-- Add more transaction records as needed -->
+
+        <!-- See More Button -->
+        <div class="transaction-records-footer">
+            <button class="see-more-button">See More</button>
+        </div>
+    </div>
+
+    <!--Add Transaction Record Form -->
+    <div class="form-container-transaction" hidden >
+        <form id="transaction-form" class="budget-form">
+        <h2>Add Transaction Record</h2>
+    
+        <label for="description">Description</label>
+        <input type="text" id="description" name="description" placeholder="e.g. Transport" required>
+
+        <label for="amount">Amount</label>
+        <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
+
+        <label for="category">Category</label>
+        <select id="category" name="category" required>
+            <option value="" disabled selected>Select category</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="rent">Rent</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+        </select>
+
+        <button type="submit" class="add-record-button">Add Record</button>
+        <button type="button" id="cancel-transaction">Cancel</button>
+        </form>
+    </div>
+
+
+    <div id="form-container-budget" class="form-container" hidden>
+        <form id="budget-form" class="budget-form">
+            <h2>Update Monthly Budget</h2>
+
+            <label for="monthly-budget">Monthly Budget ($)</label>
+            <input type="number" id="monthly-budget" name="monthlyBudget" placeholder="e.g. 1000" required>
+
+            <div class="form-buttons">
+                <button type="button" id="cancel-budget">Cancel</button>
+                <button type="submit" id="save-budget">Save Budget</button>
+            </div>
+        </form>
+    </div>
+
+
+
+    <!-- Footer -->
+    <footer class="footer">
+    <img src="Assets/logo-icon.png" alt="Logo Icon" class="footer-icon">
+
+    <link rel="stylesheet" href="CSS/footer.css">
+    <div class="footer-container">
+
+      <div class="footer-column">
+        <img src="Assets/logo.png" alt="Logo" class="footer-logo">
+        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
+        <div class="social-icons">
+          <a href="#"><i class="fab fa-facebook-f"></i></a>
+          <a href="#"><i class="fab fa-instagram"></i></a>
+          <a href="#"><i class="fab fa-twitter"></i></a>
+          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+        </div>
+      </div>
+
+      <div class="footer-column">
+        <h4>Information</h4>
+        <ul>
+          <li><a href="#">About</a></li>
+          <li><a href="#">Contact us</a></li>
+          <li><a href="#">FAQs</a></li>
+          <li><a href="#">Account</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-column">
+        <h4>Contact</h4>
+        <p>Stanley House<br>
+           Masterlord Village,<br>
+           West Rd, Ipswich<br>
+           9SX</p>
+      </div>
+
+      <div class="footer-column">
+        <h4>Legal</h4>
+        <ul>
+          <li><a href="#">Cookie Policy</a></li>
+          <li><a href="#">Privacy Policy</a></li>
+          <li><a href="#">Terms of Use</a></li>
+        </ul>
+      </div>
+    </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</footer>
+</body>
+    <script src='JS/e-finance.js'></script>
+
+</html>

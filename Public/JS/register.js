@@ -47,7 +47,7 @@ document.getElementById("profileForm").addEventListener("submit", async function
         .then(data => {
             if (data.success) {
                 alert("Account created successfully!");
-                window.location.href = "index.html";
+                window.location.href = "login.html";
             } else {
                 alert("Error initializing account details: " + data.error);
             }

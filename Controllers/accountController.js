@@ -74,7 +74,9 @@ async function createAccount(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const accountId = await accountModel.createAccount(phone_number, hashedPassword);
-
+    const payload = {
+      id: accountId,
+    };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
     
     res.status(201).json({ message: "Account created successfully.", account_id: accountId, token: token});
@@ -105,11 +107,30 @@ async function initializeAccountDetails(req, res) {
   }
 }
 
+async function getPhoneByAccountID(req, res) {
+  try {
+    const accountId = parseInt(req.params.id);
+    if (isNaN(accountId)) {
+      return res.status(400).json({ error: "Invalid account ID." });
+    }
 
+    const phoneNumber = await accountModel.getPhoneByAccountID(accountId);
+
+    if (!phoneNumber) {
+      return res.status(404).json({ error: "No phone number found for this account." });
+    }
+
+    res.status(200).json(phoneNumber);
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
 
 module.exports = {
   authenticateAccount,
   getAccountById,
   createAccount,
-  initializeAccountDetails
+  initializeAccountDetails,
+  getPhoneByAccountID
 };
