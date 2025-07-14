@@ -163,7 +163,6 @@ INSERT INTO MedicalConditionList (name, descr, acc_id, prescription_date, update
 ('Chronic Kidney Disease', 'Stage 2; requires dietary control and kidney-protective medication.', 4, '2024-03-18', GETDATE(), 2);
 
 
-
 Create table MonthlyExpenseGoal(
 	id INT PRIMARY KEY,
 	monthly_goal DECIMAL(10, 2)
@@ -175,107 +174,63 @@ Insert INTO MonthlyExpenseGoal(id, monthly_goal)
 VALUES
 (1, 5000)
 
-Create table ExpensesList(
-	entry_id INT PRIMARY KEY IDENTITY(1,1),
-	name VARCHAR(50) NOT NULL,
-	description VARCHAR(500) NULL,
-	amount DECIMAL(10,2) NOT NULL,
-	acc_id INT NOT NULL,
-	date DATE NOT NULL,
-	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
-)
 
--- JANUARY
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Tesco weekly groceries', 150.00, 1, '2025-01-05'),
-('Electric Bill', 'January bill', 70.25, 1, '2025-01-10'),
-('Fuel', 'Petrol', 60.00, 1, '2025-01-18');
+CREATE TABLE ExpensesList (
+    entry_id INT PRIMARY KEY IDENTITY(1,1),
+    cat VARCHAR(50) NOT NULL,
+    description VARCHAR(500) NULL,
+    amount DECIMAL(10,2) NOT NULL,
+    acc_id INT NOT NULL,
+    date DATE NOT NULL,
+    FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
+);
 
--- FEBRUARY
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Monthly groceries', 140.00, 1, '2025-02-03'),
-('Dining', 'Dinner at KFC', 50.00, 1, '2025-02-10'),
-('Internet', 'Unifi monthly', 89.99, 1, '2025-02-11');
+-- Expenses for Account ID 1
+INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
+('food', 'Tesco weekly groceries', 150.00, 1, '2025-01-05'),
+('utilities', 'January electric bill', 70.25, 1, '2025-01-10'),
+('transport', 'Petrol refill', 60.00, 1, '2025-01-18'),
 
--- MARCH
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Groceries at AEON', 160.00, 1, '2025-03-02'),
-('Electric Bill', 'March TNB bill', 72.00, 1, '2025-03-12'),
-('Streaming', 'Netflix', 55.00, 1, '2025-03-20');
+('food', 'Monthly groceries', 140.00, 1, '2025-02-03'),
+('food', 'Dinner at KFC', 50.00, 1, '2025-02-10'),
+('utilities', 'Unifi monthly', 89.99, 1, '2025-02-11'),
 
--- APRIL
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Fuel', 'Petrol refuel', 70.00, 1, '2025-04-01'),
-('Dining', 'Birthday dinner', 90.00, 1, '2025-04-15'),
-('Internet', 'April internet bill', 89.99, 1, '2025-04-11');
+('food', 'Groceries at AEON', 160.00, 1, '2025-03-02'),
+('utilities', 'March TNB bill', 72.00, 1, '2025-03-12'),
+('entertainment', 'Netflix', 55.00, 1, '2025-03-20'),
 
--- MAY
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Groceries at Giant', 130.00, 1, '2025-05-05'),
-('Gym', 'Gym subscription', 110.00, 1, '2025-05-07'),
-('Stationery', 'Bought office supplies', 40.00, 1, '2025-05-15');
+('transport', 'Petrol refuel', 70.00, 1, '2025-04-01'),
+('food', 'Birthday dinner', 90.00, 1, '2025-04-15'),
+('utilities', 'April internet bill', 89.99, 1, '2025-04-11'),
 
--- JUNE
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Fuel', 'Fuel top-up', 65.00, 1, '2025-06-06'),
-('Dining', 'Cafe with friends', 85.00, 1, '2025-06-10'),
-('Electric Bill', 'June bill', 75.20, 1, '2025-06-15');
+('food', 'Groceries at Giant', 130.00, 1, '2025-05-05'),
+('entertainment', 'Gym subscription', 110.00, 1, '2025-05-07'),
+('other', 'Bought office supplies', 40.00, 1, '2025-05-15'),
 
-SELECT *
-FROM ExpensesList
-WHERE acc_id = 1 AND MONTH(date) = 6 AND YEAR(date) = 2025;
+('transport', 'Fuel top-up', 65.00, 1, '2025-06-06'),
+('food', 'Cafe with friends', 85.00, 1, '2025-06-10'),
+('utilities', 'June bill', 75.20, 1, '2025-06-15'),
 
--- JULY
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Groceries at Lotus', 145.00, 1, '2025-07-01'),
-('Streaming', 'July Netflix', 55.00, 1, '2025-07-03'),
-('Internet', 'Unifi July', 89.99, 1, '2025-07-05');
+('food', 'Groceries at Lotus', 145.00, 1, '2025-07-01'),
+('entertainment', 'July Netflix', 55.00, 1, '2025-07-03'),
+('utilities', 'Unifi July', 89.99, 1, '2025-07-05');
 
+-- Expenses for Account ID 4
+INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
+('food', 'Fast food', 25.00, 4, '2025-01-15'),
+('utilities', 'Low usage', 30.00, 4, '2025-01-20'),
 
--- FOR ACC_ID 4
--- JANUARY (Low spending)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Dining', 'Fast food', 25.00, 4, '2025-01-15'),
-('Electric Bill', 'Low usage', 30.00, 4, '2025-01-20');
+('entertainment', 'Flight tickets', 450.00, 4, '2025-03-10'),
+('entertainment', 'Hotel booking', 300.00, 4, '2025-03-12'),
+('food', 'Buffet dinner', 120.00, 4, '2025-03-13'),
 
--- FEBRUARY (No data)
+('food', 'Monthly groceries', 180.00, 4, '2025-04-05'),
+('transport', 'Car petrol', 90.00, 4, '2025-04-10'),
 
--- MARCH (High spending)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Travel', 'Flight tickets', 450.00, 4, '2025-03-10'),
-('Lodging', 'Hotel booking', 300.00, 4, '2025-03-12'),
-('Dining', 'Buffet dinner', 120.00, 4, '2025-03-13');
+('utilities', 'May bill', 89.99, 4, '2025-05-03'),
 
--- APRIL (Medium spending)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Groceries', 'Monthly groceries', 180.00, 4, '2025-04-05'),
-('Fuel', 'Car petrol', 90.00, 4, '2025-04-10');
+('other', 'New phone', 1200.00, 4, '2025-06-01'),
+('food', 'Anniversary dinner', 200.00, 4, '2025-06-06'),
 
--- MAY (Very low)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Internet', 'May bill', 89.99, 4, '2025-05-03');
-
--- JUNE (Very high)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Shopping', 'New phone', 1200.00, 4, '2025-06-01'),
-('Dining', 'Anniversary dinner', 200.00, 4, '2025-06-06');
-
--- JULY (Low)
-INSERT INTO ExpensesList (name, description, amount, acc_id, date)
-VALUES 
-('Fuel', 'Top-up petrol', 70.00, 4, '2025-07-04'),
-('Streaming', 'Disney+', 49.99, 4, '2025-07-07');
-
-
+('transport', 'Top-up petrol', 70.00, 4, '2025-07-04'),
+('entertainment', 'Disney+', 49.99, 4, '2025-07-07');
