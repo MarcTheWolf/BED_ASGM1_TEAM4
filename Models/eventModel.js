@@ -9,6 +9,7 @@ async function getEventRegisteredByID(id) {
             .input("account_id", sql.Int, id)  // Use 'id' here
             .query(`
                 SELECT 
+                    e.banner_image,
                     e.id,
                     e.name,
                     e.description,
@@ -17,8 +18,7 @@ async function getEventRegisteredByID(id) {
                     e.location,
                     e.org_id,
                     e.weekly,
-                    e.equipment_required,
-                    e.banner_image
+                    e.equipment_required
                 FROM RegisteredList r
                 JOIN EventList e ON r.event_id = e.id
                 WHERE r.account_id = @account_id
