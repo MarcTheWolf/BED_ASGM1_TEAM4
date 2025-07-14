@@ -101,14 +101,14 @@ app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditur
 app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
 
 // Task management API endpoints (By Yuxuan)
-app.post("/tasks", authorization.verifyJWT, taskController.addTask);
-app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask);
-app.put("/tasks/:task_id", authorization.verifyJWT, taskController.updateTask);
-app.get("/tasks", authorization.verifyJWT, taskController.getAllTasks);
-app.get("/tasks/:task_id", authorization.verifyJWT, taskController.getTaskById);
-app.get("/tasks/month", authorization.verifyJWT, taskController.getTasksByMonth);
-app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByDate);
-app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
+app.post("/tasks", taskController.addTask);
+app.delete("/tasks/:task_id",  taskController.deleteTask);
+app.put("/tasks/:task_id",  taskController.updateTask);
+app.get("/tasks", taskController.getAllTasks);
+app.get("/tasks/:task_id",  taskController.getTaskById);
+app.get("/tasks/month",  taskController.getTasksByMonth);
+app.get("/tasks/date/:date",  taskController.getTasksByDate);
+app.patch("/tasks/:task_id/status",  taskController.updateTaskStatus);
 app.post("/tasks/initialize", taskController.initializeTaskTable);
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
