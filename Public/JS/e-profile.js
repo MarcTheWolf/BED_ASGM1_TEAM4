@@ -25,7 +25,7 @@ async function retrieveMedicalConditionData() {
     try {
         // Simulate fetching data from a server
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicalConditionByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicalConditionByAccountID`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ async function retrieveMedicationData() {
     try {
         // Simulate fetching data from a server
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicationByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicationByAccountID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -99,7 +99,7 @@ async function loadProfileInformation() {
   profileLanguage.innerHTML = `<strong>Prefered Language:</strong> ${user.preferred_language  || 'Unknown'}`;
 
   try {
-    const response = await fetch(`/getPhoneByAccountID/${user.id}`, {
+    const response = await fetch(`/getPhoneByAccountID`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${user.token}`
@@ -256,7 +256,7 @@ medicalForm.addEventListener('submit', async (event) => {
   };
 
   try {
-    const response = await fetch(`/createMedicalCondition/${user.id}`, {
+    const response = await fetch(`/createMedicalCondition`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -299,7 +299,7 @@ medicationForm.addEventListener('submit', async (event) => {
   };
 
   try {
-    const response = await fetch(`/createMedication/${user.id}`, {
+    const response = await fetch(`/createMedication`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -367,8 +367,16 @@ document.addEventListener('click', async function (event) {
 
         await retrieveMedicalConditionData();
         await retrieveMedicationData();
-        loadMedication();
-        loadMedical(); 
+
+        if (medType == "Medical Condition") {
+          loadMedical(); 
+        } else if (medType == "Medication") {
+          loadMedication();
+        } else {
+          alert('Unknown record type.');
+          return;
+        }
+        
       } else {
         return response.json().then(data => {
           throw new Error(data.message || 'Delete failed.');

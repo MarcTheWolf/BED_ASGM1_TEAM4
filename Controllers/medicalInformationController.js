@@ -2,7 +2,7 @@ const accountModel = require("../Models/medicalInformationModel.js");
 
 async function getMedicationByAccountID(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -40,7 +40,7 @@ async function getMedicationByID(req, res) {
 
 async function getMedicalConditionByAccountID(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -60,7 +60,7 @@ async function getMedicalConditionByAccountID(req, res) {
 
 async function createMedicalCondition(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -84,7 +84,7 @@ async function createMedicalCondition(req, res) {
 
 async function createMedication(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }

@@ -38,7 +38,7 @@ if (response.status = 403) {
 async function fetchMedicationData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicationByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicationByAccountID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -59,7 +59,7 @@ async function fetchMedicationData() {
 async function fetchEventData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getEventRegisteredByID/${user.id}`, {
+        const response = await fetch(`/getEventRegisteredByID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",

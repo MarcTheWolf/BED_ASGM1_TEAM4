@@ -160,7 +160,7 @@ async function displayRegistered() {
     }
 
     try {
-        const response = await fetch(`/getEventRegisteredByID/${user.id}`, {
+        const response = await fetch(`/getEventRegisteredByID`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

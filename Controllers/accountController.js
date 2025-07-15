@@ -40,7 +40,7 @@ async function authenticateAccount(req, res) {
 
 async function getAccountById(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -109,7 +109,7 @@ async function initializeAccountDetails(req, res) {
 
 async function getPhoneByAccountID(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }

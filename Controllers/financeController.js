@@ -3,7 +3,7 @@ const financeModel = require("../Models/financeModel.js");
 
 async function getExpenditureGoalByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const result = await financeModel.getExpenditureGoalByID(accountId);
         
         if (result.recordset.length === 0) {
@@ -19,7 +19,7 @@ async function getExpenditureGoalByID(req, res) {
 
 async function getTotalExpenditureByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const result = await financeModel.getTotalExpenditureByID(accountId);
         
         if (result.recordset.length === 0) {
@@ -35,7 +35,7 @@ async function getTotalExpenditureByID(req, res) {
 
 async function getMonthlyExpenditureByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const recordset = await financeModel.getMonthlyExpenditureByID(accountId);
 
         if (!recordset || recordset.length === 0) {
@@ -51,7 +51,7 @@ async function getMonthlyExpenditureByID(req, res) {
 
 async function getExpenditureByMonthBarChart(req, res) {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const data = await financeModel.getMonthlyExpenditureByID(userId);
 
     if (!Array.isArray(data)) {
@@ -144,7 +144,7 @@ async function getExpenditureByMonthBarChart(req, res) {
 
 async function getAllTransactionsByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const transactions = await financeModel.getAllTransactionsByID(accountId);
 
         if (!transactions || transactions.length === 0) {
@@ -160,7 +160,7 @@ async function getAllTransactionsByID(req, res) {
 
 async function getBudgetExpenditureDoughnutChart(req, res) {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const month = req.params.month; // format: 'YYYY-MM'
 
     // Fetch expenditures and budget
@@ -292,7 +292,7 @@ async function getBudgetExpenditureDoughnutChart(req, res) {
 
 async function addTransactionToAccount(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const { amount, date, description, category } = req.body;
 
         if (!amount || !date || !description || !category) {

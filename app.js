@@ -32,22 +32,22 @@ const {
 
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
+app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
-app.get("/getPhoneByAccountID/:id", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 //Medical Information Endpoints (By Marcus)
-app.get("/getMedicationByAccountID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByAccountID);
+app.get("/getMedicationByAccountID", authorization.verifyJWT, medicalInformationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByID);
 //app.get("/getMedicalConditionByID/:id", authorization.verifyJWT, medicalInformationController.getMedicalConditionByID);
-app.get("/getMedicalConditionByAccountID/:id", authorization.verifyJWT, medicalInformationController.getMedicalConditionByAccountID);
+app.get("/getMedicalConditionByAccountID", authorization.verifyJWT, medicalInformationController.getMedicalConditionByAccountID);
 
-app.post("/createMedication/:id", authorization.verifyJWT, validateMedication, medicalInformationController.createMedication);
-app.post("/createMedicalCondition/:id", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.createMedicalCondition);
+app.post("/createMedication", authorization.verifyJWT, validateMedication, medicalInformationController.createMedication);
+app.post("/createMedicalCondition", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.createMedicalCondition);
 
 //app.put("/updateMedication/:id", authorization.verifyJWT, validateMedication, medicalInformationController.updateMedication);
 //app.put("/updateMedicalCondition/:id", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.updateMedicalCondition);
@@ -60,7 +60,7 @@ app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInform
 
 
 //Events Endpoints (By Ansleigh)
-app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventRegisteredByID", authorization.verifyJWT, eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
 app.get("/getAllEvents", eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
@@ -70,18 +70,19 @@ app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventControlle
 
 
 //Finance Endpoints (By Belle)
-app.get("/getExpenditureGoalByID/:id", authorization.verifyJWT, financeController.getExpenditureGoalByID);
-app.get("/getTotalExpenditureByID/:id", authorization.verifyJWT, financeController.getTotalExpenditureByID);
-app.get("/getMonthlyExpenditureByID/:id", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
-app.get("/getAllTransactionsByID/:id", authorization.verifyJWT, financeController.getAllTransactionsByID);
+app.get("/getExpenditureGoalByID", authorization.verifyJWT, financeController.getExpenditureGoalByID);
+app.get("/getTotalExpenditureByID", authorization.verifyJWT, financeController.getTotalExpenditureByID);
+app.get("/getMonthlyExpenditureByID", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
+app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.getAllTransactionsByID);
 
-app.post("/addTransactionToAccount/:id", authorization.verifyJWT, financeController.addTransactionToAccount);
+
+app.post("/addTransactionToAccount", authorization.verifyJWT, financeController.addTransactionToAccount);
 
 
 
 //Use of External API from backend (By Belle)
 app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
-app.get("/getBudgetExpenditureDoughnutChart/:month/:id", financeController.getBudgetExpenditureDoughnutChart);
+app.get("/getBudgetExpenditureDoughnutChart/:month", authorization.verifyJWT, financeController.getBudgetExpenditureDoughnutChart);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

@@ -54,7 +54,7 @@ async function updateTransactionRecords(user) {
 
   try {
     console.log(user.token)
-    const response = await fetch(`/getAllTransactionsByID/${user.id}`, {
+    const response = await fetch(`/getAllTransactionsByID`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -113,7 +113,7 @@ async function displayBudgetExpenditurePieChart(user) {
     container.innerHTML = ''; // Clear existing chart
     
     try {
-        const response = await fetch(`/getBudgetExpenditureDoughnutChart/${month}/${user.id}`, {
+        const response = await fetch(`/getBudgetExpenditureDoughnutChart/${month}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ document.getElementById("transaction-form").addEventListener("submit", async fun
   }
 
   try {
-    const response = await fetch(`/addTransactionToAccount/${user.id}`, {
+    const response = await fetch(`/addTransactionToAccount`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
