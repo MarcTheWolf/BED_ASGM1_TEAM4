@@ -102,10 +102,24 @@
 
             <div class="form-buttons">
                 <button type="button" id="cancel-budget">Cancel</button>
-                <button type="submit" id="save-budget">Save Budget</button>
+                <button type="button" id="save-budget">Save Budget</button>
             </div>
         </form>
     </div>
+
+
+    <div id="transaction-details" class="popup">
+        <div class="popup-header">
+            <h2>Transaction Details</h2>
+            <span id="edit-icon" class="edit-icon">&#9998;</span> <!-- Edit icon -->
+        </div>
+        <p><strong>Date:</strong> <span id="transaction-date"></span></p>
+        <p><strong>Description:</strong> <span id="transaction-description"></span></p>
+        <p><strong>Category:</strong> <span id="transaction-category"></span></p>
+        <p><strong>Amount:</strong> $<span id="transaction-amount"></span></p>
+        <button id="close-button" class="close-button">Close</button>
+    </div>
+
 
 
 
