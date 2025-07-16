@@ -134,7 +134,7 @@ function consolidateAndDisplayActivities() {
     const dateMap = {};
     const today = new Date();
     const todayKey = formatDateKey(today);
-    const rangeDays = 3;
+    const rangeDays = 1;
 
     const displayDates = Array.from({ length: rangeDays }, (_, i) => {
         const d = new Date(today);

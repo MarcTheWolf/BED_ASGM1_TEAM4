@@ -1,61 +1,73 @@
-.footer {
-  background-color: #eaf7f7;
-  padding: 40px 20px;
-  font-family: 'Poppins', sans-serif;
-  color: #0a1b2d;
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+* {
+    font-family: 'Varela Round';
+}
+/*footer*/
+#footer {
+    background-color: #EAF8F6;
+    color: #122046;
+    height: 400px;
 }
 
-.footer-icon {
-  height: 50px;
-  margin-bottom: 20px;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
+#footer img {
+    width: 90px;
+    height: 70px;;
+    text-align: center;
+    margin-top: 50px;
 }
 
-.footer-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-around;
-  max-width: 1200px;
-  margin: auto;
-  text-align: left;
+.signature_footer {
+    color: #122046;
+    margin-left: 20px;
+    margin-top: 12px;
+    margin-bottom: 10px;
 }
 
-.footer-column {
-  flex: 1 1 200px;
-  margin: 10px;
+#footer1 {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    margin-top: 20px
 }
 
-.footer-logo {
-  height: 40px;
-  margin-bottom: 5px;
-  position: relative;
-  top: 5px;
-  right: 10px;
+#footer-info1 {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    margin-top: 20px
 }
 
-.footer-column h3, .footer-column h4 {
-  margin-bottom: 10px;
-  font-weight: bold;
+#footer1 img {
+    margin-bottom: 20px; /* Add spacing between image and the rest of the content */
+    width: 100px; /* Keep existing image styling */
+    height: auto;
 }
 
-.footer-column p, .footer-column a {
-  font-size: 14px;
-  color: #0a1b2d;
-  text-decoration: none;
+#part1 {
+    display: flex;
+    flex-direction: column
 }
 
-.footer-column a:hover {
-  text-decoration: underline;
+#part1 > p {
+    margin-bottom: 30px;
 }
 
-.social-icons a {
-  margin-right: 10px;
-  font-size: 16px;
-  color: #0a1b2d;
+.part1-icon {
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    background-color: #ffffff;
+    border-radius: 8px;
+    font-size: 24px;
+    color: #122046;
+    margin-right: 20px
 }
 
-.social-icons a:hover {
-  color: #444;
+.icon {
+    display: flex;
+    justify-content: space-between
 }
+
