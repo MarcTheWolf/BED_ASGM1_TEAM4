@@ -40,22 +40,33 @@ app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPh
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//Medical Information Endpoints (By Marcus)
+//Medical Information & Medication Endpoints (By Marcus)
+
 app.get("/getMedicationByAccountID", authorization.verifyJWT, medicalInformationController.getMedicationByAccountID);
 app.get("/getMedicationByID/:id", authorization.verifyJWT, medicalInformationController.getMedicationByID);
-//app.get("/getMedicalConditionByID/:id", authorization.verifyJWT, medicalInformationController.getMedicalConditionByID);
+app.get("/getMedicalConditionByID/:id", authorization.verifyJWT, medicalInformationController.getMedicalConditionByID);
+app.get("/getWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationController.getWeeklyTiming);
 app.get("/getMedicalConditionByAccountID", authorization.verifyJWT, medicalInformationController.getMedicalConditionByAccountID);
+app.get("/getMedicationAssociatedWithMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.getMedicationAssociatedWithMedicalCondition);
 
 app.post("/createMedication", authorization.verifyJWT, validateMedication, medicalInformationController.createMedication);
 app.post("/createMedicalCondition", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.createMedicalCondition);
+app.post("/associateMedicationWithMedicalCondition", authorization.verifyJWT, medicalInformationController.associateMedicationWithMedicalCondition);
+app.post("/saveWeeklyTiming", authorization.verifyJWT, medicalInformationController.saveWeeklyTiming);
 
-//app.put("/updateMedication/:id", authorization.verifyJWT, validateMedication, medicalInformationController.updateMedication);
-//app.put("/updateMedicalCondition/:id", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.updateMedicalCondition);
+app.put("/updateMedication/:id", authorization.verifyJWT, medicalInformationController.updateMedication);
+app.put("/updateMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.updateMedicalCondition);
 
 app.delete("/deleteMedication/:id", authorization.verifyJWT, medicalInformationController.deleteMedication);
 app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.deleteMedicalCondition);
+app.delete("/deleteMedicationConditionAssociation", authorization.verifyJWT, medicalInformationController.deleteMedicationConditionAssociation);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+//Medical Information Autocomplete, Use of external API from backend (By Marcus)
+app.get("/autocompleteMedication/:query", medicalInformationController.autocompleteMedication);
+app.get("/autocompleteMedicalCondition/:query", medicalInformationController.autocompleteMedicalCondition);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -110,7 +121,7 @@ app.post("/tasks/initialize", taskController.initializeTaskTable);
 
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
-  console.log(`Server running at http://localhost:${port}`);
+  console.log(`API documentation: http://localhost:${port}/api-docs`);
   console.log(`Index page: http://localhost:${port}/login.html`);
 });
 
@@ -124,3 +135,14 @@ process.on("SIGINT", async () => {
 
 
 app.use(express.static(path.join(__dirname, "Public")));
+
+
+////////////////////////////////////////////////////
+/////////////Swagger Documentation////////////////
+////////////////////////////////////////////////////
+
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocument = require("./swagger-output.json"); // Import generated spec
+
+// Serve the Swagger UI at a specific route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
