@@ -60,24 +60,30 @@ body {
 }
 
 .health-overview {
-  background: white;
-  padding: 2rem;
-  margin-top: 3rem;
+  margin-top: 50px;
+  padding: 50px;
 }
 
-.health-overview .health-cards {
+.health-overview h2 {
+  margin-bottom: 1rem;
+}
+
+.metrics {
   display: flex;
   gap: 1rem;
-  margin-top: 1rem;
+  margin: 1rem 0;
 }
 
-.health-overview .card {
-  background: #f6f9fc;
-  padding: 1rem;
-  border-radius: 10px;
-  text-align: center;
+.metric {
   flex: 1;
-  box-shadow: 0 0 5px rgba(0,0,0,0.05);
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.metric img{
+  height:250px;
 }
 
 .container {
@@ -339,4 +345,621 @@ footer {
 .close-btn:hover {
   color: #111;
 }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: #f7fdfc;
+}
+
+.profile-section {
+    position: relative;
+    top: 65px;
+    background: #e8f7f5;
+    padding: 2rem;
+}
+
+.profile-box {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.profile-left {
+  display: flex;
+  align-items: center;
+}
+
+.avatar {
+  border-radius: 50%;
+  margin-right: 1rem;
+  width: 50px;
+  height: 50px;
+}
+
+.edit-btn, .logout-btn {
+  padding: 0.5rem 1rem;
+  margin-left: 0.5rem;
+  border: none;
+  border-radius: 5px;
+
+}
+
+.edit-btn {
+  background-color: #007bff;
+  color: white;
+}
+
+.logout-btn {
+  background-color: #f44336;
+  color: white;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f;
+  cursor: pointer;
+}
+
+.profile-details {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 1rem;
+  gap: 0.5rem;
+}
+
+.health-overview {
+  margin-top: 50px;
+  padding: 50px;
+}
+
+.health-overview h2 {
+  margin-bottom: 1rem;
+}
+
+.metrics {
+  display: flex;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.metric {
+  flex: 1;
+  background: #ffffff;
+  padding: 1rem;
+  border-radius: 12px;
+  text-align: center;
+}
+
+.metric img{
+  height:250px;
+}
+
+.container {
+  width: 90%;
+  margin: auto;
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+.toggle-bar {
+  display: flex;
+  gap: 20px;
+  border-bottom: 2px solid #ddd;
+  margin-bottom: 20px;
+}
+
+.toggle-btn {
+  background: none;
+  border: none;
+  font-size: 16px;
+  padding: 10px;
+  cursor: pointer;
+  position: relative;
+  outline: none;
+}
+
+.toggle-btn.active {
+  font-weight: bold;
+}
+
+.toggle-btn.active::after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #00bcd4;
+}
+
+#content-section {
+  padding: 10px;
+}
+
+.add-btn {
+  background-color: #81C7BE;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-bottom: 15px;
+}
+
+.card {
+  background-color: #e7f7f9;
+  padding: 20px;
+  border-radius: 8px;
+  margin-bottom: 10px;
+}
+
+.card-content {
+  line-height: 1.5; /* or try 2 for more spacing */
+}
+
+.card.card-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.card-info {
+  flex: 1;
+}
+
+.card-actions {
+  display: flex;
+  gap: 8px; /* space between buttons */
+}
+
+.card-btn {
+  padding: 10px 12px;
+  border: none;
+  border-radius: 6px;
+  font-size: 13px;
+  cursor: pointer;
+  color: white;
+  transition: background-color 0.2s ease-in-out;
+}
+.update-btn {
+  background-color: #007bff;
+}
+
+.update-btn:hover {
+  background-color: #0056b3;
+}
+
+.delete-btn {
+  background-color: #f44336;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f;
+}
+
+
+.report-btn {
+  margin-top: 1rem;
+  padding: 0.7rem 1.2rem;
+  background-color: #55dbc2;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.care-taker {
+  background: #ffffff;
+  padding: 2rem;
+  margin-top: 1rem;
+}
+
+.add-btn {
+  background: #55dbc2;
+  color: white;
+  border: none;
+  margin-left: 1rem;
+  border-radius: 50px;
+  padding: 0.3rem 1rem;
+}
+
+.caretaker-list {
+  margin-top: 1rem;
+}
+
+.caretaker-item {
+  display: flex;
+  align-items: left;
+  background: #d7f5f4;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+
+.view-btn {
+  background: #55dbc2;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  height: 50px;
+  top: 25px;
+  position: relative;
+}
+
+footer {
+  background: #eaf4f3;
+  padding: 2rem;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+.footer-top {
+  font-size: 1.2rem;
+  margin-bottom: 1rem;
+}
+
+.footer-columns {
+  display: flex;
+  justify-content: space-around;
+  text-align: left;
+}
+
+.popup-form {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.popup-content {
+  background-color: #ffffff;
+  margin: 8% auto;
+  padding: 25px 20px;
+  width: 320px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border: 2px solid #b2e6e0;
+}
+
+.popup-content h3 {
+  margin-top: 0;
+  color: #2b8d84;
+  text-align: center;
+}
+
+.popup-content label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.popup-content input,
+.popup-content textarea {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #cdeeee;
+  background: #f7fdfc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus {
+  outline: none;
+  border-color: #81c7be;
+  background-color: #ffffff;
+}
+
+.popup-content button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #55dbc2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.popup-content button:hover {
+  background-color: #3fc7b0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  color: #111;
+}
+
+/* View Card Styles */
+.view-card {
+  position: fixed;
+  top: 25%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffffff;
+  border: 2px solid #b2e6e0;
+  padding: 30px;
+  z-index: 999;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+  border-radius: 10px;
+  background-color: #f7fdfc; /* Light background color */
+  box-sizing: border-box;
+}
+
+.view-card h3 {
+  margin-top: 0;
+  color: #2b8d84; /* Matching the theme color */
+  font-size: 24px; /* Larger heading */
+}
+
+.view-card p {
+  margin: 15px 0;
+  color: #333;
+  font-size: 18px; /* Larger text */
+}
+
+.view-card button {
+  margin-top: 15px;
+  padding: 12px 24px; /* Larger padding */
+  background-color: #55dbc2;
+  color: white;
+  border: none;
+  border-radius: 8px; /* More rounded corners */
+  cursor: pointer;
+  font-size: 18px; /* Larger button text */
+  font-weight: bold;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.view-card button:hover {
+  background-color: #3fc7b0;
+}
+
+.hidden {
+  display: none;
+}
+
+/* Close Button for View Cards */
+.view-card button.close-btn {
+  background-color: transparent;
+  color: #555;
+  font-size: 28px; /* Larger close button */
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.view-card button.close-btn:hover {
+  color: #111;
+}
+
+/* View Medication Card */
+#view-medication-card .view-card-content {
+  background-color: #ffffff;
+  padding: 30px; /* Larger padding */
+  border-radius: 10px;
+}
+
+#view-medication-card .view-card-content p {
+  color: #333;
+  font-size: 18px; /* Larger text */
+}
+
+/* View Medical Condition Card */
+#view-medical-card .view-card-content {
+  background-color: #ffffff;
+  padding: 30px; /* Larger padding */
+  border-radius: 10px;
+}
+
+#view-medical-card .view-card-content p {
+  color: #333;
+  font-size: 18px; /* Larger text */
+}
+
+/* Adjusting the close button for both cards */
+.view-card button.close-btn {
+  background-color: transparent;
+  color: #555;
+  font-size: 28px; /* Larger close button */
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  cursor: pointer;
+  border: none;
+}
+
+.view-card button.close-btn:hover {
+  color: #111;
+}
+
+/* General popup and form styling */
+.popup-form {
+  display: none;
+  position: fixed;
+  z-index: 999;
+  left: 0; top: 0;
+  width: 100%; height: 100%;
+  background-color: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(2px);
+}
+
+.popup-content {
+  background-color: #ffffff;
+  margin: 8% auto;
+  padding: 25px 20px;
+  width: 80%;
+  max-width: 900px;
+  border-radius: 16px;
+  position: relative;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  border: 2px solid #b2e6e0;
+  height: 600px;
+  overflow-y: scroll;
+}
+
+.popup-content h3 {
+  margin-top: 0;
+  color: #2b8d84;
+  text-align: center;
+}
+
+.popup-content label {
+  display: block;
+  margin-top: 12px;
+  font-weight: 500;
+  color: #333;
+}
+
+.popup-content input,
+.popup-content textarea,
+.popup-content select {
+  width: 100%;
+  padding: 10px;
+  margin-top: 6px;
+  border-radius: 8px;
+  border: 1px solid #cdeeee;
+  background: #f7fdfc;
+  font-size: 14px;
+  box-sizing: border-box;
+}
+
+.popup-content input:focus,
+.popup-content textarea:focus {
+  outline: none;
+  border-color: #81c7be;
+  background-color: #ffffff;
+}
+
+.popup-content button {
+  margin-top: 20px;
+  width: 100%;
+  padding: 12px;
+  background-color: #55dbc2;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.popup-content button:hover {
+  background-color: #3fc7b0;
+}
+
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #555;
+  cursor: pointer;
+  transition: color 0.2s ease-in-out;
+}
+
+.close-btn:hover {
+  color: #111;
+}
+
+/* Container to hold left and right side of the form */
+.form-container {
+  display: flex;
+  gap: 30px;
+  justify-content: space-between;
+}
+
+/* Left side: Medical Condition Form Fields */
+.left-side {
+  flex: 1;
+}
+
+/* Right side: Associated and Available Medications */
+.right-side {
+  flex: 1;
+  max-width: 400px;
+}
+
+/* Medication List Styling */
+#associated-medications-list, #available-medications-list {
+  border: 1px solid #ddd;
+  padding: 10px;
+  margin-top: 20px;
+  background-color: #f7fdfc;
+  border-radius: 10px;
+  height: 200px;
+  overflow-y: auto;
+}
+
+.medication-item {
+  margin-bottom: 15px;
+  padding: 8px;
+  background-color: #e7f7f9;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.medication-item button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+  font-size: 14px;
+  width: 30px;
+  bottom: 10px;
+  position: relative;
+}
+
+.medication-item button:hover {
+  background-color: #d32f2f;
+}
+
+.medication-item button.add {
+  background-color: #81C7BE;
+}
+
+.medication-item button.add:hover {
+  background-color: #3fc7b0;
+}
+
+.medication-item button.add:hover {
+  background-color: #ff8662;
+}
+
+
+
+
 
