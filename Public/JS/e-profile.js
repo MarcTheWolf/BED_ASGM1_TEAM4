@@ -5,6 +5,7 @@ var MedicalCondition = [];
 
 
 document.addEventListener('DOMContentLoaded', async function() {
+  await reloadProfileData();
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
@@ -14,6 +15,25 @@ document.addEventListener('DOMContentLoaded', async function() {
 });
 
 
+async function reloadProfileData() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const req = await fetch("/getAccountById", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+    }
+  });
+
+  if (req.ok) {
+    const newProfile = await req.json();
+    newProfile.token = user.token; // attach token safely
+    localStorage.setItem("user", JSON.stringify(newProfile));
+  } else {
+    console.warn("Failed to reload profile:", await req.text());
+  }
+}
 
 
 

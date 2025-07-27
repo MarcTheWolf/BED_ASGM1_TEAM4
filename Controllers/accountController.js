@@ -89,15 +89,17 @@ async function createAccount(req, res) {
 async function initializeAccountDetails(req, res) {
   try {
     const accountId = parseInt(req.params.id);
-    if (isNaN(accountId)) {
-      return res.status(400).json({ error: "Invalid account ID." });
+    const userId = parseInt(req.user.id);
+
+    if (isNaN(accountId) || accountId !== userId) {
+      return res.status(403).json({ error: "Unauthorized to edit this profile."});
     }
 
     const accountDetails = req.body;
     const updatedDetails = await accountModel.initializeAccountDetails(accountId, accountDetails);
 
     if (updatedDetails) {
-      return res.status(200).json({ success: true, message: "Account details initialized successfully.", account_id: accountId });
+      return res.status(200).json({ success: true, message: "Account details updated successfully.", account_id: accountId });
     } else {
       return res.status(500).json({ success: false, error: "Failed to insert account details." });
     }
@@ -174,8 +176,28 @@ async function forgotPassword(req, res) {
   }
 }
 
+async function updateProfile(req, res) {
+  try {
+    const accountId = parseInt(req.user.id);
+    const newDetails = req.body;
 
-
+    if (isNaN(accountId)) {
+      return res.status(400).json({ error: "Invalid account ID." });
+    }
+    if (!newDetails || Object.keys(newDetails).length === 0) {
+      return res.status(400).json({ error: "No details provided to update." });
+    }
+    const updatedAccount = await accountModel.updateProfile(accountId, newDetails);
+    if (updatedAccount) {
+      return res.status(200).json({ success: true, message: "Profile updated successfully." });
+    } else {
+      return res.status(500).json({ success: false, error: "Failed to update profile." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    return res.status(500).json({ success: false, error: "Server error." });
+  }
+}
 
 module.exports = {
   authenticateAccount,
@@ -184,5 +206,6 @@ module.exports = {
   initializeAccountDetails,
   getPhoneByAccountID,
   updatePassword,
-  forgotPassword
+  forgotPassword,
+  updateProfile
 };

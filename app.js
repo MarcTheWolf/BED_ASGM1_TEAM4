@@ -36,6 +36,7 @@ app.get("/getAccountById", authorization.verifyJWT, accountController.getAccount
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

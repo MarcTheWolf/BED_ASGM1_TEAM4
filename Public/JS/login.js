@@ -90,8 +90,6 @@ loginbtn.addEventListener("click", async function (e) {
     });
 });
 
-
-
 const registerbtn = document.querySelector(".register-btn");
 
 registerbtn.addEventListener("click", async function (e) {
