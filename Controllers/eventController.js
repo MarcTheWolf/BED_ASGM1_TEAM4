@@ -1,7 +1,7 @@
 const accountModel = require("../Models/eventModel.js");
 
 async function getEventRegisteredByID(req, res) {
-    const id = req.params.id;
+    const id = req.user.id;
     try {
         const event = await accountModel.getEventRegisteredByID(id);
         if (event) {

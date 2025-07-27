@@ -8,25 +8,33 @@
     <link rel='stylesheet' type='text/css' media='screen' href='CSS/e-finance.css'>
 </head>
 <body>
-    <header>
-        <nav class="navbar">
-            <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
-            <ul class="nav-links">
-                <li><a href="e-calendar.html">Calendar</a></li>
-                <li><a href="e-finance.html">Finance</a></li>
-                <li><a href="e-events.html">Events</a></li>
-                <li><a href="e-notifications.html">Notifications</a></li>
-                <li><a href="e-profile.html">Profile</a></li>
-            </ul>
-        </nav>
-    </header>
+<header>
+    <link rel="stylesheet" href="CSS/e-navbar.css">
+    <nav class="navbar">
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="e-calendar.html">Calendar</a></li>
+            <li><a href="e-finance.html">Finance</a></li>
+            <li><a href="e-events.html">Events</a></li>
+            <li><a href="e-notifications.html">Notifications</a></li>
+            <li><a href="e-profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <script src="JS/e-navbar.js"></script>
+</header>
 <!-- Title header-->
     <div class="finance-title-container">
         <span class="highlight-box"></span>
         <h1 class="finance-title">Financial Details</h1>
     </div>
 
-    <!--Missing Graphs Etc-->
+
+    <div class="budget-section">
+        <h2>Spendings This Month</h2>
+        <img src="" alt="Finance Breakdown" class="finance-pie-chart">
+        <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+    </div>
+
 
     <!-- Transaction Records Section-->
     <div class = "transaction-records-container">
@@ -66,7 +74,7 @@
         <input type="text" id="description" name="description" placeholder="e.g. Transport" required>
 
         <label for="amount">Amount</label>
-        <input type="number" id="amount" name="amount" placeholder="0.00" required>
+        <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
 
         <label for="category">Category</label>
         <select id="category" name="category" required>
@@ -80,11 +88,11 @@
         </select>
 
         <button type="submit" class="add-record-button">Add Record</button>
+        <button type="button" id="cancel-transaction">Cancel</button>
         </form>
     </div>
 
-    <!--Edit Budget Amount Form-->
-    <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button> <!-- Button to open budget form *Change placement*-->
+
     <div id="form-container-budget" class="form-container" hidden>
         <form id="budget-form" class="budget-form">
             <h2>Update Monthly Budget</h2>
@@ -101,54 +109,11 @@
 
 
 
-    <!-- Footer -->
-    <footer class="footer">
-    <img src="Assets/logo-icon.png" alt="Logo Icon" class="footer-icon">
 
-    <link rel="stylesheet" href="CSS/footer.css">
-    <div class="footer-container">
-
-      <div class="footer-column">
-        <img src="Assets/logo.png" alt="Logo" class="footer-logo">
-        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-      <div class="footer-column">
-        <h4>Information</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact us</a></li>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Account</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h4>Contact</h4>
-        <p>Stanley House<br>
-           Masterlord Village,<br>
-           West Rd, Ipswich<br>
-           9SX</p>
-      </div>
-
-      <div class="footer-column">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Use</a></li>
-        </ul>
-      </div>
-    </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</footer>
 </body>
-    <script src='JS/finance.js'></script>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/footer.js"></script>
+    <script src='JS/e-finance.js'></script>
 
 </html>

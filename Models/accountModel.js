@@ -100,10 +100,33 @@ async function initializeAccountDetails(accountId, details) {
   }
 }
 
+async function getPhoneByAccountID(accountId) {
+  let connection;
+
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("accountId", sql.Int, accountId);
+
+    const result = await request.query(
+      "SELECT phone_number FROM AccountPassword WHERE id = @accountId"
+    );
+
+    return result.recordset[0]; // Return first match or undefined
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
 
 module.exports = {
   getAccountByPhone,
   getAccountById,
   createAccount,
-  initializeAccountDetails
+  initializeAccountDetails,
+  getPhoneByAccountID
 };
