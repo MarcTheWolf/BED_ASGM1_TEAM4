@@ -123,10 +123,58 @@ async function getPhoneByAccountID(accountId) {
   }
 }
 
+async function updatePasswordById(accountId, hashedPassword) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("id", sql.Int, accountId);
+    request.input("password", sql.VarChar, hashedPassword);
+
+    const result = await request.query(`
+      UPDATE AccountPassword SET password = @password WHERE id = @id
+    `);
+
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
+async function updatePasswordByPhone(phone_number, hashedPassword) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("phone_number", sql.VarChar, phone_number);
+    request.input("password", sql.VarChar, hashedPassword);
+
+    const result = await request.query(`
+      UPDATE AccountPassword SET password = @password WHERE phone_number = @phone_number
+    `);
+
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
 module.exports = {
   getAccountByPhone,
   getAccountById,
   createAccount,
   initializeAccountDetails,
-  getPhoneByAccountID
+  getPhoneByAccountID,
+  updatePasswordById,
+  updatePasswordByPhone
 };

@@ -127,10 +127,60 @@ async function getPhoneByAccountID(req, res) {
   }
 }
 
+async function updatePassword(req, res) {
+  try {
+    const accountId = req.user.id; // Get ID from JWT middleware
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res.status(400).json({ error: "New password is required." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const success = await accountModel.updatePasswordById(accountId, hashedPassword);
+    if (success) {
+      res.status(200).json({ message: "Password updated successfully." });
+    } else {
+      res.status(404).json({ error: "Account not found or update failed." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
+
+async function forgotPassword(req, res) {
+  try {
+    const { phone_number, newPassword } = req.body;
+
+    if (!phone_number || !newPassword) {
+      return res.status(400).json({ error: "Phone number and new password are required." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const success = await accountModel.updatePasswordByPhone(phone_number, hashedPassword);
+    if (success) {
+      res.status(200).json({ message: "Password reset successfully." });
+    } else {
+      res.status(404).json({ error: "Phone number not found." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
+
+
 module.exports = {
   authenticateAccount,
   getAccountById,
   createAccount,
   initializeAccountDetails,
-  getPhoneByAccountID
+  getPhoneByAccountID,
+  updatePassword,
+  forgotPassword
 };
