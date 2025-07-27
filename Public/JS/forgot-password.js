@@ -25,8 +25,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const phoneNumber = phoneNumberInput.value.trim();
 
-    if (!phoneNumber) {
-      alert("Please enter your phone number.");
+  //New Validation: Must be 8 digits and numbers only
+    const phoneRegex = /^\d{8}$/;
+    if (!phoneRegex.test(phoneNumber)) {
+      alert("Please enter a valid 8-digit phone number.");
       return;
     }
 
@@ -74,6 +76,7 @@ document.addEventListener("DOMContentLoaded", () => {
         alert("Password reset successfully! You can now log in with your new password.");
         hideModal();
         forgotPasswordForm.reset();
+        window.location.href = "login.html"; // redirect after success
       } else {
         const data = await response.json();
         alert(data.error || "Failed to reset password. Please try again.");
@@ -96,3 +99,5 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+
