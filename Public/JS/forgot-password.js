@@ -54,6 +54,12 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
+    // Add new password validation here:
+  if (newPassword.length < 8) {
+    alert("Password must be at least 8 characters long.");
+    return;
+  }
+
     if (!phoneNumber) {
       alert("Phone number missing. Please start over.");
       hideModal();
