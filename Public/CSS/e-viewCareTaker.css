@@ -1,0 +1,162 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', sans-serif;
+    }
+
+    body {
+      background-color: #f5fafa;
+      color: #333;
+    }
+
+    .nav-logo img {
+      height: 40px;
+      filter: drop-shadow(0 0 3px white);
+    }
+
+    .navbar {
+      background-color: #fff;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .navbar .menu a {
+      margin: 0 1rem;
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1100px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    .header-section {
+      background-color: #d8f4f4;
+      padding: 1.5rem;
+      border-radius: 12px;
+    }
+
+    .header-section h2 {
+      margin-bottom: 1rem;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .profile img {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+    }
+
+    .profile-details {
+      flex-grow: 1;
+    }
+
+    .edit-btn {
+      padding: 0.5rem 1rem;
+      background-color: #3b82f6;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1rem;
+      margin: 2rem 0;
+    }
+
+    .info-item strong {
+      display: block;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    .section {
+      margin-top: 2rem;
+    }
+
+    .section h3 {
+      margin-bottom: 0.5rem;
+    }
+
+    .section small {
+      color: #777;
+    }
+
+    .job-table {
+      margin-top: 1rem;
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .job-table td {
+      background-color: #b0eaea;
+      padding: 0.75rem 1rem;
+      border-radius: 15px;
+      margin-bottom: 1rem;
+      font-weight: 500;
+    }
+
+    .availability {
+      margin-top: 1.5rem;
+    }
+
+    .availability-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modify-btn {
+      background-color: #b4dfda;
+      border: none;
+      padding: 0.4rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+    }
+
+    .avail-grid {
+      display: flex;
+      justify-content: space-between;
+      margin-top: 1.5rem;
+    }
+
+    .days-box, .time-box {
+      flex: 0 0 45%;
+      background: #ffffff;
+      padding: 1rem;
+      border-radius: 10px;
+      text-align: center;
+    }
+
+    .days-box p,
+    .time-box p {
+      margin-top: 0.5rem;
+      color: #666;
+    }
+
+    footer {
+      margin-top: 3rem;
+      padding: 2rem;
+      background: #e9f6f5;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #555;
+    }
