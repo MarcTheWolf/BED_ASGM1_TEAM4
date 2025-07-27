@@ -47,7 +47,7 @@ app.get("/getMonthlyExpenditureByID/:id", financeController.getMonthlyExpenditur
 app.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`Server running at http://localhost:${port}`);
-  console.log(`Index page: http://localhost:${port}/e-events.html`);
+  console.log(`Index page: http://localhost:${port}/login.html`);
 });
 
 // Graceful shutdown

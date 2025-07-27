@@ -202,6 +202,28 @@ body{
     transition: background-color 0.3s ease;
 }
 
+.unregister-button {
+    margin-top: auto;
+    background-color: #6fc1be;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 14px ;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
+}
+
+.unregister-button:hover {
+    background-color: #5da9a7;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease;
+}
+
 @media (max-width: 700px) {
     .event-card {
         flex-direction: column;
