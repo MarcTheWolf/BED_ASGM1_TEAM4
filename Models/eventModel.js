@@ -21,7 +21,8 @@ async function getEventRegisteredByID(id) {
                     e.equipment_required
                 FROM RegisteredList r
                 JOIN EventList e ON r.event_id = e.id
-                WHERE r.account_id = @account_id
+                WHERE r.account_id = @account_id and e.date >= CONVERT(DATE, GETDATE())
+                ORDER BY e.date DESC
             `);
 
         return result.recordset;
@@ -66,8 +67,7 @@ async function getAllEvents() {
         connection = await sql.connect(dbConfig);
         const request = connection.request();
 
-        const result = await request.query("SELECT * FROM EventList");
-
+        const result = await request.query("SELECT * FROM EventList WHERE date >= CONVERT(DATE, GETDATE()) ORDER BY date desc");
         return result.recordset; // Return all events
     } catch (error) {
         console.error("Model error:", error);

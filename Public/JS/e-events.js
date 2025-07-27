@@ -16,55 +16,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    try {
-        const response = await fetch("/getAllEvents", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer "${user.token}"`
-            }
-        });
-
-        if (!response.ok) {
-            const errorText = await response.text();
-            throw new Error(`Network error: ${response.status} - ${errorText}`);
-        }
-
-        const data = await response.json();
-        console.log("Fetched Events:", data);
-
-        EventsContainer.innerHTML = "";
-
-        if (Array.isArray(data) && data.length > 0) {
-            data.forEach(event => {
-                // Format date and time for clarity
-                const eventDate = new Date(event.date);
-                const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-                const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
-
-                const html = `
-                    <div class="event-card" id="event-${event.id}">
-                        <div class="event-image">
-                            <img src="${event.banner_image || "Assets/logo.png"}" alt="placeholder image">
-                        </div>
-                        <div class="event-details">
-                            <h2>${event.name}</h2>
-                            <p>Date: ${formattedDate}</p>
-                            <p>Time: ${formattedTime}</p>
-                            <p>Location: ${event.location}</p>
-                        </div>
-                        <button class="register-button" data-event-id="${event.id}">Register</button>
-                    </div>
-                `;
-                EventsContainer.innerHTML += html;
-            });
-        } else {
-            EventsContainer.innerHTML = "<p>No events found.</p>";
-        }
-    } catch (error) {
-        console.error("There was a problem with the fetch operation:", error);
-        EventsContainer.innerHTML = "<p>Failed to load events. Please try again later.</p>";
-    }
+await displayAllEvents();
 });
 
 //#endregion
@@ -77,13 +29,17 @@ AllEvents.addEventListener("click", async () => {
 })
 
 async function displayAllEvents() {
-        RegisteredEvents.classList.remove("selected")
+    RegisteredEvents.classList.remove("selected")
     AllEvents.classList.add("selected")
-
-    const EventsContainer = document.getElementById("AllEventsContainer")
     const user = JSON.parse(localStorage.getItem("user")) || {};
 
-    
+    const EventsContainer = document.getElementById("AllEventsContainer")
+
+    if (!user) {
+        console.error("User data not found in localStorage.");
+        return;
+    }
+
     if (!EventsContainer) {
         console.error("EventsContainer element not found in the DOM.");
         return;
@@ -106,39 +62,25 @@ async function displayAllEvents() {
         const data = await response.json();
         console.log("Fetched Events:", data);
 
+
         EventsContainer.innerHTML = "";
 
-        if (Array.isArray(data) && data.length > 0) {
-            data.forEach(event => {
-                // Format date and time for clarity
-                const eventDate = new Date(event.date);
-                const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-                const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
-
-                const html = `
-                    <div class="event-card" id="event-${event.id}">
-                        <div class="event-image">
-                            <img src="${event.banner_image || "Assets/logo.png"}" alt="placeholder image">
-                        </div>
-                        <div class="event-details">
-                            <h2>${event.name}</h2>
-                            <p>Date: ${formattedDate}</p>
-                            <p>Time: ${formattedTime}</p>
-                            <p>Location: ${event.location}</p>
-                        </div>
-                        <button class="register-button" data-event-id="${event.id}">Register</button>
-                    </div>
-                `;
-                EventsContainer.innerHTML += html;
-            });
-        } else {
-            EventsContainer.innerHTML = "<p>No events found.</p>";
+            if (Array.isArray(data) && data.length > 0) {
+                data.forEach(event => {
+                    const html = renderEvent(event, user.account_type, "view");
+                    EventsContainer.innerHTML += html;
+                });
+            } else {
+                EventsContainer.innerHTML = "<p>No events found.</p>";
+            }
+        
+        
         }
-    } catch (error) {
+    catch (error) {
         console.error("There was a problem with the fetch operation:", error);
-        EventsContainer.innerHTML = "<p>Failed to load events. Please try again later.</p>";
+        EventsContainer.innerHTML = "<p>There are currently no events. Please try again later.</p>";
     }
-}
+};
 
 //#endregion
 
@@ -180,34 +122,16 @@ async function displayRegistered() {
 
         if (Array.isArray(data) && data.length > 0) {
             data.forEach(event => {
-                // Format date and time for clarity
-                const eventDate = new Date(event.date);
-                const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-                const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
-
-                const html = `
-                    <div class="event-card" id="event-${event.id}">
-                        <div class="event-image">
-                            <img src="${event.banner_image || "Assets/logo.png"}" alt="placeholder image">
-                        </div>
-                        <div class="event-details">
-                            <h2>${event.name}</h2>
-                            <p>Date: ${formattedDate}</p>
-                            <p>Time: ${formattedTime}</p>
-                            <p>Location: ${event.location}</p>
-                        </div>
-                        <button class="unregister-button" data-event-id="${event.id}">Unregister</button>
-                    </div>
-                `;
-
+                const html = renderEvent(event, user.account_type, "registered");
                 EventsContainer.innerHTML += html;
+
             });
         } else {
             EventsContainer.innerHTML = "<p>No events found.</p>";
         }
     } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
-        EventsContainer.innerHTML = "<p>Failed to load events. Please try again later.</p>";
+        EventsContainer.innerHTML = "<p>There are currently no events. Please try again later.</p>";
     }
 }
 //#endregion
@@ -290,6 +214,36 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
   }
 });
 
+
+function renderEvent(event, userRole, view){
+    const eventDate = new Date(event.date);
+    const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+    const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+
+    let actionButton = "";
+    if (view === "registered") {
+        actionButton = `<button class="unregister-button" data-event-id="${event.id}">Unregister</button>`;
+    } else if (userRole === "o") {
+        actionButton = `<button class="edit-button" data-event-id="${event.id}">Edit event</button>`;
+    } else if (userRole === "e" || userRole === "c") {
+        actionButton = `<button class="register-button" data-event-id="${event.id}">Register</button>`;
+    }
+
+     return `
+        <div class="event-card" id="event-${event.id}">
+            <div class="event-image">
+                <img src="${event.banner_image || "Assets/logo.png"}" alt="placeholder image">
+            </div>
+            <div class="event-details">
+                <h2>${event.name}</h2>
+                <p>Date: ${formattedDate}</p>
+                <p>Time: ${formattedTime}</p>
+                <p>Location: ${event.location}</p>
+            </div>
+            ${actionButton}
+        </div>
+    `;
+}
 
 
 
