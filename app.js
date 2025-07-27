@@ -65,6 +65,10 @@ app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.get
 app.get("/getAllEvents", eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
 app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventController.unregisterEvent);
+
+
+app.post("/createEvent", authorization.verifyJWT, eventController.createEvent);
+app.put("/updateEvent/:event_id", authorization.verifyJWT, eventController.updateEvent);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

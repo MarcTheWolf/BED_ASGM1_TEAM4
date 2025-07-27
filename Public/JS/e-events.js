@@ -1,6 +1,6 @@
 const AllEvents = document.getElementById("AllEventsButton")
 const RegisteredEvents = document.getElementById("RegisteredEventsButton")
-
+const addEventButton = document.getElementById("addEventButton");
 
 
 //#region Show All Events
@@ -16,7 +16,16 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-await displayAllEvents();
+    if (user.account_type === "o") {
+        addEventButton.hidden = false; // Show add event button for organizers
+        RegisteredEvents.hidden = true; // Hide registered events button for organizers
+    }
+    else {
+        addEventButton.hidden = true; // Hide add event button for non-organizers
+        RegisteredEvents.hidden = false; // Show registered events button for non-organizers
+        }
+
+    await displayAllEvents();
 });
 
 //#endregion
@@ -60,6 +69,7 @@ async function displayAllEvents() {
         }
 
         const data = await response.json();
+        window.allEvents = data;
         console.log("Fetched Events:", data);
 
 
@@ -247,8 +257,177 @@ function renderEvent(event, userRole, view){
 
 
 
+document.addEventListener("click", function (e) {
+    const card = e.target.closest(".event-card");
+    const isButton = e.target.classList.contains("register-button") || 
+                     e.target.classList.contains("unregister-button") || 
+                     e.target.classList.contains("edit-button");
+
+    if (card && !isButton) {
+        const eventId = card.id.replace("event-", "");
+        const event = window.allEvents?.find(ev => ev.id == eventId);
+        if (event) {
+            showEventModal(event);
+        }
+    }
+});
+
+function showEventModal(event) {
+    const modal = document.getElementById("eventModal");
+    document.getElementById("modalName").textContent = event.name;
+    document.getElementById("modalDescription").textContent = event.description || "N/A";
+    document.getElementById("modalDate").textContent = new Date(event.date).toLocaleDateString();
+    document.getElementById("modalTime").textContent = new Date(event.date).toLocaleTimeString();
+    document.getElementById("modalLocation").textContent = event.location || "N/A";
+    document.getElementById("modalWeekly").textContent = event.weekly ? "Yes" : "No";
+    document.getElementById("modalEquipment").textContent = event.equipment_required || "None";
+    document.getElementById("modalImage").src = event.banner_image || "Assets/logo.png";
+
+    modal.classList.add("show");
+}
+
+document.getElementById("modalClose").addEventListener("click", () => {
+    document.getElementById("eventModal").classList.remove("show");
+});
+
+//#region Add Event
+// Add Event Modal
+const addEventModal = document.getElementById("addEventModalBackdrop");
+const closeAddEventModal = document.getElementById("closeAddEventModal");
+
+addEventButton.addEventListener("click", function () {
+    addEventModal.classList.remove("hidden");
+});
+
+closeAddEventModal.addEventListener("click", function () {
+    addEventModal.classList.add("hidden");
+});
+
+document.getElementById("addEventForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const form = e.target;
+    var user = JSON.parse(localStorage.getItem("user")) || {};
+
+    const formData = {
+        name: form.name.value,
+        description: form.description.value,
+        date: form.date.value,
+        time: form.time.value,
+        location: form.location.value,
+        equipment_required: form.equipment_required.value,
+        weekly: form.weekly.checked,
+        org_id: user.id
+    };
+    console.log("Form Data:", formData);
+    try {
+        const response = await fetch("/createEvent", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            throw new Error(err);
+        }
+
+        alert("Event created successfully!");
+        addEventModal.classList.add("hidden");
+        form.reset();
+        await displayAllEvents(); // Refresh list
+    } catch (err) {
+        console.error("Failed to create event:", err);
+        alert("Failed to create event.");
+    }
+});
 
 
+//#endregion
+
+//#region Edit Event Modal
+
+const editEventModal = document.getElementById("editEventModalBackdrop");
+const closeEditEventModal = document.getElementById("closeEditEventModal");
+const editEventForm = document.getElementById("editEventForm");
+
+document.addEventListener("click", function (e) {
+    const editBtn = e.target.closest(".edit-button");
+    if (editBtn) {
+        const eventId = editBtn.dataset.eventId;
+        const event = window.allEvents?.find(ev => ev.id == eventId);
+        if (event) {
+            console.log("Opening modal for event", event);
+            openEditEventModal(event);
+        } else {
+            console.warn("Event not found for ID:", eventId);
+        }
+    }
+});
+
+function openEditEventModal(event) {
+
+    editEventForm.id.value = event.id;
+    editEventForm.name.value = event.name;
+    editEventForm.description.value = event.description;
+    editEventForm.date.value = event.date;
+    editEventForm.time.value = event.time;
+    editEventForm.location.value = event.location;
+    editEventForm.weekly.checked = !!event.weekly;
+
+    editEventModal.classList.remove("hidden");
+}
+
+closeEditEventModal.addEventListener("click", function () {
+    editEventModal.classList.add("hidden");
+});
+
+editEventModal.addEventListener("click", function (e) {
+    if (e.target === editEventModal) {
+        editEventModal.classList.add("hidden");
+    }
+});
+
+editEventForm.addEventListener("submit", async function (e) {
+    e.preventDefault();
+
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    const formData = {
+        id: editEventForm.id.value,
+        name: editEventForm.name.value,
+        description: editEventForm.description.value,
+        date: editEventForm.date.value,
+        time: editEventForm.time.value,
+        location: editEventForm.location.value,
+        equipment_required: editEventForm.equipment_required.value,
+        banner_image: editEventForm.banner_image.value,
+        weekly: editEventForm.weekly.checked,
+        org_id: user.id
+    };
+
+    try {
+        const response = await fetch(`/updateEvent/${formData.id}`, {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            },
+            body: JSON.stringify(formData)
+        });
+
+        if (!response.ok) throw new Error("Failed to update event");
+
+        alert("Event updated.");
+        editEventModal.classList.add("hidden");
+        await displayAllEvents();
+    } catch (err) {
+        console.error(err);
+        alert("Update failed.");
+    }
+});
 
 
 
