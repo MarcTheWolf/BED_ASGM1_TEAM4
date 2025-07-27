@@ -36,6 +36,7 @@ app.get("/getAccountById", authorization.verifyJWT, accountController.getAccount
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -106,8 +107,8 @@ app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByD
 app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
 app.post("/tasks/initialize", taskController.initializeTaskTable);
 
-
-
+app.put("/account/password", authorization.verifyJWT, accountController.updatePassword); // Edit password (authenticated user)
+app.post("/account/forgot-password", accountController.forgotPassword); // Forgot password (via phone)
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
