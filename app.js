@@ -36,6 +36,7 @@ app.get("/getAccountById", authorization.verifyJWT, accountController.getAccount
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -76,6 +77,10 @@ app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.get
 app.get("/getAllEvents", eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
 app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventController.unregisterEvent);
+
+
+app.post("/createEvent", authorization.verifyJWT, eventController.createEvent);
+app.put("/updateEvent/:event_id", authorization.verifyJWT, eventController.updateEvent);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -113,8 +118,8 @@ app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByD
 app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
 app.post("/tasks/initialize", taskController.initializeTaskTable);
 
-
-
+app.put("/account/password", authorization.verifyJWT, accountController.updatePassword); // Edit password (authenticated user)
+app.post("/account/forgot-password", accountController.forgotPassword); // Forgot password (via phone)
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////

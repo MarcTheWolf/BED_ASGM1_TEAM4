@@ -5,6 +5,7 @@ var MedicalCondition = [];
 
 
 document.addEventListener('DOMContentLoaded', async function() {
+  await reloadProfileData();
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
@@ -88,6 +89,101 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
+
+  
+  inputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector("ul");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedicalCondition/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const medInputs = document.querySelectorAll(".med-autocomplete");
+
+  medInputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector(".med-suggestions");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedication/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch medication suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Medication autocomplete error:", err);
+      }
+    });
+  });
+});
+
+async function reloadProfileData() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const req = await fetch("/getAccountById", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+    }
+  });
+
+  if (req.ok) {
+    const newProfile = await req.json();
+    newProfile.token = user.token; // attach token safely
+    localStorage.setItem("user", JSON.stringify(newProfile));
+  } else {
+    console.warn("Failed to reload profile:", await req.text());
+  }
+}
+
 
 
 
