@@ -10,6 +10,7 @@ const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+const notificationEngine = require("./Services/notificationEngine.js");
 
 const accountController = require("./Controllers/accountController.js");
 const medicalInformationController = require("./Controllers/medicalInformationController.js");
@@ -75,19 +76,35 @@ app.put("/updateEvent/:event_id", authorization.verifyJWT, eventController.updat
 
 
 //Finance Endpoints (By Belle)
+
 app.get("/getExpenditureGoalByID", authorization.verifyJWT, financeController.getExpenditureGoalByID);
 app.get("/getTotalExpenditureByID", authorization.verifyJWT, financeController.getTotalExpenditureByID);
 app.get("/getMonthlyExpenditureByID", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
 app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.getAllTransactionsByID);
-
+app.get("/getTransactionByID/:id", authorization.verifyJWT, financeController.getTransactionByID);
 
 app.post("/addTransactionToAccount", authorization.verifyJWT, financeController.addTransactionToAccount);
+app.post("/addExpenditureGoal", authorization.verifyJWT, financeController.updateExpenditureGoal);
 
+app.put("/updateTransaction/:id", authorization.verifyJWT, financeController.updateTransaction);
+app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.deleteTransaction);
 
-
-//Use of External API from backend (By Belle)
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//Displaying data as graphs/charts, use of external API from backend (By Belle) ////////////////////////////////////////////////////////////////
 app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
 app.get("/getBudgetExpenditureDoughnutChart/:month", authorization.verifyJWT, financeController.getBudgetExpenditureDoughnutChart);
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// Notification Feature API Endpoints (By Belle)
+app.get("/getAllNotifications", authorization.verifyJWT, notificationsController.getAllNotifications);
+app.get("/getUnnotified", authorization.verifyJWT, notificationsController.getUnnotified);
+
+
+app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
+//app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
+//app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -109,6 +126,16 @@ app.post("/tasks/initialize", taskController.initializeTaskTable);
 
 app.put("/account/password", authorization.verifyJWT, accountController.updatePassword); // Edit password (authenticated user)
 app.post("/account/forgot-password", accountController.forgotPassword); // Forgot password (via phone)
+
+////////////////////////////////////////////////////
+///////////////Main Engine Loop////////////////////
+////////////////////////////////////////////////////
+setInterval(async () => {
+  await notificationEngine.run();
+}, 10000);
+
+
+
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////

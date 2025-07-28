@@ -237,3 +237,94 @@ body{
   padding: 10px 20px;
   cursor: pointer;
 }
+
+.popup {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    padding: 20px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    max-width: 400px;
+    display: none; /* Hide by default */
+    z-index: 1000;
+    width: 90%;
+}
+
+.popup-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.popup-header h2 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+}
+
+.edit-icon {
+    cursor: pointer;
+    font-size: 1.5em;
+    color: #007bff;
+}
+
+#edit-icon:hover {
+    color: #0056b3;
+}
+
+#close-button {
+    background-color: #48ceb7;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#close-button:hover {
+    background-color: #8affec;
+}
+
+#delete-button {
+    background-color: #ff5858;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#delete-button:hover {
+    background-color: #ffa9a9;
+}
+
+
+/* Optional: Add animation for opening the popup */
+@keyframes popupFadeIn {
+    from {
+        opacity: 0;
+        transform: translate(-50%, -40%);
+    }
+    to {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.popup {
+    animation: popupFadeIn 0.3s ease-in-out;
+}
+
+.hidden {
+  display: none;
+}
