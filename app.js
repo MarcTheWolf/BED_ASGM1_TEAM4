@@ -17,6 +17,7 @@ const medicalInformationController = require("./Controllers/medicalInformationCo
 const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 const taskController = require("./Controllers/taskController.js");
+notificationsController = require("./Controllers/notificationsController.js");
 
 
 const authorization = require("./Middlewares/authorization.js");
