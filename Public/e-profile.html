@@ -29,7 +29,7 @@
         <p id="display-name"><strong>Full Name:</strong> Alexa Rawles</p>
       </div>
       <div class="profile-right">
-        <button class="edit-btn">Edit</button>
+        <a href="e-editProfile.html" class="edit-btn">Edit</a>
         <button class="logout-btn">Log out</button>
       </div>
     </div>
@@ -44,17 +44,25 @@
     </div>
   </section>
 
-  <section class="health-overview">
-    <h3>Health Overview <span class="date">August 5, 2025</span></h3>
-    <div class="health-cards">
-      <div class="card">🧁<br><strong>Blood Sugar</strong><br>80 mg/dL</div>
-      <div class="card">❤️<br><strong>Heart Rate</strong><br>98 bpm</div>
-      <div class="card">💧<br><strong>Blood Pressure</strong><br>102 / 70</div>
-      <div class="card">🌬️<br><strong>Oxygen</strong><br>92 SpO₂</div>
+    <div class="container2">
+      <div class="health-overview">
+        <h2>Health Overview</h2>
+        <div class="metrics">
+          <div class="metric">
+            <img src="Assets/Blood Sugar.png">
+          </div>
+          <div class="metric">
+            <img src="Assets/Heart Rate.png">
+          </div>
+          <div class="metric">
+            <img src="Assets/Blood Pressure.png">
+          </div>
+          <div class="metric">
+            <img src="Assets/Oxygen.png">
+          </div>
+        </div>
+      </div>
     </div>
-    <button class="report-btn">Click to view Detailed Health Report</button>
-  </div>
-  </section>
 
   <section class="medical-list">
         <div class="container">
@@ -98,8 +106,9 @@
       <h3>Add Medical Condition</h3>
       <form id="medical-form">
         <label for="medc-name">Condition Name:</label>
-        <input type="text" name="name" id="medc-name" required>
-
+        <input type="text" name="name" id="medc-name" class="medc-autocomplete"required>
+        <ul id="medc-suggestions" style="margin-top: 5px;"></ul>
+ 
         <label for="medc-descr">Description:</label>
         <textarea name="descr" id="medc-descr" rows="3" placeholder="Optional"></textarea>
 
@@ -121,7 +130,8 @@
       <h3>Add Medication</h3>
       <form id="medication-form">
         <label for="med-name">Medication Name:</label>
-        <input type="text" name="name" id="med-name" required>
+        <input type="text" name="name" id="med-name" class="med-autocomplete"required>
+        <ul class="med-suggestions" style="margin-top: 5px; list-style: none;"></ul>
 
         <label for="med-desc">Description:</label>
         <textarea name="description" id="med-desc" rows="2" placeholder="Optional"></textarea>
@@ -130,18 +140,23 @@
         <input type="text" name="dosage" id="med-dosage" required>
 
         <label for="med-time">Time to Take:</label>
-        <input type="time" name="time" id="med-time">
+        <input type="time" name="time" id="med-time" required>
 
         <label for="med-frequency">Frequency:</label>
         <select name="frequency" id="med-frequency" required>
           <option value="D">Daily</option>
           <option value="W">Weekly</option>
-          <option value="M">Monthly</option>
           <option value="WR">When Required</option>
         </select>
 
+        <div id="weekly-timing-container" style="display:none; margin-top: 10px;">
+          <label><strong>Weekly Timings:</strong></label>
+          <div id="weekly-timings-list"></div>
+          <button type="button" id="add-weekly-time">Add Timing</button>
+        </div>
+
         <label for="med-start-date">Start Date:</label>
-        <input type="date" name="start_date" id="med-start-date" required>
+        <input type="date" name="start_date" id="med-start-date">
 
         <!-- Hidden field for account_id -->
         <input type="hidden" name="account_id" id="med-account-id">
@@ -161,52 +176,119 @@
     </div>
   </div>
 
+  <!-- View Medication Card -->
+  <div id="view-medication-card" class="view-card hidden">
+    <div class="view-card-content">
+      <h3>Medication Details</h3>
+      <p><strong>Name:</strong> <span id="view-med-name"></span></p>
+      <p><strong>Description:</strong> <span id="view-med-desc"></span></p>
+      <p><strong>Dosage:</strong> <span id="view-med-dosage"></span></p>
+      <p><strong>Time:</strong> <span id="view-med-time"></span></p>
+      <p><strong>Frequency:</strong> <span id="view-med-frequency"></span></p>
+      <p><strong>Start Date:</strong> <span id="view-med-start-date"></span></p>
+      <button onclick="closeCard('view-medication-card')">Close</button>
+    </div>
+  </div>
 
+  <!-- View Medical Condition Card -->
+  <div id="view-medical-card" class="view-card hidden">
+    <div class="view-card-content">
+      <h3>Medical Condition Details</h3>
+      <p><strong>Condition Name:</strong> <span id="view-medc-name"></span></p>
+      <p><strong>Description:</strong> <span id="view-medc-desc"></span></p>
+      <p><strong>Prescription Date:</strong> <span id="view-medc-date"></span></p>
+      <button onclick="closeCard('view-medical-card')">Close</button>
+    </div>
+  </div>
 
-  <footer class="footer">
-    <link rel="stylesheet" href="CSS/footer.css">
-    <div class="footer-container">
-      <div class="footer-column">
-        <img src="Assets/logo.png"Logo" class="footer-logo">
-        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
+  <!-- Edit Medical Condition Form -->
+<div id="edit-medical-condition-popup" class="popup-form">
+  <div class="popup-content">
+    <span class="close-btn" onclick="closePopup('edit-medical-condition-popup')">&times;</span>
+    <h3>Edit Medical Condition</h3>
+    <form id="edit-medical-condition-form">
+      <div class="form-container">
+        <!-- Left side: Medical Condition Information -->
+        <div class="left-side">
+          <label for="edit-medc-name">Condition Name:</label>
+          <input type="text" name="name" id="edit-medc-name" class="medc-autocomplete" required>
+                  <ul class="medc-suggestions" style="margin-top: 5px;"></ul>
+
+          <label for="edit-medc-descr">Description:</label>
+          <textarea name="descr" id="edit-medc-descr" rows="3" placeholder="Optional"></textarea>
+
+          <label for="edit-medc-date">Prescription Date:</label>
+          <input type="date" name="prescription_date" id="edit-medc-date" required>
+
+          <!-- Optional: Hidden fields for acc_id and mod_id -->
+          <input type="hidden" name="medc_id" id="edit-medc-id">
+        </div>
+
+        <!-- Right side: Associated Medications -->
+        <div class="right-side">
+          <h4>Associated Medications</h4>
+          <div id="associated-medications-list">
+            <!-- Dynamically populated list of medications associated with this condition -->
+          </div>
+
+          <h4>My Medications</h4>
+          <div id="available-medications-list">
+            <!-- Dynamically populated list of available medications not yet associated -->
+          </div>
         </div>
       </div>
 
-      <div class="footer-column">
-        <h4>Information</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact us</a></li>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Account</a></li>
-        </ul>
-      </div>
+      <button class="mc-save-changes-btn"type="button">Save Changes</button>
+    </form>
+  </div>
+</div>
 
-      <div class="footer-column">
-        <h4>Contact</h4>
-        <p>Stanley House<br>
-           Masterlord Village,<br>
-           West Rd, Ipswich<br>
-           9SX</p>
-      </div>
+<!-- Edit Medication Form -->
+  <div id="edit-medication-popup" class="popup-form">
+    <div class="popup-content">
+      <span class="close-btn" onclick="closePopup('edit-medication-popup')">&times;</span>
+      <h3>Edit Medication</h3>
+      <form id="edit-medication-form">
+        <label for="edit-med-name">Medication Name:</label>
+        <input type="text" name="name" id="edit-med-name" class="med-autocomplete" required>
+        <ul id="med-suggestions" style="margin-top: 5px; list-style: none;"></ul>
 
-      <div class="footer-column">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Use</a></li>
-        </ul>
-      </div>
+        <label for="edit-med-desc">Description:</label>
+        <textarea name="description" id="edit-med-desc" rows="2" placeholder="Optional"></textarea>
+
+        <label for="edit-med-dosage">Dosage:</label>
+        <input type="text" name="dosage" id="edit-med-dosage" required>
+
+        <label for="edit-med-time">Time to Take:</label>
+        <input type="time" name="time" id="edit-med-time">
+
+        <label for="edit-med-frequency">Frequency:</label>
+        <select name="frequency" id="edit-med-frequency" required>
+          <option value="D">Daily</option>
+          <option value="W">Weekly</option>
+          <option value="M">Monthly</option>
+          <option value="WR">When Required</option>
+        </select>
+
+        <label for="edit-med-start-date">Start Date:</label>
+        <input type="date" name="start_date" id="edit-med-start-date" required>
+
+        <!-- Hidden field for account_id -->
+        <input type="hidden" name="account_id" id="edit-med-id">
+
+        <button class="m-save-changes-btn" type="button">Save Changes</button>
+      </form>
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</footer>
+</div>
+
+
+
+
+
+  <div id="footer-placeholder"></div>
+  <script src="js/footer.js"></script>
     <script src="JS/e-role.js"></script>
     <script src="JS/e-profile.js"></script>
+      <script src="/JS/notificationSystem.js" type="module"></script>
 </body>
 </html>

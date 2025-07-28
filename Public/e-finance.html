@@ -87,6 +87,9 @@
             <option value="other">Other</option>
         </select>
 
+        <label for="date">Date 'Leave blank for todays date'</label>
+        <input type="date" id="date" name="date" placeholder="Leave blank for today">
+
         <button type="submit" class="add-record-button">Add Record</button>
         <button type="button" id="cancel-transaction">Cancel</button>
         </form>
@@ -102,61 +105,59 @@
 
             <div class="form-buttons">
                 <button type="button" id="cancel-budget">Cancel</button>
-                <button type="submit" id="save-budget">Save Budget</button>
+                <button type="button" id="save-budget">Save Budget</button>
             </div>
         </form>
     </div>
 
 
-
-    <!-- Footer -->
-    <footer class="footer">
-    <img src="Assets/logo-icon.png" alt="Logo Icon" class="footer-icon">
-
-    <link rel="stylesheet" href="CSS/footer.css">
-    <div class="footer-container">
-
-      <div class="footer-column">
-        <img src="Assets/logo.png" alt="Logo" class="footer-logo">
-        <p>Web Shop fulfilled by <a href="#">Star Editions.</a></p>
-        <div class="social-icons">
-          <a href="#"><i class="fab fa-facebook-f"></i></a>
-          <a href="#"><i class="fab fa-instagram"></i></a>
-          <a href="#"><i class="fab fa-twitter"></i></a>
-          <a href="#"><i class="fab fa-linkedin-in"></i></a>
-        </div>
-      </div>
-
-      <div class="footer-column">
-        <h4>Information</h4>
-        <ul>
-          <li><a href="#">About</a></li>
-          <li><a href="#">Contact us</a></li>
-          <li><a href="#">FAQs</a></li>
-          <li><a href="#">Account</a></li>
-        </ul>
-      </div>
-
-      <div class="footer-column">
-        <h4>Contact</h4>
-        <p>Stanley House<br>
-           Masterlord Village,<br>
-           West Rd, Ipswich<br>
-           9SX</p>
-      </div>
-
-      <div class="footer-column">
-        <h4>Legal</h4>
-        <ul>
-          <li><a href="#">Cookie Policy</a></li>
-          <li><a href="#">Privacy Policy</a></li>
-          <li><a href="#">Terms of Use</a></li>
-        </ul>
-      </div>
+    <div id="transaction-details" class="popup">
+    <div class="popup-header">
+        <h2>Transaction Details</h2>
+        <span id="edit-icon" class="edit-icon">&#9998;</span> <!-- Edit icon -->
     </div>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-</footer>
-</body>
-    <script src='JS/e-finance.js'></script>
 
+    <p><strong>Date:</strong> 
+        <span id="transaction-date"></span>
+        <input type="date" id="transaction-date-input" class="edit-input hidden">
+    </p>
+
+    <p><strong>Description:</strong> 
+        <span id="transaction-description"></span>
+        <input type="text" id="transaction-description-input" class="edit-input hidden">
+    </p>
+
+    <p><strong>Category:</strong> 
+        <span id="transaction-category"></span>
+        <select id="transaction-category-input" name="category" required class="edit-input hidden">
+            <option value="" disabled selected>Select category</option>
+            <option value="food">Food</option>
+            <option value="transport">Transport</option>
+            <option value="rent">Rent</option>
+            <option value="utilities">Utilities</option>
+            <option value="entertainment">Entertainment</option>
+            <option value="other">Other</option>
+        </select>
+    </p>
+
+    <p><strong>Amount:</strong> $
+        <span id="transaction-amount"></span>
+        <input type="number" id="transaction-amount-input" class="edit-input hidden" step="0.01">
+    </p>
+
+    <button id="close-button" class="close-button">Close</button>
+    <button id="delete-button" class="delete-button hidden" style="background-color: red; color: white;">Delete</button>
+    </div>
+
+
+
+
+
+
+</body>
+
+    <div id="footer-placeholder"></div>
+    <script src="js/footer.js"></script>
+    <script src='JS/e-finance.js'></script>
+    <script src="/JS/notificationSystem.js" type="module"></script>
 </html>

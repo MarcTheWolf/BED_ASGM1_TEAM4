@@ -5,6 +5,7 @@ var MedicalCondition = [];
 
 
 document.addEventListener('DOMContentLoaded', async function() {
+  await reloadProfileData();
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
@@ -13,6 +14,175 @@ document.addEventListener('DOMContentLoaded', async function() {
   console.log(MedicalCondition);
 });
 
+document.addEventListener("DOMContentLoaded", () => {
+  const inputs = document.querySelectorAll(".medc-autocomplete");
+
+  inputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector("ul");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedicalCondition/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const medInputs = document.querySelectorAll(".med-autocomplete");
+
+  medInputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector(".med-suggestions");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedication/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch medication suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Medication autocomplete error:", err);
+      }
+    });
+  });
+});
+
+  
+  inputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector("ul");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedicalCondition/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Autocomplete error:", err);
+      }
+    });
+  });
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+  const medInputs = document.querySelectorAll(".med-autocomplete");
+
+  medInputs.forEach(input => {
+    input.addEventListener("input", async () => {
+      const query = input.value.trim();
+      const suggestionsList = input.parentElement.querySelector(".med-suggestions");
+
+      if (query.length < 2) {
+        suggestionsList.innerHTML = "";
+        return;
+      }
+
+      try {
+        const res = await fetch(`/autocompleteMedication/${encodeURIComponent(query)}`);
+        if (!res.ok) throw new Error("Failed to fetch medication suggestions");
+
+        const data = await res.json();
+        const suggestions = data.suggestions || [];
+
+        suggestionsList.innerHTML = "";
+        suggestions.forEach(item => {
+          const li = document.createElement("li");
+          li.textContent = item;
+          li.style.cursor = "pointer";
+          li.addEventListener("click", () => {
+            input.value = item;
+            suggestionsList.innerHTML = "";
+          });
+          suggestionsList.appendChild(li);
+        });
+      } catch (err) {
+        console.error("Medication autocomplete error:", err);
+      }
+    });
+  });
+});
+
+async function reloadProfileData() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const req = await fetch("/getAccountById", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+    }
+  });
+
+  if (req.ok) {
+    const newProfile = await req.json();
+    newProfile.token = user.token; // attach token safely
+    localStorage.setItem("user", JSON.stringify(newProfile));
+  } else {
+    console.warn("Failed to reload profile:", await req.text());
+  }
+}
 
 
 
@@ -25,7 +195,7 @@ async function retrieveMedicalConditionData() {
     try {
         // Simulate fetching data from a server
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicalConditionByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicalConditionByAccountID`, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
@@ -49,14 +219,14 @@ async function retrieveMedicationData() {
     try {
         // Simulate fetching data from a server
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicationByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicationByAccountID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
             "Authorization": `Bearer ${user.token}`
         }
         });
-        
+              autoLogout(response);
         if (!response.ok) {
             autoLogout(response);
             console.error('Failed to retrieve data:', response.statusText);
@@ -99,13 +269,13 @@ async function loadProfileInformation() {
   profileLanguage.innerHTML = `<strong>Prefered Language:</strong> ${user.preferred_language  || 'Unknown'}`;
 
   try {
-    const response = await fetch(`/getPhoneByAccountID/${user.id}`, {
+    const response = await fetch(`/getPhoneByAccountID`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${user.token}`
       }
     });
-
+      autoLogout(response);
     if (!response.ok) throw new Error('Failed to fetch phone number.');
 
     const data = await response.json();
@@ -139,7 +309,7 @@ function loadMedical() {
   const card = document.createElement('div');
   card.className = 'card card-flex card-content';
   card.setAttribute('data-id', item.medc_id);
-  card.setAttribute('data-medType', 'medicalCondition');
+  card.setAttribute('data-medType', 'mc');
 
   let modified = item.updated_at
     ? `<div class="card-info"><strong>${item.name}</strong><br>Last modified: ${formatDate(item.updated_at)}</div>`
@@ -148,8 +318,8 @@ function loadMedical() {
   card.innerHTML = `
     ${modified}
     <div class="card-actions">
-      <button class="card-btn update-btn" data-id="${item.medc_id}" data-medType = "Medical Condition">Update</button>
-      <button class="card-btn delete-btn" data-id="${item.medc_id}" data-medType = "Medical Condition">Delete</button>
+      <button class="card-btn update-btn" data-id="${item.medc_id}" data-medType = "mc">Update</button>
+      <button class="card-btn delete-btn" data-id="${item.medc_id}" data-medType = "mc">Delete</button>
     </div>
   `;
 
@@ -179,17 +349,17 @@ function loadMedication() {
     const card = document.createElement('div');
     card.className = 'card card-flex'; // Add new layout class
     card.setAttribute('data-id', item.med_id);
-    card.setAttribute('data-medType', 'medication')
+    card.setAttribute('data-medType', 'm')
     card.innerHTML = `
 
       <div class="card-content">
         <strong>${item.name}</strong><br>
-        Dosage: ${item.dosage}<br>
-        Take ${item.dosage} ${getFrequencyLabel(item.frequency)}
+        Take ${item.dosage} ${getFrequencyLabel(item.frequency)}<br>
+        ${item.description ? `<em>${item.description}</em><br>` : ''}
       </div>
       <div class="card-actions">
-        <button class="card-btn update-btn" data-id="${item.med_id}" data-medType = "Medication">Update</button>
-        <button class="card-btn delete-btn" data-id="${item.med_id}" data-medType = "Medication">Delete</button>
+        <button class="card-btn update-btn" data-id="${item.med_id}" data-medType = "m">Update</button>
+        <button class="card-btn delete-btn" data-id="${item.med_id}" data-medType = "m">Delete</button>
       </div>
 
     `;
@@ -231,6 +401,7 @@ const formatDate = (dateString) => {
 
 function openPopup(id) {
   document.getElementById(id).style.display = "block";
+  
 }
 
 function closePopup(id) {
@@ -249,14 +420,14 @@ medicalForm.addEventListener('submit', async (event) => {
   const formData = new FormData(medicalForm);
   const payload = {
     name: formData.get('name'),
-    descr: formData.get('descr'),
+    descr: formData.get('descr') || ' ',
     prescription_date: formData.get('prescription_date'),
     acc_id: user.id,
     mod_id: user.id
   };
 
   try {
-    const response = await fetch(`/createMedicalCondition/${user.id}`, {
+    const response = await fetch(`/createMedicalCondition`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -264,7 +435,7 @@ medicalForm.addEventListener('submit', async (event) => {
       },
       body: JSON.stringify(payload)
     });
-
+      autoLogout(response);
     if (response.ok) {
       alert('Medical condition added successfully!');
       closePopup('medical-popup');
@@ -282,47 +453,6 @@ medicalForm.addEventListener('submit', async (event) => {
 });
 const medicationForm = document.getElementById('medication-form');
 
-medicationForm.addEventListener('submit', async (event) => {
-  event.preventDefault(); // Prevent default form submission
-
-  var user = JSON.parse(localStorage.getItem("user"));
-  const formData = new FormData(medicationForm);
-  
-  const payload = {
-    name: formData.get('name'),
-    description: formData.get('description'),
-    dosage: formData.get('dosage'),
-    time: formData.get('time'),
-    frequency: formData.get('frequency'),
-    start_date: formData.get('start_date'),
-    account_id: user.id
-  };
-
-  try {
-    const response = await fetch(`/createMedication/${user.id}`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${user.token}`
-      },
-      body: JSON.stringify(payload)
-    });
-
-    if (response.ok) {
-      alert('Medication added successfully!');
-      closePopup('medication-popup');
-      medicationForm.reset();
-      await retrieveMedicationData();
-      loadMedication(); 
-    } else {
-      const error = await response.json();
-      alert(`Error: ${error.message || 'Failed to submit medication'}`);
-    }
-  } catch (err) {
-    console.error(err);
-    alert('Network or server error');
-  }
-});
 
 
 let deleteId = null;
@@ -345,12 +475,12 @@ document.addEventListener('click', async function (event) {
 
   // Confirm delete
   if (event.target.id === 'confirm-delete-btn' && deleteId !== null) {
-    if (medType == "Medical Condition") {
+    if (medType == 'mc') {
         url = `/deleteMedicalCondition/${deleteId}`;
-      } else if (medType == "Medication") {
+      } else if (medType == 'm') {
         url = `/deleteMedication/${deleteId}`;
       } else {
-        alert('Unknown record type.');
+        alert('Unknown record type.' + medType);
         return;
       }
     fetch(url, {
@@ -367,8 +497,16 @@ document.addEventListener('click', async function (event) {
 
         await retrieveMedicalConditionData();
         await retrieveMedicationData();
-        loadMedication();
-        loadMedical(); 
+
+        if (medType == 'mc') {
+          loadMedical(); 
+        } else if (medType == 'm') {
+          loadMedication();
+        } else {
+          alert('Unknown record type.');
+          return;
+        }
+        
       } else {
         return response.json().then(data => {
           throw new Error(data.message || 'Delete failed.');
@@ -381,4 +519,672 @@ document.addEventListener('click', async function (event) {
       closePopup('delete-confirmation-popup');
     });
   }
+
+  // Fetch and log full record when a card is clicked (not button)
+  if (event.target.closest('.card') && !event.target.classList.contains('card-btn')) {
+    const card = event.target.closest('.card');
+    const recordId = card.getAttribute('data-id');
+    const medType = card.getAttribute('data-medType');
+    const user = JSON.parse(localStorage.getItem("user"));
+
+    try {
+      let response;
+
+      if (medType == 'm') {
+        response = await fetch(`/getMedicationByID/${recordId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+      } else if (medType == 'mc') {
+        response = await fetch(`/getMedicalConditionByID/${recordId}`, {
+          method: 'GET',
+          headers: {
+            'Authorization': `Bearer ${user.token}`
+          }
+        });
+      } else {
+        console.warn("Unknown type:", medType);
+        return;
+      }
+
+      if (!response.ok) {
+        console.error(`Failed to fetch ${medType}:`, await response.text());
+        return;
+      }
+
+      const data = await response.json();
+      if (medType == 'm') {
+        showMedicalData(data);
+      } else if (medType == 'mc') {
+        showMedicalConditionData(data);
+      }
+      console.log(`[${medType}]`, data);
+    } catch (err) {
+      console.error("Error fetching record:", err);
+    }
+  }
 });
+
+function getFrequencyLabel(code) {
+  switch (code) {
+    case 'D': return 'Daily';
+    case 'W': return 'Weekly';
+    case 'M': return 'Monthly';
+    case 'WR': return 'When Required';
+    default: return 'Unknown';
+  }
+}
+
+function showMedicalData(data) {
+    // Fill in the medication view popup
+  document.getElementById('view-med-name').textContent = data.name;
+  document.getElementById('view-med-desc').textContent = data.description || '—';
+  document.getElementById('view-med-dosage').textContent = data.dosage;
+  document.getElementById('view-med-time').textContent = data.time
+    ? data.time.substring(11, 16) // Extracts "HH:mm" from "1970-01-01T18:45:00.000Z"
+    : '—';
+  document.getElementById('view-med-frequency').textContent = getFrequencyLabel(data.frequency);
+  document.getElementById('view-med-start-date').textContent = data.start_date.split('T')[0];
+
+  document.getElementById('view-medication-card').classList.remove('hidden');
+}
+
+function showMedicalConditionData(data) {
+    // Fill in the medical condition view popup
+  document.getElementById('view-medc-name').textContent = data.name;
+  document.getElementById('view-medc-desc').textContent = data.descr || '—';
+  document.getElementById('view-medc-date').textContent = data.prescription_date.split('T')[0];
+
+  document.getElementById('view-medical-card').classList.remove('hidden');
+}
+
+
+
+function closeCard(cardId) {
+  document.getElementById(cardId).classList.add('hidden');
+}
+
+
+//Display and load information when update button is clicked
+document.addEventListener('click', async function(event) {
+  // Check if the "Update" button for a medication card is clicked
+if (event.target.classList.contains('update-btn') && event.target.getAttribute('data-medType') === 'm') {
+  const medicationId = event.target.getAttribute('data-id');
+  console.log(`Update Medication ID: ${medicationId}`);
+
+  try {
+    // Fetch the data for the medication with the given ID
+    const response = await fetch(`/getMedicationByID/${medicationId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+      }
+    });
+
+          autoLogout(response);
+    // Check if the response is not OK
+    if (!response.ok) {
+      throw new Error('Failed to fetch medication data');
+    }
+
+    // Parse the response as JSON
+    const medication = await response.json();
+
+    if (medication) {
+      // Populate the form with the medication data for editing
+      document.getElementById('edit-med-name').value = medication.name;
+      document.getElementById('edit-med-desc').value = medication.description || '';
+      document.getElementById('edit-med-dosage').value = medication.dosage;
+      document.getElementById('edit-med-frequency').value = medication.frequency;
+      document.getElementById('edit-med-start-date').value = medication.start_date.split('T')[0];
+      document.getElementById('edit-med-id').value = medication.med_id; // Assuming you have a hidden input for the ID
+
+      if (medication.time) {
+        // medication.time should be "HH:mm:ss" (e.g., "17:24:00")
+        const formattedTime = medication.time
+                              ? medication.time.substring(11, 16) // Extracts "HH:mm" from "1970-01-01T18:45:00.000Z"
+                              : '—';
+        document.getElementById('edit-med-time').value = formattedTime;
+      } else {
+        document.getElementById('edit-med-time').value = '';
+      }
+
+      console.log(`Editing Medication: ${medication.name}`);
+
+      // Show the popup for updating medication
+      openPopup('edit-medication-popup');
+    }
+  } catch (error) {
+    console.error('Error fetching medication data:', error);
+  }
+}
+
+  // Check if the "Update" button for a medical condition card is clicked
+  if (event.target.classList.contains('update-btn') && event.target.getAttribute('data-medType') === 'mc') {
+    const medicalConditionId = event.target.getAttribute('data-id');
+    console.log(`Update Medical Condition ID: ${medicalConditionId}`);
+    
+    // Fetch the data for the medical condition with the given ID
+    const response = await fetch(`/getMedicalConditionByID/${medicalConditionId}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${JSON.parse(localStorage.getItem("user")).token}`
+      }
+    })
+
+          autoLogout(response);
+    
+    if (!response.ok) {
+      throw new Error('Failed to fetch condition data');
+    }
+
+    const condition = await response.json();
+    
+    console.log(`Editing Medical Condition ID: ${condition}`);
+    if (condition) {
+      // Populate the form with the medical condition data for editing
+      document.getElementById('edit-medc-name').value = condition.name;
+      document.getElementById('edit-medc-descr').value = condition.descr || '';
+      document.getElementById('edit-medc-date').value = condition.prescription_date.split('T')[0] || '';
+      document.getElementById('edit-medc-id').value = condition.medc_id; // Assuming you have a hidden input for the ID
+
+
+      const associatedMedications = await getMedicationAssociated(condition.medc_id); // Medications already associated
+      const medicationList = await getAllMedications(); // All medications (including associated ones)
+
+      // Filter out medications that are already in the associated list
+      const medicationsNotAssociated = medicationList.filter(med => 
+        !associatedMedications.some(associated => associated.med_id === med.med_id)
+      );
+
+      fillMyMedications(medicationsNotAssociated, medicalConditionId);
+      fillAssociatedMedications(associatedMedications, medicalConditionId);
+      // Show the popup for updating medical condition
+      openPopup('edit-medical-condition-popup');
+    }
+  }
+});
+
+
+async function updateAssociationUI(medicalConditionId) {
+  const associatedMedications = await getMedicationAssociated(medicalConditionId); // Medications already associated
+  const medicationList = await getAllMedications(); // All medications (including associated ones)
+
+  // Filter out medications that are already in the associated list
+  const medicationsNotAssociated = medicationList.filter(med => 
+    !associatedMedications.some(associated => associated.med_id === med.med_id)
+  );
+
+  fillMyMedications(medicationsNotAssociated, medicalConditionId);
+  fillAssociatedMedications(associatedMedications, medicalConditionId);
+
+}
+
+// Open the popup by ID
+function openPopup(id) {
+  document.getElementById(id).style.display = "block";
+}
+
+// Close the popup
+function closePopup(id) {
+  document.getElementById(id).style.display = "none";
+}
+
+
+async function updateMedication(data) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  try {
+    const response = await fetch(`/updateMedication/${data.med_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify(data)
+    });
+          autoLogout(response);
+    if (response.ok) {
+      alert('Medication updated successfully!');
+      closePopup('edit-medication-popup');
+      await retrieveMedicationData();
+      loadMedication();
+    } else {
+      const error = await response.json();
+      alert(`Error: ${error.message || 'Failed to update medication'}`);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Network or server error');
+  }
+}
+
+async function updateMedicalCondition(data) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log('Updating medical condition with data:', data);
+  try {
+    const response = await fetch(`/updateMedicalCondition/${data.medc_id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify(data)
+    });
+
+          autoLogout(response);
+    if (response.ok) {
+      alert('Medical condition updated successfully!');
+      closePopup('edit-medical-condition-popup');
+      await retrieveMedicalConditionData();
+      loadMedical();
+    } else {
+      const error = await response.json();
+      alert(`Error: ${error.message || 'Failed to update medical condition'}`);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Network or server error');
+  }
+}
+
+//Updating medication and medical condition data when the save button is clicked
+document.addEventListener('click', async function(event) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  // Check if the clicked element has the "save-changes-btn" class
+  if (event.target.classList.contains('m-save-changes-btn')) {
+    event.preventDefault(); // Prevent form submission (if it's inside a form)
+
+    // Gather values from the form inputs
+    console.log('Saving changes for medication...');
+    const name = document.getElementById('edit-med-name').value;
+    const description = document.getElementById('edit-med-desc').value || '';
+    const dosage = document.getElementById('edit-med-dosage').value;
+    const time = document.getElementById('edit-med-time').value;
+    const frequency = document.getElementById('edit-med-frequency').value;
+    const startDate = document.getElementById('edit-med-start-date').value;
+
+    // Get the medication ID
+    const medicationId = parseInt(document.getElementById('edit-med-id').value);  // Assuming the ID is stored somewhere in the hidden input
+
+    // Create the data object to send to the update function
+    const updatedMedication = {
+      med_id: medicationId,
+      name: name,
+      description: description,
+      dosage: dosage,
+      time: time,
+      frequency: frequency,
+      start_date: startDate
+    };
+
+    console.log('Updating medication with data:', updatedMedication);
+
+    // Call the updateMedication function with the updated data
+    await updateMedication(updatedMedication);
+  }
+
+    if (event.target.classList.contains('mc-save-changes-btn')) {
+    event.preventDefault(); // Prevent form submission (if it's inside a form)
+    
+    // Get the medication ID
+    const conditionId = document.getElementById('edit-medc-id').value;  // Assuming the ID is stored somewhere in the hidden input
+    // Gather values from the form inputs
+    console.log('Saving changes for medical condition...');
+    const name = document.getElementById('edit-medc-name').value;
+    const description = document.getElementById('edit-medc-descr').value || '';
+    const prescriptionDate = document.getElementById('edit-medc-date').value;
+    const updatedAt = new Date().toISOString(); // Get the current date and time for updated_at
+    const modId = user.id; // Assuming you want to use the current user's ID as mod_id
+
+
+    // Create the data object to send to the update function
+    const updatedCondition = {
+      medc_id: conditionId,
+      name: name,
+      descr: description,
+      prescription_date: prescriptionDate,
+      updated_at: updatedAt, // Use the current date and time
+      mod_id: modId // Use the current user's ID as mod_id
+    };
+
+    console.log('Updating medication with data:', updatedCondition);
+
+    // Call the updateMedication function with the updated data
+    await updateMedicalCondition(updatedCondition);
+  }
+});
+
+
+function fillMyMedications(medicationList, medc_id) {
+  // Select the container for available medications
+  const medicationsContainer = document.querySelector("#available-medications-list");
+
+  // Clear any previous content
+  medicationsContainer.innerHTML = '';
+
+  // Loop through each medication in the medicationList
+  medicationList.forEach(med => {
+    // Create a new div element for each medication
+    const medElement = document.createElement("div");
+    medElement.classList.add("medication-item");
+
+    // Add the medication name and the plus button
+    medElement.innerHTML = `
+      <div>
+      <span><strong>${med.name}</strong></span><br>
+      <span>${med.description || 'No description available'}</span>
+      </div>
+      <button class="add-medication-btn add" data-med-id="${med.med_id}" data-medc-id="${medc_id}">+</button>
+    `;
+
+    // Append the new medication element to the container
+    medicationsContainer.appendChild(medElement);
+  });
+
+  // Optional: Add event listeners to each "add" button for future functionality
+  document.querySelectorAll('.add-btn').forEach(button => {
+    button.addEventListener('click', (e) => {
+      const medId = e.target.getAttribute('data-med-id');
+      console.log('Add medication with ID:', medId);
+      // You can call the function to add medication to the condition here
+      // Example: addMedicationToCondition(medId);
+    });
+  });
+}
+
+function fillAssociatedMedications(medicationList, medc_id) {
+
+  const associatedContainer = document.querySelector("#associated-medications-list");
+  associatedContainer.innerHTML = '';
+  medicationList.forEach(med => {
+    const medElement = document.createElement("div");
+    medElement.classList.add("medication-item");
+
+    medElement.innerHTML = `
+      <div>
+      <span><strong>${med.name}</strong></span><br>
+      <span>${med.description || 'No description available'}</span>
+      </div>
+      <button class="remove-medication-btn remove" data-med-id="${med.med_id}" data-medc-id="${medc_id}">-</button>
+    `;
+
+    associatedContainer.appendChild(medElement);
+  });
+}
+
+async function getMedicationAssociated(medc_id) {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const response = await fetch(`/getMedicationAssociatedWithMedicalCondition/${medc_id}`, {
+    method: 'GET',
+    headers: {
+      "authorization": `Bearer ${user.token}`
+    }
+  });
+
+  autoLogout(response);
+
+  if (!response.ok) {
+    console.error('Failed to retrieve medications:', response.statusText);
+    return [];
+  }
+
+  const medications = await response.json();
+  const cleaned = medications.filter(med => med !== null && med !== undefined);
+
+  return cleaned;
+}
+
+async function getAllMedications() {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const response = await fetch(`/getMedicationByAccountID`, {
+    method: 'GET',
+    headers: {
+      "authorization": `Bearer ${user.token}`
+    }
+  });
+
+        autoLogout(response);
+
+  if (!response.ok) {
+    console.error('Failed to retrieve medications:', response.statusText);
+    return [];
+  }
+
+  const medications = await response.json();
+  return medications;
+}
+
+//Adds & Removes associations between medications and medical conditions
+document.addEventListener('click', async function(event) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  
+  // Handle adding medication to a medical condition
+  if (event.target.classList.contains('add-medication-btn')) {
+      event.preventDefault(); // Prevent default button behavior  
+    const medId = event.target.getAttribute('data-med-id');
+    const medcId = event.target.getAttribute('data-medc-id');
+
+    try {
+      const response = await fetch(`/associateMedicationWithMedicalCondition`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ med_id: medId, medc_id: medcId })
+      });
+
+      autoLogout(response);
+
+      if (response.ok) {
+        await updateAssociationUI(medcId); // Update the UI with the new association
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.message || 'Failed to associate medication'}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network or server error');
+    }
+  }
+
+  // Handle removing medication from a medical condition
+  if (event.target.classList.contains('remove-medication-btn')) {
+    event.preventDefault(); // Prevent default button behavior
+    const medId = event.target.getAttribute('data-med-id');
+    const medcId = event.target.getAttribute('data-medc-id');
+
+    try {
+      const response = await fetch(`/deleteMedicationConditionAssociation`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
+        },
+        body: JSON.stringify({ med_id: medId, medc_id: medcId })
+      });
+
+      autoLogout(response);
+
+      if (response.ok) {
+        await updateAssociationUI(medcId); // Update the UI with the new association
+      } else {
+        const error = await response.json();
+        alert(`Error: ${error.message || 'Failed to remove medication'}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Network or server error');
+    }
+  }
+});
+
+function autoLogout(response) {
+  if (response.status === 403) {
+    alert("Session expired. Please log in again.");
+    localStorage.removeItem("user");
+    window.location.href = "login.html";
+    return;
+  }
+}
+
+
+
+const medFrequency = document.getElementById("med-frequency");
+const weeklyTimingContainer = document.getElementById("weekly-timing-container");
+const weeklyTimingsList = document.getElementById("weekly-timings-list");
+const addWeeklyTimeBtn = document.getElementById("add-weekly-time");
+const medicationTime = document.getElementById("med-time");
+
+let weeklyTimings = [];
+
+// Show/hide weekly timing section
+medFrequency.addEventListener("change", () => {
+  if (medFrequency.value === "W") {
+    weeklyTimingContainer.style.display = "block";
+    medicationTime.style.display = "none"; // Hide single time input
+    medicationTime.removeAttribute("required");
+  } else if (medFrequency.value === "WR") {
+    weeklyTimingContainer.style.display = "none";
+    medicationTime.style.display = "none"; // Show single time input
+  }
+  else {
+    weeklyTimingContainer.style.display = "none";
+    weeklyTimings = []; // Clear if switching out
+    weeklyTimingsList.innerHTML = "";
+    medicationTime.style.display = "block"; // Show single time input
+      medicationTime.setAttribute("required", "required");
+  }
+});
+
+// Add new weekly timing
+addWeeklyTimeBtn.addEventListener("click", () => {
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("weekly-time-entry");
+
+  wrapper.innerHTML = `
+    <select class="week-day">
+      <option value="1">Monday</option>
+      <option value="2">Tuesday</option>
+      <option value="3">Wednesday</option>
+      <option value="4">Thursday</option>
+      <option value="5">Friday</option>
+      <option value="6">Saturday</option>
+      <option value="7">Sunday</option>
+    </select>
+    <input type="time" class="week-time" required />
+    <button type="button" class="remove-weekly-time">Remove</button>
+  `;
+
+  wrapper.querySelector(".remove-weekly-time").addEventListener("click", () => {
+    wrapper.remove();
+  });
+
+  weeklyTimingsList.appendChild(wrapper);
+});
+
+// On medication form submit, collect weekly timings and post
+medicationForm.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const formData = new FormData(medicationForm);
+
+  const payload = {
+    name: formData.get('name'),
+    description: formData.get('description') || ' ',
+    dosage: formData.get('dosage'),
+    time: formData.get('time') || null, // Use single time input if not weekly
+    frequency: formData.get('frequency'),
+    start_date: formData.get('start_date') || new Date().toISOString().split('T')[0], // Default to today if not provided
+    account_id: user.id
+  };
+
+  console.log('Payload:', payload);
+
+  try {
+    const response = await fetch(`/createMedication`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify(payload)
+    });
+
+    autoLogout(response);
+
+    if (response.ok) {
+      const med = await response.json();
+      console.log('Medication created:', med);
+      const med_id = med.med_id || med.id; // assuming backend returns new med_id
+
+    if (payload.frequency === "W") {
+      const timingData = Array.from(document.querySelectorAll(".weekly-time-entry")).map(entry => {
+        const dayVal = entry.querySelector(".week-day")?.value;
+        const timeVal = entry.querySelector(".week-time")?.value;
+
+        console.log("Day:", dayVal, "Time:", timeVal); // Debugging
+
+        return {
+          med_id,
+          day: dayVal ? parseInt(dayVal) : null,
+          time: timeVal || null
+        };
+      });
+
+      console.log("Weekly Timing Data:", timingData); // Debugging
+      for (const timing of timingData) {
+        await fetch(`/saveWeeklyTiming`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${user.token}`
+          },
+          body: JSON.stringify(timing)
+        });
+      }
+    }
+
+      alert('Medication added successfully!');
+      closePopup('medication-popup');
+      medicationForm.reset();
+      weeklyTimingsList.innerHTML = "";
+      await retrieveMedicationData();
+      loadMedication();
+    } else {
+      const error = await response.json();
+      console.log("Raw response:", response);
+      alert(`Error: ${error.message || 'Failed to submit medication'}`);
+    }
+  } catch (err) {
+    console.error(err);
+    alert('Network or server error');
+  }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -55,7 +55,7 @@ loginbtn.addEventListener("click", async function (e) {
             alert("Login successful!");
             console.log("User logged in:", data.account_id);
 
-            fetch(`/getAccountById/${account_id}`, {
+            fetch(`/getAccountById`, {
                 method: "GET",
                 headers: {
                     "Content-Type": "application/json",
@@ -89,8 +89,6 @@ loginbtn.addEventListener("click", async function (e) {
         alert("Server error. Please try again later.");
     });
 });
-
-
 
 const registerbtn = document.querySelector(".register-btn");
 
