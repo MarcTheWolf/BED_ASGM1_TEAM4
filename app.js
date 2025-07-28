@@ -124,19 +124,13 @@ app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, noti
 app.post("/postImage", authorization.verifyJWT); //WIP
 
 
-// Task management API endpoints (By Yuxuan)
-app.post("/tasks", authorization.verifyJWT, taskController.addTask);
-app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask);
-app.put("/tasks/:task_id", authorization.verifyJWT, taskController.updateTask);
-app.get("/tasks", authorization.verifyJWT, taskController.getAllTasks);
-app.get("/tasks/:task_id", authorization.verifyJWT, taskController.getTaskById);
-app.get("/tasks/month", authorization.verifyJWT, taskController.getTasksByMonth);
-app.get("/tasks/date/:date", authorization.verifyJWT, taskController.getTasksByDate);
-app.patch("/tasks/:task_id/status", authorization.verifyJWT, taskController.updateTaskStatus);
-app.post("/tasks/initialize", taskController.initializeTaskTable);
 
-app.put("/account/password", authorization.verifyJWT, accountController.updatePassword); // Edit password (authenticated user)
-app.post("/account/forgot-password", accountController.forgotPassword); // Forgot password (via phone)
+
+
+// Task management API endpoints (By Yuxuan)
+app.get("/tasks", taskController.getTasks);
+app.post("/tasks", taskController.addTask);
+app.delete("/tasks/:task_id",  taskController.deleteTask);
 
 ////////////////////////////////////////////////////
 ///////////////Main Engine Loop////////////////////

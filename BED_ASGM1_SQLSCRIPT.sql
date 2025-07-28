@@ -59,7 +59,7 @@ INSERT INTO MedicationList (account_id, name, description, dosage, time, frequen
 -- For acc_id 1
 (1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
 (1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', '21:00', 'D', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38Â°C', '1 tablet', NULL, 'WR', '2025-06-01'),
 
 -- For acc_id 4
 (4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),
@@ -231,6 +231,14 @@ INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
 
 ('other', 'New phone', 1200.00, 4, '2025-06-01'),
 ('food', 'Anniversary dinner', 200.00, 4, '2025-06-06'),
-
 ('transport', 'Top-up petrol', 70.00, 4, '2025-07-04'),
 ('entertainment', 'Disney+', 49.99, 4, '2025-07-07');
+
+
+CREATE TABLE TaskList(
+    task_id INT PRIMARY KEY IDENTITY(1,1),
+    task_name VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    time VARCHAR(10) NULL
+);
+
