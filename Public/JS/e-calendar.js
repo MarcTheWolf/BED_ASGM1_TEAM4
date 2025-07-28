@@ -9,52 +9,54 @@ function toggleModal(modalId) {
   }
 }
 
-const addTaskBtn = document.querySelector('.add-task');
-if (addTaskBtn) {
-  addTaskBtn.addEventListener('click', () => {
-    toggleModal('addModal');
+//add
+const addTaskBtn = document.getElementById('add-task-button');
+
+addTaskBtn.addEventListener('click', toggleTaskForm)
+
+// Remove old .close-btn bindings
+// Add close-add-btn for Add form
+const closeAddBtns = document.querySelectorAll('.close-add-btn');
+closeAddBtns.forEach(function(btn) {
+  btn.addEventListener('click', toggleTaskForm);
+});
+
+function toggleTaskForm(){
+  const taskForm = document.getElementById('form-container-task')
+  taskForm.hidden = !taskForm.hidden;
+  if (!taskForm.hidden) {
+    // Reset form fields when opening
+    document.getElementById('task-name').value = '';
+    document.getElementById('task-date').value = '';
+    document.getElementById('task-time').value = '';
+  }
+}
+
+const cancelBtnTask = document.getElementById('cancel-btn-task');
+if (cancelBtnTask) {
+  cancelBtnTask.addEventListener('click', function() {
+    const taskForm = document.getElementById('form-container-task');
+    if (taskForm) taskForm.hidden = true;
   });
 }
 
-const createTaskBtn = document.querySelector('#createTaskBtn');
-if (createTaskBtn) {
-  createTaskBtn.addEventListener('click', (event) => {
-    event.preventDefault();
 
-    const modal = document.getElementById('addModal');
-    if (!modal) return;
 
-    const inputs = modal.querySelectorAll('input, select, textarea');
-    let isValid = true;
-
-    for (const input of inputs) {
-      if (input.disabled || input.type === 'hidden') continue;
-      if (!input.value.trim()) {
-        isValid = false;
-        break;
-      }
-    }
-
-    if (!isValid) {
-      alert("Please fill in all fields before creating the task.");
-    } else {
-      alert("Task created successfully!");
-      toggleModal('addModal');
-      // TODO: Add logic to actually create and display the task
-    }
-  });
+function toggleTaskFormT(){
+  const taskForm = document.getElementById('form-container-task2')
+    taskForm.hidden = !taskForm.hidden;
 }
 
-const deleteTaskBtn = document.querySelector('.delete-task');
-if (deleteTaskBtn) {
-  deleteTaskBtn.addEventListener('click', () => {
-    // For demo, open edit modal with dummy data
-    openEditModal('Sample Task', '2025-07-17', '12:00 – 13:00', 'Sample description');
+const cancelBtnTask2 = document.getElementById('cancel-btn-task2');
+if (cancelBtnTask2) {
+  cancelBtnTask2.addEventListener('click', function() {
+    const taskForm = document.getElementById('form-container-task2');
+    if (taskForm) taskForm.hidden = true;
   });
 }
 
 // Function to open Edit Modal with pre-filled data
-function openEditModal(taskName, taskDate, taskTime, taskDesc) {
+function openEditModal(taskName, taskDate, taskTime) {
   toggleModal('editModal');
 
   const editModal = document.getElementById('editModal');
@@ -68,7 +70,6 @@ function openEditModal(taskName, taskDate, taskTime, taskDesc) {
   // 0 - Task Name (editable)
   // 1 - Date (disabled)
   // 2 - Time (disabled)
-  // 3 - Description (textarea, disabled in your code, so we enable it here for editing)
   
   if (inputs.length >= 4) {
     inputs[0].value = taskName;
@@ -80,51 +81,88 @@ function openEditModal(taskName, taskDate, taskTime, taskDesc) {
     inputs[2].value = taskTime;
     inputs[2].disabled = true;   // keep time disabled
     
-    inputs[3].value = taskDesc;
-    inputs[3].disabled = false;  // allow editing description
   }
 }
 
 // Attach listeners for Delete and Save buttons inside Edit Modal
-document.addEventListener('DOMContentLoaded', () => {
-  const deleteBtn = document.querySelector('#editModal .btn-delete');
-  if (deleteBtn) {
-    deleteBtn.addEventListener('click', () => {
-      // Here you would remove the task from your data/store
-      alert('Delete clicked! Implement task deletion here.');
-      toggleModal('editModal');
+
+// ========== Task Related Functions ========== //
+
+// Load task list and render to page
+async function loadTasks() {
+  const res = await fetch('/tasks');
+  if (!res.ok) return;
+  const tasks = await res.json();
+  renderTasks('.tasks-today', tasks); // Render all tasks in one area
+}
+
+function getTomorrow() {
+  const d = new Date();
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0, 10);
+}
+
+function renderTasks(selector, tasks) {
+  const container = document.querySelector(selector);
+  if (!container) return;
+  container.innerHTML = '<h4>All Tasks</h4>'; // Change title to "All Tasks"
+  tasks.forEach(task => {
+    const card = document.createElement('div');
+    card.className = 'task-card';
+    const taskDate = new Date(task.date);
+    const formattedDate = taskDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+    const formattedTime = taskDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+    card.innerHTML = `
+      <strong>${task.task_name}</strong>
+      <span>${formattedDate} ${formattedTime || ''}</span>
+      <button class="delete-task" data-id="${task.task_id}">Delete ❌</button>
+    `;
+    container.appendChild(card);
+  });
+}
+
+// Add task form submit
+const addTaskForm = document.getElementById('add-task-form');
+if (addTaskForm) {
+  addTaskForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const data = {
+      task_name: document.getElementById('task-name').value,
+      date: document.getElementById('task-date').value,
+      time: document.getElementById('task-time').value
+    };
+    const res = await fetch('/tasks', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
     });
-  }
+    if (res.ok) {
+      loadTasks();
+      //toggleTaskForm(); // Close form after adding
+    } else {
+      alert('Failed to add task');
+    }
+  });
+}
 
-  const saveBtn = document.querySelector('#editModal .btn-save');
-  if (saveBtn) {
-    saveBtn.addEventListener('click', () => {
-      // Get updated values from inputs
-      const editModal = document.getElementById('editModal');
-      if (!editModal) return;
-
-      const inputs = editModal.querySelectorAll('input, textarea');
-      const updatedTaskName = inputs[0].value.trim();
-      const updatedTaskDesc = inputs[3].value.trim();
-
-      if (!updatedTaskName) {
-        alert("Task name cannot be empty.");
-        return;
+// Delete task button
+// Use event delegation, listen on the whole document
+// Trigger when .btn-delete is clicked
+// This works for dynamically rendered buttons
+//
+document.addEventListener('click', async function(e) {
+  if (e.target.classList.contains('delete-task')) {
+    const taskId = e.target.dataset.id;
+    if (confirm('Are you sure you want to delete this task?')) {
+      const res = await fetch(`/tasks/${taskId}`, { method: 'DELETE' });
+      if (res.ok) {
+        loadTasks();
+      } else {
+        alert('Failed to delete task');
       }
-
-      // TODO: Save the updated task details to your data/store
-      alert(`Save clicked! Updated task name: "${updatedTaskName}" and description: "${updatedTaskDesc}"`);
-
-      toggleModal('editModal');
-    });
-  }
-
-  const editableTaskCard = document.querySelector('.tasks-tomorrow .task-card.medication:last-child');
-  if (editableTaskCard) {
-    editableTaskCard.addEventListener('click', () => {
-      const taskName = editableTaskCard.querySelector('strong')?.textContent || "Task Title";
-      const taskDesc = editableTaskCard.querySelector('span')?.textContent || "";
-      openEditModal(taskName, '2025-07-17', '12:00 – 13:00', taskDesc);
-    });
+    }
   }
 });
+
+// Automatically load tasks on page load
+window.addEventListener('DOMContentLoaded', loadTasks);

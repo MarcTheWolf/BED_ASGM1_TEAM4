@@ -279,3 +279,14 @@ VALUES
 ('Streaming', 'Disney+', 49.99, 4, '2025-07-07');
 
 
+USE BED_ASGM1;
+
+IF OBJECT_ID('TaskList', 'U') IS NOT NULL
+    DROP TABLE TaskList;
+
+CREATE TABLE TaskList(
+    task_id INT PRIMARY KEY IDENTITY(1,1),
+    task_name VARCHAR(50) NOT NULL,
+    date DATE NOT NULL,
+    time VARCHAR(10) NULL
+);

@@ -102,57 +102,33 @@
     </div>
 
     <div class="task-controls">
-      <button class="add-task">Add Task ➕</button>
-      <button class="delete-task">Delete ❌</button>
+      <button id="add-task-button" class="add-task" >Add Task ➕</button>
     </div>
+
+      <div id="form-container-task" class="container" hidden>
+        <h2>Add Task</h2>
+        <form id="add-task-form">
+          <label for="name">Task Name</label>
+          <input type="text" id="task-name" name="name" placeholder="e.g., Medication Time" required>
+
+          <label for="time">Time</label>
+          <input type="time" id="task-time" name="time">
+
+          <label for="date">Date</label>
+          <input type="date" id="task-date" name="date" required>
+
+          <div class="form-actions">
+            <button type="submit" id="save-task-btn" class="save-btn close-add-btn">Save</button>
+            <button type="button" id="cancel-btn-task" class="cancel-btn close-add-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
 
     <div class="tasks-today">
-      <h4>Today</h4>
-
-      <div class="task-card medication">
-        <div class="task-content">
-          <strong>Medication Time (8:30)</strong>
-          <span>Lisinopril (2 pills)</span>
-        </div>
-        <input type="checkbox" />
-      </div>
-
-      <div class="task-card medication">
-        <div class="task-content">
-          <strong>Medication Time (12:30)</strong>
-          <span>Lisinopril (2 pills)</span>
-        </div>
-        <input type="checkbox" />
-      </div>
-
-      <div class="task-card event">
-        <div class="task-content">
-          <strong>Upcoming Event (14:30)</strong>
-          <span>Fitness Class @ Marymount CC</span>
-        </div>
-        <input type="checkbox" />
-      </div>
+      <h4>All Tasks</h4>
     </div>
 
-    <div class="tasks-tomorrow">
-      <h4>Tomorrow</h4>
-
-      <div class="task-card medication">
-        <div class="task-content">
-          <strong>Medication Time (8:30)</strong>
-          <span>Lisinopril (2 pills)</span>
-        </div>
-        <input type="checkbox" />
-      </div>
-
-      <div class="task-card medication">
-        <div class="task-content">
-          <strong>Medication Time (12:30)</strong>
-          <span>Lisinopril (2 pills)</span>
-        </div>
-        <input type="checkbox" />
-      </div>
-    </div>
   </main>
 
   <footer class="footer">
@@ -192,5 +168,7 @@
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
   </footer>
+
+  <script src="JS/e-calendar.js"></script>
 </body>
 </html>
