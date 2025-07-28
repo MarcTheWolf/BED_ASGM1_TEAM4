@@ -235,6 +235,19 @@ INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
 ('entertainment', 'Disney+', 49.99, 4, '2025-07-07');
 
 
+create table notificationList(
+	noti_id INT PRIMARY KEY IDENTITY(1,1),
+	type varchar(25) NOT NULL check (type in ('event', 'finance', 'medication', 'announcement', 'calendar', 'social', 'profile')),
+	time DATETIME NOT NULL,
+	description VARCHAR(255) NOT NULL,
+	acc_id INT NOT NULL,
+	notified BIT DEFAULT 0,
+	seen BIT Default 0
+
+
+	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
+)
+
 CREATE TABLE TaskList(
     task_id INT PRIMARY KEY IDENTITY(1,1),
     task_name VARCHAR(50) NOT NULL,
