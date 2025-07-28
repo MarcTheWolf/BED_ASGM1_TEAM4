@@ -29,7 +29,7 @@
         <p id="display-name"><strong>Full Name:</strong> Alexa Rawles</p>
       </div>
       <div class="profile-right">
-        <a href="e-editProfile.html" class="edit-btn">Edit</a>
+        <button class="edit-btn">Edit</button>
         <button class="logout-btn">Log out</button>
       </div>
     </div>
@@ -186,6 +186,13 @@
       <p><strong>Time:</strong> <span id="view-med-time"></span></p>
       <p><strong>Frequency:</strong> <span id="view-med-frequency"></span></p>
       <p><strong>Start Date:</strong> <span id="view-med-start-date"></span></p>
+
+      <!-- Weekly timings container -->
+      <div id="weekly-timings-container" class="hidden">
+        <p><strong>Weekly Timings:</strong></p>
+        <div id="view-weekly-timings-list" class="timing-records"></div>
+      </div>
+
       <button onclick="closeCard('view-medication-card')">Close</button>
     </div>
   </div>
@@ -248,6 +255,7 @@
     <div class="popup-content">
       <span class="close-btn" onclick="closePopup('edit-medication-popup')">&times;</span>
       <h3>Edit Medication</h3>
+      <div class="edit-medication-layout"></div>
       <form id="edit-medication-form">
         <label for="edit-med-name">Medication Name:</label>
         <input type="text" name="name" id="edit-med-name" class="med-autocomplete" required>
@@ -278,6 +286,12 @@
 
         <button class="m-save-changes-btn" type="button">Save Changes</button>
       </form>
+      <div id="edit-weekly-timings-editor" class="hidden">
+        <h4>Weekly Timings</h4>
+        <div id="edit-weekly-timings-list"></div>
+        <button type="button" onclick="addWeeklyTiming()">+ Add Timing</button>
+      </div>
+      </div>
     </div>
 </div>
 

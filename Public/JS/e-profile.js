@@ -5,7 +5,6 @@ var MedicalCondition = [];
 
 
 document.addEventListener('DOMContentLoaded', async function() {
-  await reloadProfileData();
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
@@ -89,101 +88,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 });
-
-  
-  inputs.forEach(input => {
-    input.addEventListener("input", async () => {
-      const query = input.value.trim();
-      const suggestionsList = input.parentElement.querySelector("ul");
-
-      if (query.length < 2) {
-        suggestionsList.innerHTML = "";
-        return;
-      }
-
-      try {
-        const res = await fetch(`/autocompleteMedicalCondition/${encodeURIComponent(query)}`);
-        if (!res.ok) throw new Error("Failed to fetch suggestions");
-
-        const data = await res.json();
-        const suggestions = data.suggestions || [];
-
-        suggestionsList.innerHTML = "";
-        suggestions.forEach(item => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          li.style.cursor = "pointer";
-          li.addEventListener("click", () => {
-            input.value = item;
-            suggestionsList.innerHTML = "";
-          });
-          suggestionsList.appendChild(li);
-        });
-      } catch (err) {
-        console.error("Autocomplete error:", err);
-      }
-    });
-  });
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-  const medInputs = document.querySelectorAll(".med-autocomplete");
-
-  medInputs.forEach(input => {
-    input.addEventListener("input", async () => {
-      const query = input.value.trim();
-      const suggestionsList = input.parentElement.querySelector(".med-suggestions");
-
-      if (query.length < 2) {
-        suggestionsList.innerHTML = "";
-        return;
-      }
-
-      try {
-        const res = await fetch(`/autocompleteMedication/${encodeURIComponent(query)}`);
-        if (!res.ok) throw new Error("Failed to fetch medication suggestions");
-
-        const data = await res.json();
-        const suggestions = data.suggestions || [];
-
-        suggestionsList.innerHTML = "";
-        suggestions.forEach(item => {
-          const li = document.createElement("li");
-          li.textContent = item;
-          li.style.cursor = "pointer";
-          li.addEventListener("click", () => {
-            input.value = item;
-            suggestionsList.innerHTML = "";
-          });
-          suggestionsList.appendChild(li);
-        });
-      } catch (err) {
-        console.error("Medication autocomplete error:", err);
-      }
-    });
-  });
-});
-
-async function reloadProfileData() {
-  const user = JSON.parse(localStorage.getItem("user"));
-
-  const req = await fetch("/getAccountById", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${user.token}`,
-    }
-  });
-
-  if (req.ok) {
-    const newProfile = await req.json();
-    newProfile.token = user.token; // attach token safely
-    localStorage.setItem("user", JSON.stringify(newProfile));
-  } else {
-    console.warn("Failed to reload profile:", await req.text());
-  }
-}
-
 
 
 
@@ -577,16 +481,68 @@ function getFrequencyLabel(code) {
   }
 }
 
-function showMedicalData(data) {
-    // Fill in the medication view popup
+async function showMedicalData(data) {
+  console.log('Showing medical data:', data);
   document.getElementById('view-med-name').textContent = data.name;
   document.getElementById('view-med-desc').textContent = data.description || '—';
   document.getElementById('view-med-dosage').textContent = data.dosage;
   document.getElementById('view-med-time').textContent = data.time
-    ? data.time.substring(11, 16) // Extracts "HH:mm" from "1970-01-01T18:45:00.000Z"
+    ? data.time.substring(11, 16)
     : '—';
   document.getElementById('view-med-frequency').textContent = getFrequencyLabel(data.frequency);
   document.getElementById('view-med-start-date').textContent = data.start_date.split('T')[0];
+
+    const weeklyList = document.getElementById('view-weekly-timings-list');
+    const weeklyContainer = document.getElementById('weekly-timings-container');
+
+    weeklyList.innerHTML = ''; // clear old data
+    weeklyContainer.classList.add('hidden'); // reset visibility before logic
+
+  if (data.frequency === 'W') {
+    try {
+      const response = await fetch(`/getWeeklyTiming/${data.med_id}`, {
+        headers: {
+          Authorization: 'Bearer ' + (localStorage.getItem('user') ? JSON.parse(localStorage.getItem('user')).token : '')
+        }
+      });
+
+      if (!response.ok) throw new Error('Failed to fetch weekly timings');
+
+      const weeklyTimings = await response.json();
+      console.log('Weekly timings:', weeklyTimings);
+
+      if (weeklyTimings.length === 0) {
+        const noTiming = document.createElement('div');
+        noTiming.textContent = '—';
+        noTiming.className = 'timing-record';
+        weeklyList.appendChild(noTiming);
+      } else {
+        weeklyTimings.forEach(entry => {
+          console.log('Weekly entry:', entry);
+          const record = document.createElement('div');
+          record.className = 'timing-record';
+
+          const textSpan = document.createElement('span');
+          const day = entry.day;
+          const time = entry.time ? entry.time.substring(11, 16) : '—';
+          textSpan.textContent = `${getDayfromNumber(day)} at ${time}`;
+
+          record.appendChild(textSpan);
+          weeklyList.appendChild(record);
+          console.log(weeklyList);
+        });
+      }
+
+      weeklyContainer.classList.remove('hidden');
+    } catch (err) {
+      console.error('Error fetching weekly timings:', err);
+      const errorMsg = document.createElement('div');
+      errorMsg.textContent = 'Error loading weekly timings';
+      errorMsg.className = 'timing-record';
+      weeklyList.appendChild(errorMsg);
+      weeklyContainer.classList.remove('hidden');
+    }
+  }
 
   document.getElementById('view-medication-card').classList.remove('hidden');
 }
@@ -600,6 +556,19 @@ function showMedicalConditionData(data) {
   document.getElementById('view-medical-card').classList.remove('hidden');
 }
 
+
+function getDayfromNumber(dayNumber) {
+  const dayMap = {
+    7: 'Sunday',
+    1: 'Monday',
+    2: 'Tuesday',
+    3: 'Wednesday',
+    4: 'Thursday',
+    5: 'Friday',
+    6: 'Saturday'
+  };
+  return dayMap[dayNumber] || 'Unknown';
+}
 
 
 function closeCard(cardId) {
@@ -632,30 +601,38 @@ if (event.target.classList.contains('update-btn') && event.target.getAttribute('
     // Parse the response as JSON
     const medication = await response.json();
 
-    if (medication) {
-      // Populate the form with the medication data for editing
-      document.getElementById('edit-med-name').value = medication.name;
-      document.getElementById('edit-med-desc').value = medication.description || '';
-      document.getElementById('edit-med-dosage').value = medication.dosage;
-      document.getElementById('edit-med-frequency').value = medication.frequency;
-      document.getElementById('edit-med-start-date').value = medication.start_date.split('T')[0];
-      document.getElementById('edit-med-id').value = medication.med_id; // Assuming you have a hidden input for the ID
+if (medication) {
+  // Populate the form with the medication data for editing
+  document.getElementById('edit-med-name').value = medication.name;
+  document.getElementById('edit-med-desc').value = medication.description || '';
+  document.getElementById('edit-med-dosage').value = medication.dosage;
+  document.getElementById('edit-med-frequency').value = medication.frequency;
+  document.getElementById('edit-med-start-date').value = medication.start_date.split('T')[0];
+  document.getElementById('edit-med-id').value = medication.med_id;
 
-      if (medication.time) {
-        // medication.time should be "HH:mm:ss" (e.g., "17:24:00")
-        const formattedTime = medication.time
-                              ? medication.time.substring(11, 16) // Extracts "HH:mm" from "1970-01-01T18:45:00.000Z"
-                              : '—';
-        document.getElementById('edit-med-time').value = formattedTime;
-      } else {
-        document.getElementById('edit-med-time').value = '';
-      }
+  if (medication.time) {
+    const formattedTime = medication.time
+      ? medication.time.substring(11, 16)
+      : '—';
+    document.getElementById('edit-med-time').value = formattedTime;
+  } else {
+    document.getElementById('edit-med-time').value = '';
+  }
 
-      console.log(`Editing Medication: ${medication.name}`);
+  // Weekly frequency: show + load editor
+  const editorContainer = document.getElementById('edit-weekly-timings-editor');
+  if (medication.frequency === 'W') {
+    editorContainer.classList.remove('hidden');
+    await loadWeeklyTimings(medication.med_id);
+  } else {
+    editorContainer.classList.add('hidden');
+  }
 
-      // Show the popup for updating medication
-      openPopup('edit-medication-popup');
-    }
+  console.log(`Editing Medication: ${medication.name}`);
+
+  // Show the popup for updating medication
+  openPopup('edit-medication-popup');
+}
   } catch (error) {
     console.error('Error fetching medication data:', error);
   }
@@ -698,6 +675,8 @@ if (event.target.classList.contains('update-btn') && event.target.getAttribute('
       const medicationsNotAssociated = medicationList.filter(med => 
         !associatedMedications.some(associated => associated.med_id === med.med_id)
       );
+
+      
 
       fillMyMedications(medicationsNotAssociated, medicalConditionId);
       fillAssociatedMedications(associatedMedications, medicalConditionId);
@@ -819,6 +798,10 @@ document.addEventListener('click', async function(event) {
       start_date: startDate
     };
 
+      if (updatedMedication.frequency === 'W') {
+        await saveWeeklyTimings(medicationId);
+      }
+
     console.log('Updating medication with data:', updatedMedication);
 
     // Call the updateMedication function with the updated data
@@ -855,6 +838,74 @@ document.addEventListener('click', async function(event) {
     await updateMedicalCondition(updatedCondition);
   }
 });
+
+document.getElementById('edit-med-frequency').addEventListener('change', (e) => {
+  const isWeekly = e.target.value === 'W';
+  document.getElementById('edit-weekly-timings-editor').classList.toggle('hidden', !isWeekly);
+});
+
+
+async function loadWeeklyTimings(med_id) {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const container = document.getElementById('edit-weekly-timings-list');
+  container.innerHTML = '';
+
+  try {
+    const res = await fetch(`/getWeeklyTiming/${med_id}`, {
+      headers: { Authorization: `Bearer ${user.token}` }
+    });
+    const timings = await res.json();
+
+    timings.forEach(t => addWeeklyTiming(t.day, t.time));
+    document.getElementById('edit-weekly-timings-editor').classList.remove('hidden');
+  } catch (err) {
+    console.error('Failed to load weekly timings:', err);
+  }
+}
+
+function addWeeklyTiming(day = '1', time = '08:00') {
+  const container = document.getElementById('edit-weekly-timings-list');
+
+  const row = document.createElement('div');
+  row.className = 'weekly-timing-row';
+
+  row.innerHTML = `
+    <select class="weekly-day">
+      ${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map((d, i) =>
+        `<option value="${i+1}" ${day == i+1 ? 'selected' : ''}>${d}</option>`).join('')}
+    </select>
+    <input type="time" class="weekly-time" value="${time ? time.substring(11, 16) : ''}">
+    <button type="button" onclick="this.parentElement.remove()">Remove</button>
+  `;
+
+  container.appendChild(row);
+}
+
+async function saveWeeklyTimings(med_id) {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  // Reset all existing timings
+  await fetch(`/resetWeeklyTiming/${med_id}`, {
+    method: 'DELETE',
+    headers: { Authorization: `Bearer ${user.token}` }
+  });
+
+  // Recreate new ones
+  const rows = document.querySelectorAll('.weekly-timing-row');
+  for (const row of rows) {
+    const day = row.querySelector('.weekly-day').value;
+    const time = row.querySelector('.weekly-time').value;
+
+    await fetch('/saveWeeklyTiming', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${user.token}`
+      },
+      body: JSON.stringify({ day, time, med_id })
+    });
+  }
+}
 
 
 function fillMyMedications(medicationList, medc_id) {
