@@ -1,5 +1,4 @@
 const medicalModel = require("../Models/medicalInformationModel.js");
-const medicalModel = require("../Models/medicalInformationModel.js");
 
 async function getMedicationByAccountID(req, res) {
   try {
