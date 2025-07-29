@@ -403,7 +403,7 @@ editEventForm.addEventListener("submit", async function (e) {
         time: editEventForm.time.value,
         location: editEventForm.location.value,
         equipment_required: editEventForm.equipment_required.value,
-        banner_image: editEventForm.banner_image.value,
+        //banner_image: editEventForm.banner_image.value || null,
         weekly: editEventForm.weekly.checked,
         org_id: user.id
     };
