@@ -94,8 +94,8 @@ RegisteredEvents.addEventListener("click", async (event) => {
 async function displayRegistered() {
         AllEvents.classList.remove("selected")
     RegisteredEvents.classList.add("selected")
-    
-    const account_id = localStorage.getItem("account_id") ? parseInt(localStorage.getItem("account_id")) : 1;
+
+    const account_id = localStorage.getItem("account_id") ? parseInt(localStorage.getItem("account_id")) : null;
     const user = JSON.parse(localStorage.getItem("user")) || {};
     const EventsContainer = document.getElementById("AllEventsContainer")
     if (!EventsContainer) {
@@ -249,7 +249,13 @@ document.getElementById("seeMoreBtn").addEventListener("click", () => {
 });
 
 function renderEvent(event, userRole, view){
-    const eventDate = new Date(event.date);
+    const date = event.date.substring(0, 10);
+    const time = event.time.substring(11, 16);
+    // Ensure date and time are in the correct format
+
+    const datetime = `${date}T${time}:00`;
+    const eventDate = new Date(datetime);
+
     const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
     const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
 
@@ -299,10 +305,21 @@ document.addEventListener("click", function (e) {
 
 function showEventModal(event) {
     const modal = document.getElementById("eventModal");
+
+    const date = event.date.substring(0, 10);
+    const time = event.time.substring(11, 16);
+    // Ensure date and time are in the correct format
+
+    const datetime = `${date}T${time}:00`;
+    const eventDate = new Date(datetime);
+
+    const formattedDate = eventDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
+    const formattedTime = eventDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+    
     document.getElementById("modalName").textContent = event.name;
     document.getElementById("modalDescription").textContent = event.description || "N/A";
-    document.getElementById("modalDate").textContent = new Date(event.date).toLocaleDateString();
-    document.getElementById("modalTime").textContent = new Date(event.date).toLocaleTimeString();
+    document.getElementById("modalDate").textContent = formattedDate;
+    document.getElementById("modalTime").textContent = formattedTime;
     document.getElementById("modalLocation").textContent = event.location || "N/A";
     document.getElementById("modalWeekly").textContent = event.weekly ? "Yes" : "No";
     document.getElementById("modalEquipment").textContent = event.equipment_required || "None";
@@ -439,8 +456,16 @@ function openEditEventModal(event) {
     editEventForm.id.value = event.id;
     editEventForm.name.value = event.name;
     editEventForm.description.value = event.description;
-    editEventForm.date.value = event.date;
-    editEventForm.time.value = event.time;
+
+     if (event.date) {
+        const date = new Date(event.date);
+        editEventForm.date.value = date.toISOString().split("T")[0];
+    }
+
+    if (event.time) {
+        editEventForm.time.value = event.time.substring(11,16);
+    }
+
     editEventForm.location.value = event.location;
     editEventForm.weekly.checked = !!event.weekly;
     editEventForm.equipment_required.value = event.equipment_required || "";
