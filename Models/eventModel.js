@@ -87,6 +87,14 @@ async function registerEvent(accountId, eventId) {
         request.input("accountId", sql.Int, accountId);
         request.input("eventId", sql.Int, eventId);
 
+        const existing = await request.query(`
+            SELECT 1 FROM RegisteredList
+            WHERE account_id = @accountId AND event_id = @eventId
+        `);
+        if (existing.recordset.length > 0) {
+            return false;
+        }
+
         const result = await request.query(`
             INSERT INTO RegisteredList (account_id, event_id)
             VALUES (@accountId, @eventId);
@@ -210,6 +218,13 @@ async function deleteEvent(eventId, accountId) {
         request.input("id", sql.Int, eventId);
         request.input("account_id", sql.Int, accountId);
 
+        // First, delete from RegisteredList to avoid foreign key constraint
+        await request.query(`
+            DELETE FROM RegisteredList
+            WHERE event_id = @id;
+        `);
+
+        // Then, delete the event itself
         const result = await request.query(`
             DELETE FROM EventList
             WHERE id = @id AND org_id = @account_id;

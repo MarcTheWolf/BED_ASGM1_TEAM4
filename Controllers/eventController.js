@@ -51,8 +51,10 @@ async function registerEvent(req, res) {
 
     try {
         const result = await eventModel.registerEvent(accountId, eventId);
-        if (result) {
+        if (result !== false) {
             res.status(200).json({ message: "Successfully registered for the event" });
+        } else if (result === false) {
+            res.status(409).json({ message: "Already registered for this event" });
         } else {
             res.status(400).json({ message: "Failed to register for the event" });
         }

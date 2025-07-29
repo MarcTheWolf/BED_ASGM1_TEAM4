@@ -1,7 +1,7 @@
 const AllEvents = document.getElementById("AllEventsButton")
 const RegisteredEvents = document.getElementById("RegisteredEventsButton")
 const addEventButton = document.getElementById("addEventButton");
-
+let visibleCount = 5;
 
 //#region Show All Events
 
@@ -75,18 +75,10 @@ async function displayAllEvents() {
 
         EventsContainer.innerHTML = "";
 
-            if (Array.isArray(data) && data.length > 0) {
-                data.forEach(event => {
-                    const html = renderEvent(event, user.account_type, "view");
-                    EventsContainer.innerHTML += html;
-                });
-            } else {
-                EventsContainer.innerHTML = "<p>No events found.</p>";
-            }
-        
-        
-        }
-    catch (error) {
+        visibleCount = 5;
+        renderEvents();
+
+    } catch (error) {
         console.error("There was a problem with the fetch operation:", error);
         EventsContainer.innerHTML = "<p>There are currently no events. Please try again later.</p>";
     }
@@ -173,14 +165,14 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
       const result = await response.json();
 
       if (response.ok) {
-        alert("Successfully unregistered from the event.");
+        showMessagePopover("Successfully unregistered from the event.");
         document.getElementById(`event-${eventId}`).remove();
       } else {
-        alert(result.message || "Unregister failed.");
+        showMessagePopover(result.message || "Unregister failed.");
       }
     } catch (error) {
       console.error("Unregister error:", error);
-      alert("Something went wrong.");
+      showMessagePopover("Something went wrong.");
     }
   }
 });
@@ -196,7 +188,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
     const accId = user?.id;
 
     if (!token || !accId) {
-      alert("You must be logged in to register.");
+      showMessagePopover("You must be logged in to register.");
       return;
     }
 
@@ -212,18 +204,49 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
       const result = await response.json();
 
       if (response.ok) {
-        alert("Successfully registered for the event.");
+        showMessagePopover("Successfully registered for the event. Your details will be sent to the organizer.");
         // Optional: change button text or disable it
       } else {
-        alert(result.message || "Failed to register.");
+        showMessagePopover(result.message || "Failed to register.");
       }
     } catch (error) {
       console.error("Register error:", error);
-      alert("An error occurred during registration.");
+      showMessagePopover("An error occurred during registration.");
     }
   }
 });
 
+function renderEvents(){
+    const EventsContainer = document.getElementById("AllEventsContainer");
+    const user = JSON.parse(localStorage.getItem("user")) || {};
+    
+    if (!window.allEvents || !Array.isArray(window.allEvents)) {
+        EventsContainer.innerHTML = "<p>No events found.</p>";
+        return;
+    }
+
+    EventsContainer.innerHTML = ""; // Clear previous contents
+
+    const events = window.allEvents.slice(0, visibleCount);
+
+    events.forEach(event => {
+        const html = renderEvent(event, user.account_type, "view");
+        EventsContainer.innerHTML += html;
+    });
+
+    // Manage visibility of the button
+    const seeMoreBtn = document.getElementById("seeMoreBtn");
+    if (visibleCount >= window.allEvents.length) {
+        seeMoreBtn.style.display = "none";
+    } else {
+        seeMoreBtn.style.display = "block";
+    }
+}
+
+document.getElementById("seeMoreBtn").addEventListener("click", () => {
+    visibleCount += 5;
+    renderEvents();
+});
 
 function renderEvent(event, userRole, view){
     const eventDate = new Date(event.date);
@@ -343,7 +366,7 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
             banner_image = imageData.secure_url; // Use the secure_url to get the image URL
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert("Failed to upload image.");
+            showMessagePopover("Failed to upload image.");
             return;
         }
     }
@@ -377,13 +400,13 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
             throw new Error(err);
         }
 
-        alert("Event created successfully!");
+        showMessagePopover("Event created successfully!");
         addEventModal.classList.add("hidden");
         form.reset();
         await displayAllEvents(); // Refresh list
     } catch (err) {
         console.error("Failed to create event:", err);
-        alert("Failed to create event.");
+        showMessagePopover("Failed to create event.");
     }
 });
 
@@ -465,7 +488,7 @@ editEventForm.addEventListener("submit", async function (e) {
             banner_image = imageData.secure_url;
         } catch (error) {
             console.error("Error uploading image:", error);
-            alert("Failed to upload image.");
+            showMessagePopover("Failed to upload image.");
             return;
         }
     }
@@ -496,12 +519,12 @@ editEventForm.addEventListener("submit", async function (e) {
 
         if (!response.ok) throw new Error("Failed to update event");
 
-        alert("Event updated.");
+        showMessagePopover("Event updated.");
         editEventModal.classList.add("hidden");
         await displayAllEvents();
     } catch (err) {
         console.error(err);
-        alert("Update failed.");
+        showMessagePopover("Update failed.");
     }
 });
 
@@ -518,7 +541,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
         const token = user?.token;
 
         if (!token) {
-            alert("You must be logged in to delete an event.");
+            showMessagePopover("You must be logged in to delete an event.");
             return;
         }
 
@@ -540,11 +563,11 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
                 throw new Error(`Network error: ${response.status} - ${errorText}`);
             }
 
-            alert("Event deleted successfully.");
+            showMessagePopover("Event deleted successfully.");
             document.getElementById(`event-${eventId}`).remove();
         } catch (error) {
             console.error("Delete error:", error);
-            alert("An error occurred while deleting the event.");
+            showMessagePopover("An error occurred while deleting the event.");
         }
     }
 });
@@ -552,10 +575,24 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
 //#endregion
 
 
+function showMessagePopover(message, timeout = 3000) {
+    const popover = document.getElementById('messagePopover');
+    const msgSpan = document.getElementById('popoverMessage');
+    if (popover && msgSpan) {
+        msgSpan.textContent = message;
+        popover.classList.remove('hidden');
+        if (timeout > 0) {
+            setTimeout(() => popover.classList.add('hidden'), timeout);
+        }
+    } else {
+        console.error("Popover or message span not found in the DOM.");
+    }
+}
 
 
-
-
+document.getElementById('closePopover').onclick = function() {
+    document.getElementById('messagePopover').classList.add('hidden');
+};
 
 
 
