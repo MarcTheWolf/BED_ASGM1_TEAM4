@@ -40,7 +40,7 @@ async function authenticateAccount(req, res) {
 
 async function getAccountById(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -89,15 +89,17 @@ async function createAccount(req, res) {
 async function initializeAccountDetails(req, res) {
   try {
     const accountId = parseInt(req.params.id);
-    if (isNaN(accountId)) {
-      return res.status(400).json({ error: "Invalid account ID." });
+    const userId = parseInt(req.user.id);
+
+    if (isNaN(accountId) || accountId !== userId) {
+      return res.status(403).json({ error: "Unauthorized to edit this profile."});
     }
 
     const accountDetails = req.body;
     const updatedDetails = await accountModel.initializeAccountDetails(accountId, accountDetails);
 
     if (updatedDetails) {
-      return res.status(200).json({ success: true, message: "Account details initialized successfully.", account_id: accountId });
+      return res.status(200).json({ success: true, message: "Account details updated successfully.", account_id: accountId });
     } else {
       return res.status(500).json({ success: false, error: "Failed to insert account details." });
     }
@@ -109,7 +111,7 @@ async function initializeAccountDetails(req, res) {
 
 async function getPhoneByAccountID(req, res) {
   try {
-    const accountId = parseInt(req.params.id);
+    const accountId = parseInt(req.user.id);
     if (isNaN(accountId)) {
       return res.status(400).json({ error: "Invalid account ID." });
     }
@@ -127,12 +129,83 @@ async function getPhoneByAccountID(req, res) {
   }
 }
 
+async function updatePassword(req, res) {
+  try {
+    const accountId = req.user.id; // Get ID from JWT middleware
+    const { newPassword } = req.body;
 
+    if (!newPassword) {
+      return res.status(400).json({ error: "New password is required." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const success = await accountModel.updatePasswordById(accountId, hashedPassword);
+    if (success) {
+      res.status(200).json({ message: "Password updated successfully." });
+    } else {
+      res.status(404).json({ error: "Account not found or update failed." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
+
+async function forgotPassword(req, res) {
+  try {
+    const { phone_number, newPassword } = req.body;
+
+    if (!phone_number || !newPassword) {
+      return res.status(400).json({ error: "Phone number and new password are required." });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(newPassword, salt);
+
+    const success = await accountModel.updatePasswordByPhone(phone_number, hashedPassword);
+    if (success) {
+      res.status(200).json({ message: "Password reset successfully." });
+    } else {
+      res.status(404).json({ error: "Phone number not found." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
+
+async function updateProfile(req, res) {
+  try {
+    const accountId = parseInt(req.user.id);
+    const newDetails = req.body;
+
+    if (isNaN(accountId)) {
+      return res.status(400).json({ error: "Invalid account ID." });
+    }
+    if (!newDetails || Object.keys(newDetails).length === 0) {
+      return res.status(400).json({ error: "No details provided to update." });
+    }
+    const updatedAccount = await accountModel.updateProfile(accountId, newDetails);
+    if (updatedAccount) {
+      return res.status(200).json({ success: true, message: "Profile updated successfully." });
+    } else {
+      return res.status(500).json({ success: false, error: "Failed to update profile." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    return res.status(500).json({ success: false, error: "Server error." });
+  }
+}
 
 module.exports = {
   authenticateAccount,
   getAccountById,
   createAccount,
   initializeAccountDetails,
-  getPhoneByAccountID
+  getPhoneByAccountID,
+  updatePassword,
+  forgotPassword,
+  updateProfile
 };

@@ -18,6 +18,8 @@ async function getAccountByPhone(phone_number) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
+  } finally {
+    if (connection) await connection.close();
   }
 }
 
@@ -37,8 +39,9 @@ async function getAccountById(id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
+  } finally {
+    if (connection) await connection.close();
   }
-  
 }
 
 async function createAccount(phone_number, password) {
@@ -81,22 +84,29 @@ async function initializeAccountDetails(accountId, details) {
     request.input("name", sql.VarChar, details.name);
     request.input("account_type", sql.VarChar, details.account_type);
     request.input("email", sql.VarChar, details.email);
-    request.input("gender", sql.VarChar, details.gender); // ✅ FIXED
+    request.input("gender", sql.VarChar, details.gender); 
     request.input("date_of_birth", sql.Date, details.date_of_birth);
     request.input("preferred_language", sql.VarChar, details.preferred_language);
 
     const result = await request.query(`
-      INSERT INTO AccountProfile (
-        id, name, account_type, email, gender, date_of_birth, preferred_language
-      ) VALUES (
-        @id, @name, @account_type, @email, @gender, @date_of_birth, @preferred_language
-      );
+     UPDATE AccountProfile
+      SET 
+        name = COALESCE(@name, name),
+        email = COALESCE(@email, email),
+        gender = COALESCE(@gender, gender),
+        date_of_birth = COALESCE(@date_of_birth, date_of_birth),
+        preferred_language = COALESCE(@preferred_language, preferred_language)
+      WHERE id = @id
     `);
 
-    return result.rowsAffected[0] > 0; // ✅ ensure boolean return
+    return result.rowsAffected[0] > 0; // ensure boolean return
   } catch (error) {
     console.error("Model error:", error);
     throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
   }
 }
 
@@ -123,10 +133,114 @@ async function getPhoneByAccountID(accountId) {
   }
 }
 
+async function updatePasswordById(accountId, hashedPassword) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("id", sql.Int, accountId);
+    request.input("password", sql.VarChar, hashedPassword);
+
+    const result = await request.query(`
+      UPDATE AccountPassword SET password = @password WHERE id = @id
+    `);
+
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
+async function updatePasswordByPhone(phone_number, hashedPassword) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("phone_number", sql.VarChar, phone_number);
+    request.input("password", sql.VarChar, hashedPassword);
+
+    const result = await request.query(`
+      UPDATE AccountPassword SET password = @password WHERE phone_number = @phone_number
+    `);
+
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
+async function updateProfile(accountId, newDetails) {
+  let connection;
+
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+
+    request.input("id", sql.Int, accountId);
+
+    const fields = [];
+    if (newDetails.name !== undefined) {
+      fields.push("name = @name");
+      request.input("name", sql.VarChar, newDetails.name);
+    }
+    if (newDetails.email !== undefined) {
+      fields.push("email = @email");
+      request.input("email", sql.VarChar, newDetails.email);
+    }
+    if (newDetails.gender !== undefined) {
+      fields.push("gender = @gender");
+      request.input("gender", sql.VarChar, newDetails.gender);
+    }
+    if (newDetails.date_of_birth !== undefined) {
+      fields.push("date_of_birth = @date_of_birth");
+      request.input("date_of_birth", sql.Date, newDetails.date_of_birth);
+    }
+    if (newDetails.preferred_language !== undefined) {
+      fields.push("preferred_language = @preferred_language");
+      request.input("preferred_language", sql.VarChar, newDetails.preferred_language);
+    }
+
+    if (fields.length === 0) {
+      console.warn("No fields to update");
+      return false; // Nothing to update
+    }
+
+    const query = `
+      UPDATE AccountProfile
+      SET ${fields.join(", ")}
+      WHERE id = @id
+    `;
+
+    const result = await request.query(query);
+    return result.rowsAffected[0] > 0;
+
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
 module.exports = {
   getAccountByPhone,
   getAccountById,
   createAccount,
   initializeAccountDetails,
-  getPhoneByAccountID
+  getPhoneByAccountID,
+  updatePasswordById,
+  updatePasswordByPhone,
+  updateProfile
 };

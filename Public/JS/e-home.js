@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     if (user.account_type == "o") {
-        window.location.href = "o-home.html";
+        window.location.href = "e-events.html";
         return;
     } else if (user.account_type == "c") {
         window.location.href = "c-home.html";
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 function autoLogout(response) {
-if (response.status = 403) {
+if (response.status === 403) {
         alert("Session expired. Please log in again.");
         localStorage.removeItem("user");
         window.location.href = "login.html";
@@ -38,7 +38,7 @@ if (response.status = 403) {
 async function fetchMedicationData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getMedicationByAccountID/${user.id}`, {
+        const response = await fetch(`/getMedicationByAccountID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -59,7 +59,7 @@ async function fetchMedicationData() {
 async function fetchEventData() {
     try {
         const user = JSON.parse(localStorage.getItem("user"));
-        const response = await fetch(`/getEventRegisteredByID/${user.id}`, {
+        const response = await fetch(`/getEventRegisteredByID`, {
         method: "GET",
         headers: {
             "Content-Type": "application/json",
@@ -134,7 +134,7 @@ function consolidateAndDisplayActivities() {
     const dateMap = {};
     const today = new Date();
     const todayKey = formatDateKey(today);
-    const rangeDays = 3;
+    const rangeDays = 1;
 
     const displayDates = Array.from({ length: rangeDays }, (_, i) => {
         const d = new Date(today);

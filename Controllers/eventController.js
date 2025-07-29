@@ -1,7 +1,7 @@
 const accountModel = require("../Models/eventModel.js");
 
 async function getEventRegisteredByID(req, res) {
-    const id = req.params.id;
+    const id = req.user.id;
     try {
         const event = await accountModel.getEventRegisteredByID(id);
         if (event) {
@@ -79,10 +79,47 @@ async function unregisterEvent(req, res) {
     }
 }
 
+async function createEvent(req, res) {
+    const eventData = req.body;
+    const accountId = req.user.id;
+
+    try {
+        const result = await accountModel.createEvent(eventData, accountId);
+        if (result) {
+            res.status(201).json({ message: "Event created successfully" });
+        } else {
+            res.status(400).json({ message: "Failed to create event" });
+        }
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+async function updateEvent(req, res) {
+    const eventId = req.params.event_id;
+    const eventData = req.body;
+    const accountId = req.user.id;
+
+    try {
+        const result = await accountModel.updateEvent(eventId, eventData, accountId);
+        if (result) {
+            res.status(200).json({ message: "Event updated successfully" });
+        } else {
+            res.status(400).json({ message: "Failed to update event" });
+        }
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 module.exports = {
     getEventRegisteredByID,
     getEventDetailsByID,
     getAllEvents,
     registerEvent,
-    unregisterEvent
+    unregisterEvent,
+    createEvent,
+    updateEvent
 };

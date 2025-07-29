@@ -3,7 +3,7 @@ const financeModel = require("../Models/financeModel.js");
 
 async function getExpenditureGoalByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const result = await financeModel.getExpenditureGoalByID(accountId);
         
         if (result.recordset.length === 0) {
@@ -19,7 +19,7 @@ async function getExpenditureGoalByID(req, res) {
 
 async function getTotalExpenditureByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const result = await financeModel.getTotalExpenditureByID(accountId);
         
         if (result.recordset.length === 0) {
@@ -35,7 +35,7 @@ async function getTotalExpenditureByID(req, res) {
 
 async function getMonthlyExpenditureByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const recordset = await financeModel.getMonthlyExpenditureByID(accountId);
 
         if (!recordset || recordset.length === 0) {
@@ -51,7 +51,7 @@ async function getMonthlyExpenditureByID(req, res) {
 
 async function getExpenditureByMonthBarChart(req, res) {
   try {
-    const userId = req.params.id;
+    const userId = req.user.id;
     const data = await financeModel.getMonthlyExpenditureByID(userId);
 
     if (!Array.isArray(data)) {
@@ -72,17 +72,10 @@ async function getExpenditureByMonthBarChart(req, res) {
     const maxValue = Math.max(...amounts);
     const yMin = Math.max(0, Math.floor(minValue * 0.8));
 
-    // Gradient shade generator
-    const getShade = (value) => {
-      const ratioLinear = (value - minValue) / (maxValue - minValue || 1);
-      const easedRatio = Math.pow(ratioLinear, 2.5);
-      const lightBase = 200;
-      const darkBase = 40;
-      const shade = Math.floor(lightBase - (lightBase - darkBase) * easedRatio);
-      return `rgb(${shade}, ${shade + 20}, ${shade + 50})`;
-    };
-
-    const backgroundColors = amounts.map(getShade);
+    // Color assignment: latest month is dark blue, others are light blue
+    const backgroundColors = recentData.map((_, index) =>
+      index === recentData.length - 1 ? 'rgb(129, 199, 190)' : 'rgba(200, 250, 242, 1)'
+    );
 
     const chartData = {
       type: 'bar',
@@ -132,19 +125,17 @@ async function getExpenditureByMonthBarChart(req, res) {
 
     const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData)) + '&version=3';
 
-
     res.json({ chartUrl });
-
-
   } catch (error) {
     console.error("Error generating chart:", error);
     res.status(500).json({ message: "Failed to generate chart" });
   }
 }
 
+
 async function getAllTransactionsByID(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const transactions = await financeModel.getAllTransactionsByID(accountId);
 
         if (!transactions || transactions.length === 0) {
@@ -160,120 +151,185 @@ async function getAllTransactionsByID(req, res) {
 
 async function getBudgetExpenditureDoughnutChart(req, res) {
   try {
-    const userId = req.params.id;
-    const month = req.params.month; // format: 'YYYY-MM'
+    const userId = req.user.id;
+    const month = req.params.month; // 'YYYY-MM'
 
-    // Fetch expenditures and budget
     const { transactions, total } = await financeModel.getExpenditureForMonth(userId, month);
     let budgetData = await financeModel.getAccountBudget(userId);
 
-    // If budgetData is null/undefined OR monthly_goal is missing, default it to 0
     if (!budgetData || budgetData.monthly_goal == null) {
       budgetData = { monthly_goal: 0 };
     }
 
-    if (!Array.isArray(transactions) || budgetData == null || budgetData.monthly_goal == null) {
-      return res.status(500).json({ message: "Invalid data from database" });
-    }
-
-    const totalSpent = total || 0;
-    const budget = parseFloat(budgetData.monthly_goal);
+    const totalSpent = parseFloat(total) || 0;
+    const budget = parseFloat(budgetData.monthly_goal) || 0;
     const remaining = Math.max(budget - totalSpent, 0);
 
-    const spentPercentage = ((totalSpent / budget) * 100).toFixed(2);
-    const remainingPercentage = ((remaining / budget) * 100).toFixed(2);
+    let spentPercentage = 0;
+    let remainingPercentage = 0;
 
-    // Construct chart configuration
-        var chartData = {
-        type: 'doughnut',
-        data: {
-            labels: ['Spent', 'Remaining'],
-            datasets: [{
-            data: [totalSpent, remaining],
-            backgroundColor: ['#86DAD5', '#EAF8F6']
-            }]
-        },
-        options: {
-            rotation: 185,
-            cutout: '50%',
-            plugins: {
-            title: {
-                display: true,
-                text: 'Monthly Budget Usage'
-            },
-            legend: {
-                position: 'bottom'
-            },
-            doughnutlabel: {
-                labels: [
-                {
-                    text: `$${totalSpent.toFixed(2)}`,
-                    font: {
-                    size: 24,
-                    weight: 'bold'
-                    }
-                },
-                {
-                    text: `/$${budget.toFixed(2)}`,
-                    font: {
-                    size: 18
-                    }
-                }
-                ]
-            }
-            }
-        },
-        plugins: ['datalabels', 'doughnutlabel']
-        };
+    if (budget > 0) {
+      spentPercentage = ((totalSpent / budget) * 100).toFixed(2);
+      remainingPercentage = ((remaining / budget) * 100).toFixed(2);
+    } else {
+      spentPercentage = 100;
+      remainingPercentage = 0;
+    }
 
-        
-    // Respond with chart details
+    let chartData = null;
+
+    // CASE 1: No budget set
     if (budget === 0) {
       chartData = {
         type: 'doughnut',
         data: {
-            labels: ['Spent'],
-            datasets: [{
-            data: [totalSpent, totalSpent],
+          labels: ['Spent'],
+          datasets: [{
+            data: [totalSpent, 0],
             backgroundColor: ['#86DAD5']
-            }]
+          }]
         },
         options: {
-            rotation: 185,
-            cutout: '50%',
-            plugins: {
+          rotation: 185,
+          cutout: '50%',
+          plugins: {
             title: {
-                display: true,
-                text: 'Monthly Budget Usage'
+              display: true,
+              text: 'Monthly Budget Usage'
             },
             legend: {
-                position: 'bottom'
+              position: 'bottom'
             },
             doughnutlabel: {
-                labels: [
-                {
-                    text: `$${totalSpent.toFixed(2)}`,
-                    font: {
-                    size: 24,
-                    weight: 'bold'
-                    }
-                },
-                {
-                  text: 'No Budget Set',
-                  font: {
-                    size: 18
-                  }
-                }
-                ]
+              labels: [
+                { text: `$${totalSpent.toFixed(2)}`, font: { size: 24, weight: 'bold' } },
+                { text: 'No Budget Set', font: { size: 18 } }
+              ]
             }
-            }
+          }
         },
         plugins: ['datalabels', 'doughnutlabel']
-        };
+      };
     }
 
+    // CASE 2: Overspent
+    else if (totalSpent > budget) {
+      let overshot = totalSpent;
+      let overshotCounter = 0;
+      while (overshot > budget && budget > 0) {
+        overshot -= budget;
+        overshotCounter++;
+      }
 
-        const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData));
+      const overshotRemaining = Math.max(budget - overshot, 0);
+
+      chartData = {
+        type: 'doughnut',
+        data: {
+          labels: ['Overshot', 'Remaining'],
+          datasets: [{
+            data: [parseFloat(overshot.toFixed(2)), parseFloat(overshotRemaining.toFixed(2))],
+            backgroundColor: ['#ff1d1dff', '#86DAD5']
+          }]
+        },
+        options: {
+          rotation: 185,
+          cutout: '50%',
+          plugins: {
+            title: {
+              display: true,
+              text: 'Monthly Budget Usage'
+            },
+            legend: {
+              position: 'bottom'
+            },
+            doughnutlabel: {
+              labels: [
+                { text: `$${totalSpent.toFixed(2)}`, font: { size: 24, weight: 'bold' } },
+                { text: `/$${budget.toFixed(2)}`, font: { size: 18 } },
+                { text: `${overshotCounter} times of Budget`, font: { size: 18 } }
+              ]
+            }
+          }
+        },
+        plugins: ['datalabels', 'doughnutlabel']
+      };
+    }
+
+    // CASE 3: Normal spending
+    else {
+      chartData = {
+        type: 'doughnut',
+        data: {
+          labels: ['Spent', 'Remaining'],
+          datasets: [{
+            data: [parseFloat(totalSpent.toFixed(2)), parseFloat(remaining.toFixed(2))],
+            backgroundColor: ['#86DAD5', '#EAF8F6']
+          }]
+        },
+        options: {
+          rotation: 185,
+          cutout: '50%',
+          plugins: {
+            title: {
+              display: true,
+              text: 'Monthly Budget Usage'
+            },
+            legend: {
+              position: 'bottom'
+            },
+            doughnutlabel: {
+              labels: [
+                { text: `$${totalSpent.toFixed(2)}`, font: { size: 24, weight: 'bold' } },
+                { text: `/$${budget.toFixed(2)}`, font: { size: 18 } }
+              ]
+            }
+          }
+        },
+        plugins: ['datalabels', 'doughnutlabel']
+      };
+    }
+
+if (budget === 0) {
+  chartData = {
+    type: 'doughnut',
+    data: {
+      labels: [],
+      datasets: [{
+        data: [totalSpent], // Single dummy value
+        backgroundColor: ['#e0e0e0']
+      }]
+    },
+    options: {
+      cutout: '50%',
+      rotation: 0,
+      plugins: {
+        legend: { display: false },
+        title: {
+          display: true,
+          text: 'Monthly Budget Usage'
+        },
+        doughnutlabel: {
+          labels: [
+            {
+              text: 'No Budget',
+              font: { size: 20, weight: 'bold' },
+              color: '#333'
+            },
+            {
+              text: 'Set',
+              font: { size: 18 },
+              color: '#666'
+            }
+          ]
+        }
+      }
+    },
+    plugins: ['datalabels', 'doughnutlabel']
+  };
+}
+
+    const chartUrl = 'https://quickchart.io/chart?c=' + encodeURIComponent(JSON.stringify(chartData));
 
     res.json({
       chartUrl,
@@ -290,9 +346,10 @@ async function getBudgetExpenditureDoughnutChart(req, res) {
   }
 }
 
+
 async function addTransactionToAccount(req, res) {
     try {
-        const accountId = req.params.id;
+        const accountId = req.user.id;
         const { amount, date, description, category } = req.body;
 
         if (!amount || !date || !description || !category) {
@@ -314,6 +371,94 @@ async function addTransactionToAccount(req, res) {
     }
 }
 
+// Modify `updateExpenditureGoal` to handle both update and insert operations
+async function updateExpenditureGoal(req, res) {
+  const accountId = req.user.id; // Get account ID from the user object
+  const monthly_Goal = req.body.monthly_goal; // Get new goal from request body
+
+  try {
+    // Check if an expenditure goal already exists for this account
+    const existingGoal = await financeModel.getExpenditureGoalByID(accountId);
+
+    if (existingGoal.recordset.length > 0) {
+      // If a goal exists, update it
+      await financeModel.modifyExpenditureGoal(accountId, monthly_Goal);
+      return res.status(200).json({ message: "Expenditure goal updated successfully." });
+    } else {
+      // If no goal exists, create a new one
+      await financeModel.addExpenditureGoal(accountId, monthly_Goal );
+      return res.status(201).json({ message: "Expenditure goal created successfully." });
+    }
+
+  } catch (error) {
+    console.error("Error updating expenditure goal:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function getTransactionByID(req, res) {
+    try {
+        const transactionId = req.params.id;
+        const accountId = req.user.id; // Ensure that req.user.id is populated correctly from authentication
+
+        // Pass accountId and transactionId to the model method
+        const transaction = await financeModel.getTransactionByID(accountId, transactionId);
+
+        if (!transaction || transaction.length === 0) {
+            return res.status(404).json({ message: "Transaction not found." });
+        }
+
+        // Send the transaction details back in the response
+        res.status(200).json(transaction);
+    } catch (error) {
+        console.error("Error fetching transaction:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+async function updateTransaction(req, res) {
+    try {
+        const transactionId = req.params.id;
+        const accountId = req.user.id; // Ensure that req.user.id is populated correctly from authentication
+        const { amount, date, description, cat } = req.body;
+
+        if (!amount || !date || !description || !cat) {
+            return res.status(400).json({ message: "All fields are required." });
+        }
+
+        let updatedTransaction = {
+            amount: parseFloat(amount),
+            date: date,
+            description: description.trim(),
+            cat: cat.trim()
+        };
+
+        const result = await financeModel.updateTransaction(accountId, transactionId, updatedTransaction);
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error updating transaction:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
+async function deleteTransaction(req, res) {
+    try {
+        const transactionId = req.params.id;
+        const accountId = req.user.id; // Ensure that req.user.id is populated correctly from authentication
+
+        const result = await financeModel.deleteTransaction(accountId, transactionId);
+
+        if (result.rowsAffected === 0) {
+            return res.status(404).json({ message: "Transaction not found." });
+        }
+
+        res.status(200).json({ message: "Transaction deleted successfully." });
+    } catch (error) {
+        console.error("Error deleting transaction:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 module.exports = {
     getExpenditureGoalByID,
     getTotalExpenditureByID,
@@ -321,5 +466,9 @@ module.exports = {
     getExpenditureByMonthBarChart,
     getAllTransactionsByID,
     getBudgetExpenditureDoughnutChart,
-    addTransactionToAccount
+    addTransactionToAccount,
+    updateExpenditureGoal,
+    getTransactionByID,
+    updateTransaction,
+    deleteTransaction
 };
