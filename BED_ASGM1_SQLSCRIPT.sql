@@ -59,7 +59,7 @@ INSERT INTO MedicationList (account_id, name, description, dosage, time, frequen
 -- For acc_id 1
 (1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
 (1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', '21:00', 'D', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38ï¿½C', '1 tablet', NULL, 'WR', '2025-06-01'),
 
 -- For acc_id 4
 (4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),

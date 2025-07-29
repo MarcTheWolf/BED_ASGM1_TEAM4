@@ -117,6 +117,7 @@ body::-webkit-scrollbar {
   margin: 20px 0;
   display: flex;
   gap: 10px;
+  
 }
 
 .add-task, .delete-task {
@@ -125,6 +126,11 @@ body::-webkit-scrollbar {
   border-radius: 6px;
   font-weight: bold;
   cursor: pointer;
+  text-decoration: none;
+}
+
+.container{
+  max-width: 150px;
 }
 
 .add-task {
@@ -135,6 +141,7 @@ body::-webkit-scrollbar {
 .delete-task {
   background-color: #F0C795;
   color: white;
+  font-size: 0.9rem;
 }
 
 .tasks-today, .tasks-tomorrow {
@@ -223,4 +230,158 @@ body::-webkit-scrollbar {
 .task-card:hover {
   background-color: #f5fefe;
   transition: background-color 0.2s ease;
+}
+
+ .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: #fff;
+      padding: 2rem;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+    }
+
+    h2 {
+      margin-bottom: 1rem;
+    }
+
+    form label {
+      display: block;
+      margin-top: 1rem;
+      font-weight: 600;
+    }
+
+    form input, form select, form textarea {
+      width: 100%;
+      padding: 0.6rem;
+      margin-top: 0.4rem;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    .form-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .form-actions button {
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+    .save-btn {
+      background-color: #45b5aa;
+      color: #fff;
+    }
+
+    .cancel-btn {
+      background-color: #ccc;
+      color: #000;
+    }
+    .form-actions a{
+      background-color: #ccc;
+      color: #000;
+      text-decoration: none;
+      padding: 0.6rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+
+/* Task indicator styles */
+.task-indicator {
+  position: absolute;
+  bottom: 5px;
+  left: 5px;
+  right: 5px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 2px;
+}
+
+.task-line {
+  height: 3px;
+  width: 100%;
+  background-color: #81C7BE;
+  border-radius: 2px;
+}
+
+.task-name {
+  font-size: 0.7rem;
+  color: #1d3557;
+  font-weight: 500;
+  line-height: 1;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Ensure date box has enough space to display task indicators */
+.day-box {
+  height: 80px;
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+  padding: 5px;
+  font-size: 0.9rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+/* Edit button styles */
+.edit-task {
+  padding: 8px 15px;
+  border: none;
+  border-radius: 6px;
+  font-weight: bold;
+  cursor: pointer;
+  text-decoration: none;
+  background-color: #4CAF50;
+  color: white;
+  margin-right: 5px;
+  font-size: 0.9rem;
+}
+
+.edit-task:hover {
+  background-color: #45a049;
+}
+
+/* Adjust button layout in task cards */
+.task-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #ffffff;
+  border-radius: 6px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  font-size: 0.95rem;
+  gap: 10px;
+}
+
+.task-card strong {
+  flex: 1;
+}
+
+.task-card span {
+  flex: 1;
+  text-align: center;
+}
+
+.task-card button {
+  flex-shrink: 0;
 }

@@ -106,8 +106,9 @@
       <h3>Add Medical Condition</h3>
       <form id="medical-form">
         <label for="medc-name">Condition Name:</label>
-        <input type="text" name="name" id="medc-name" required>
-
+        <input type="text" name="name" id="medc-name" class="medc-autocomplete"required>
+        <ul id="medc-suggestions" style="margin-top: 5px;"></ul>
+ 
         <label for="medc-descr">Description:</label>
         <textarea name="descr" id="medc-descr" rows="3" placeholder="Optional"></textarea>
 
@@ -129,7 +130,8 @@
       <h3>Add Medication</h3>
       <form id="medication-form">
         <label for="med-name">Medication Name:</label>
-        <input type="text" name="name" id="med-name" required>
+        <input type="text" name="name" id="med-name" class="med-autocomplete"required>
+        <ul class="med-suggestions" style="margin-top: 5px; list-style: none;"></ul>
 
         <label for="med-desc">Description:</label>
         <textarea name="description" id="med-desc" rows="2" placeholder="Optional"></textarea>
@@ -138,7 +140,7 @@
         <input type="text" name="dosage" id="med-dosage" required>
 
         <label for="med-time">Time to Take:</label>
-        <input type="time" name="time" id="med-time">
+        <input type="time" name="time" id="med-time" required>
 
         <label for="med-frequency">Frequency:</label>
         <select name="frequency" id="med-frequency" required>
@@ -147,8 +149,14 @@
           <option value="WR">When Required</option>
         </select>
 
+        <div id="weekly-timing-container" style="display:none; margin-top: 10px;">
+          <label><strong>Weekly Timings:</strong></label>
+          <div id="weekly-timings-list"></div>
+          <button type="button" id="add-weekly-time">Add Timing</button>
+        </div>
+
         <label for="med-start-date">Start Date:</label>
-        <input type="date" name="start_date" id="med-start-date" required>
+        <input type="date" name="start_date" id="med-start-date">
 
         <!-- Hidden field for account_id -->
         <input type="hidden" name="account_id" id="med-account-id">
@@ -178,6 +186,13 @@
       <p><strong>Time:</strong> <span id="view-med-time"></span></p>
       <p><strong>Frequency:</strong> <span id="view-med-frequency"></span></p>
       <p><strong>Start Date:</strong> <span id="view-med-start-date"></span></p>
+
+      <!-- Weekly timings container -->
+      <div id="weekly-timings-container" class="hidden">
+        <p><strong>Weekly Timings:</strong></p>
+        <div id="view-weekly-timings-list" class="timing-records"></div>
+      </div>
+
       <button onclick="closeCard('view-medication-card')">Close</button>
     </div>
   </div>
@@ -203,7 +218,8 @@
         <!-- Left side: Medical Condition Information -->
         <div class="left-side">
           <label for="edit-medc-name">Condition Name:</label>
-          <input type="text" name="name" id="edit-medc-name" required>
+          <input type="text" name="name" id="edit-medc-name" class="medc-autocomplete" required>
+                  <ul class="medc-suggestions" style="margin-top: 5px;"></ul>
 
           <label for="edit-medc-descr">Description:</label>
           <textarea name="descr" id="edit-medc-descr" rows="3" placeholder="Optional"></textarea>
@@ -239,9 +255,11 @@
     <div class="popup-content">
       <span class="close-btn" onclick="closePopup('edit-medication-popup')">&times;</span>
       <h3>Edit Medication</h3>
+      <div class="edit-medication-layout"></div>
       <form id="edit-medication-form">
         <label for="edit-med-name">Medication Name:</label>
-        <input type="text" name="name" id="edit-med-name" required>
+        <input type="text" name="name" id="edit-med-name" class="med-autocomplete" required>
+        <ul id="med-suggestions" style="margin-top: 5px; list-style: none;"></ul>
 
         <label for="edit-med-desc">Description:</label>
         <textarea name="description" id="edit-med-desc" rows="2" placeholder="Optional"></textarea>
@@ -268,6 +286,12 @@
 
         <button class="m-save-changes-btn" type="button">Save Changes</button>
       </form>
+      <div id="edit-weekly-timings-editor" class="hidden">
+        <h4>Weekly Timings</h4>
+        <div id="edit-weekly-timings-list"></div>
+        <button type="button" onclick="addWeeklyTiming()">+ Add Timing</button>
+      </div>
+      </div>
     </div>
 </div>
 
@@ -279,5 +303,6 @@
   <script src="js/footer.js"></script>
     <script src="JS/e-role.js"></script>
     <script src="JS/e-profile.js"></script>
+      <script src="/JS/notificationSystem.js" type="module"></script>
 </body>
 </html>

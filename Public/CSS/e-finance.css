@@ -277,7 +277,7 @@ body{
 }
 
 #close-button {
-    background-color: #ff8787;
+    background-color: #48ceb7;
     color: white;
     border: none;
     padding: 10px 20px;
@@ -289,8 +289,25 @@ body{
 }
 
 #close-button:hover {
-    background-color: #ff5a5a;
+    background-color: #8affec;
 }
+
+#delete-button {
+    background-color: #ff5858;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1em;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+}
+
+#delete-button:hover {
+    background-color: #ffa9a9;
+}
+
 
 /* Optional: Add animation for opening the popup */
 @keyframes popupFadeIn {
@@ -306,4 +323,8 @@ body{
 
 .popup {
     animation: popupFadeIn 0.3s ease-in-out;
+}
+
+.hidden {
+  display: none;
 }
