@@ -95,6 +95,7 @@ app.post("/postImage", authorization.verifyJWT); //WIP
 // Task management API endpoints (By Yuxuan)
 app.get("/tasks", taskController.getTasks);
 app.post("/tasks", taskController.addTask);
+app.put("/tasks/:task_id", taskController.updateTask);
 app.delete("/tasks/:task_id",  taskController.deleteTask);
 
 

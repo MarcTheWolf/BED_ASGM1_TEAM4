@@ -42,10 +42,30 @@ async function deleteTask(req, res) {
     }
 }
 
+// Update task
+async function updateTask(req, res) {
+    const { task_id } = req.params;
+    const taskData = req.body;
+    if (!taskData.task_name || !taskData.date) {
+        return res.status(400).json({ message: "Task name and date are required" });
+    }
+    try {
+        const result = await taskModel.updateTask(task_id, taskData);
+        if (result) {
+            res.status(200).json({ message: "Task updated successfully" });
+        } else {
+            res.status(404).json({ message: "Task not found" });
+        }
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
 
 
 module.exports = {
     getTasks,
     addTask,
     deleteTask,
+    updateTask,
 }; 

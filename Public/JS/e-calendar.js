@@ -32,6 +32,19 @@ function toggleTaskForm(){
   }
 }
 
+function toggleEditTaskForm(){
+  const editTaskForm = document.getElementById('form-container-edit-task')
+  editTaskForm.hidden = !editTaskForm.hidden;
+}
+
+const cancelEditBtnTask = document.getElementById('cancel-edit-btn-task');
+if (cancelEditBtnTask) {
+  cancelEditBtnTask.addEventListener('click', function() {
+    const editTaskForm = document.getElementById('form-container-edit-task');
+    if (editTaskForm) editTaskForm.hidden = true;
+  });
+}
+
 const cancelBtnTask = document.getElementById('cancel-btn-task');
 if (cancelBtnTask) {
   cancelBtnTask.addEventListener('click', function() {
@@ -94,6 +107,20 @@ async function loadTasks() {
   if (!res.ok) return;
   const tasks = await res.json();
   renderTasks('.tasks-today', tasks); // Render all tasks in one area
+  
+  // Clear existing task indicators on calendar
+  clearCalendarTasks();
+  
+  // Display all tasks on calendar
+  tasks.forEach(task => {
+    addTaskToCalendar(task.task_name, task.date);
+  });
+}
+
+// New function: Clear task indicators from calendar
+function clearCalendarTasks() {
+  const taskIndicators = document.querySelectorAll('.task-indicator');
+  taskIndicators.forEach(indicator => indicator.remove());
 }
 
 function getTomorrow() {
@@ -105,7 +132,7 @@ function getTomorrow() {
 function renderTasks(selector, tasks) {
   const container = document.querySelector(selector);
   if (!container) return;
-  container.innerHTML = '<h4>All Tasks</h4>'; // Change title to "All Tasks"
+  container.innerHTML = '<h4></h4>';
   tasks.forEach(task => {
     const card = document.createElement('div');
     card.className = 'task-card';
@@ -115,6 +142,7 @@ function renderTasks(selector, tasks) {
     card.innerHTML = `
       <strong>${task.task_name}</strong>
       <span>${formattedDate} ${formattedTime || ''}</span>
+      <button class="edit-task" data-id="${task.task_id}" data-name="${task.task_name}" data-date="${task.date}" data-time="${task.time || ''}">Edit ✏️</button>
       <button class="delete-task" data-id="${task.task_id}">Delete ❌</button>
     `;
     container.appendChild(card);
@@ -138,11 +166,77 @@ if (addTaskForm) {
     });
     if (res.ok) {
       loadTasks();
-      //toggleTaskForm(); // Close form after adding
+      addTaskToCalendar(data.task_name, data.date); // Add task to calendar display
+      // Force close form
+      const taskForm = document.getElementById('form-container-task');
+      if (taskForm) {
+        taskForm.hidden = true;
+      }
     } else {
       alert('Failed to add task');
     }
   });
+}
+
+// Edit task form submit
+const editTaskForm = document.getElementById('edit-task-form');
+if (editTaskForm) {
+  editTaskForm.addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const taskId = document.getElementById('edit-task-id').value;
+    const data = {
+      task_name: document.getElementById('edit-task-name').value,
+      date: document.getElementById('edit-task-date').value,
+      time: document.getElementById('edit-task-time').value
+    };
+    const res = await fetch(`/tasks/${taskId}`, {
+      method: 'PUT',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      loadTasks();
+      const editTaskForm = document.getElementById('form-container-edit-task');
+      if (editTaskForm) {
+        editTaskForm.hidden = true;
+      }
+    } else {
+      alert('Failed to update task');
+    }
+  });
+}
+
+// New function: Add task indicator to calendar
+function addTaskToCalendar(taskName, taskDate) {
+  // Convert date string to Date object
+  const date = new Date(taskDate);
+  const day = date.getDate();
+  
+  // Find corresponding date box
+  const dayBoxes = document.querySelectorAll('.day-box');
+  let targetDayBox = null;
+  
+  // Find day-box containing corresponding date number
+  for (let dayBox of dayBoxes) {
+    const dateNumber = dayBox.querySelector('.date-number');
+    if (dateNumber && parseInt(dateNumber.textContent) === day) {
+      targetDayBox = dayBox;
+      break;
+    }
+  }
+  
+  if (targetDayBox) {
+    // Create task indicator
+    const taskIndicator = document.createElement('div');
+    taskIndicator.className = 'task-indicator';
+    taskIndicator.innerHTML = `
+      <div class="task-line"></div>
+      <span class="task-name">${taskName}</span>
+    `;
+    
+    // Add to date box
+    targetDayBox.appendChild(taskIndicator);
+  }
 }
 
 // Delete task button
@@ -161,6 +255,22 @@ document.addEventListener('click', async function(e) {
         alert('Failed to delete task');
       }
     }
+  }
+  
+  if (e.target.classList.contains('edit-task')) {
+    const taskId = e.target.dataset.id;
+    const taskName = e.target.dataset.name;
+    const taskDate = e.target.dataset.date;
+    const taskTime = e.target.dataset.time;
+    
+    // Fill edit form
+    document.getElementById('edit-task-id').value = taskId;
+    document.getElementById('edit-task-name').value = taskName;
+    document.getElementById('edit-task-date').value = taskDate;
+    document.getElementById('edit-task-time').value = taskTime;
+    
+    // Show edit form
+    toggleEditTaskForm();
   }
 });
 

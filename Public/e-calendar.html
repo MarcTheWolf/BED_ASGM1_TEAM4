@@ -45,8 +45,6 @@
       <div class="day-box"></div>
       <div class="day-box">
         <span class="date-number">1</span>
-        <div class="event-bar bar-blue"></div>
-        <div class="event-bar bar-red"></div>
       </div>
       <div class="day-box"><span class="date-number">2</span></div>
       <div class="day-box"><span class="date-number">3</span></div>
@@ -56,14 +54,9 @@
       <div class="day-box"><span class="date-number">5</span></div>
       <div class="day-box">
         <span class="date-number">6</span>
-        <div class="event-bar bar-red"></div>
-        <div class="event-bar bar-blue"></div>
       </div>
       <div class="day-box">
         <span class="date-number">7</span>
-        <div class="event-bar bar-red"></div>
-        <div class="event-bar bar-blue"></div>
-        <div class="event-bar bar-green"></div>
       </div>
       <div class="day-box"><span class="date-number">8</span></div>
       <div class="day-box"><span class="date-number">9</span></div>
@@ -76,8 +69,6 @@
       <div class="day-box"><span class="date-number">14</span></div>
       <div class="day-box">
         <span class="date-number">15</span>
-        <div class="event-bar bar-blue"></div>
-        <div class="event-bar bar-green"></div>
       </div>
       <div class="day-box"><span class="date-number">16</span></div>
       <div class="day-box"><span class="date-number">17</span></div>
@@ -124,9 +115,30 @@
         </form>
       </div>
 
+      <div id="form-container-edit-task" class="container" hidden>
+        <h2>Edit Task</h2>
+        <form id="edit-task-form">
+          <input type="hidden" id="edit-task-id" name="task_id">
+          
+          <label for="edit-task-name">Task Name</label>
+          <input type="text" id="edit-task-name" name="name" placeholder="e.g., Medication Time" required>
+
+          <label for="edit-task-time">Time</label>
+          <input type="time" id="edit-task-time" name="time">
+
+          <label for="edit-task-date">Date</label>
+          <input type="date" id="edit-task-date" name="date" required>
+
+          <div class="form-actions">
+            <button type="submit" id="save-edit-task-btn" class="save-btn">Save Changes</button>
+            <button type="button" id="cancel-edit-btn-task" class="cancel-btn">Cancel</button>
+          </div>
+        </form>
+      </div>
+
 
     <div class="tasks-today">
-      <h4>All Tasks</h4>
+      
     </div>
 
   </main>
