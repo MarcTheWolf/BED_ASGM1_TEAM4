@@ -34,6 +34,7 @@
     <div class="event-button-container">
         <button class="event-button selected" id="AllEventsButton">All Events</button>
         <button class="event-button" id="RegisteredEventsButton">Registered Events</button>
+        <button class="event-button" id="addEventButton" hidden>Add Event</button>
     </div>
 
     <!-- Events Container -->
@@ -41,6 +42,115 @@
 
         <div class="event-container" id="AllEventsContainer">
             
+        </div>
+    </div>
+
+
+    <!-- Event Details Popup-->
+    <div id="eventModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close" id="modalClose">&times;</span>
+        <img id="modalImage" src="" alt="Event image" />
+        <h2 id="modalName"></h2>
+        <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+        <p><strong>Time:</strong> <span id="modalTime"></span></p>
+        <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+        <p><strong>Weekly:</strong> <span id="modalWeekly"></span></p>
+        <p><strong>Equipment Required:</strong> <span id="modalEquipment"></span></p>
+      </div>
+    </div>
+
+    <!-- Add Event Form -->
+     <div id="addEventModalBackdrop" class="modal-AddEvent hidden">
+        <div class="modal-contents">
+            <form id="addEventForm">
+                <h2>Add New Event</h2>
+
+                <label>
+                    Event Name:
+                    <input type="text" name="name" required>
+                </label>
+
+                <label>
+                    Description:
+                    <textarea name="description" required></textarea>
+                </label>
+
+                <label>
+                    Date:
+                    <input type="date" name="date" required>
+                </label>
+
+                <label>
+                    Time:
+                    <input type="time" name="time" required>
+                </label>
+
+                <label>
+                    Location:
+                    <input type="text" name="location" required>
+                </label>
+
+                <label>
+                    Equipment Required:
+                    <input type="text" name="equipment_required">
+                </label>
+
+                <label>
+                    Weekly:
+                    <input type="checkbox" name="weekly">
+                </label>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeAddEventModal">Cancel</button>
+                    <button type="submit" id="createEventButton">Create Event</button>
+                </div>
+            </form>
+        </div>
+      </div>
+
+    <!-- Edit Event Details form-->
+     <div id="editEventModalBackdrop" class="modal-EditEvent hidden">
+        <div class="modal-contents">
+            <form id="editEventForm">
+                <h2>Edit Event</h2>
+
+                <input type="hidden" name="id">
+
+                <label>Event Name:
+                    <input type="text" name="name" required>
+                </label>
+
+                <label>Description:
+                    <textarea name="description" required></textarea>
+                </label>
+
+                <label>Date:
+                    <input type="date" name="date" required>
+                </label>
+
+                <label>Time:
+                    <input type="time" name="time" required>
+                </label>
+
+                <label>Location:
+                    <input type="text" name="location" required>
+                </label>
+
+                <label>Equipment Required:
+                    <input type="text" name="equipment_required">
+                </label>
+
+                <label>Weekly:
+                    <input type="checkbox" name="weekly">
+                </label>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeEditEventModal">Cancel</button>
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
         </div>
     </div>
 

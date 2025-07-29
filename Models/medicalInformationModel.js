@@ -181,6 +181,7 @@ async function createMedication(accountId, medication) {
     );
 
     return result.recordset[0].success;
+    return result.recordset[0].success;
   } catch (error) {
     console.error("Model error:", error);
     throw error;

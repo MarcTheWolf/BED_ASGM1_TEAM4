@@ -29,7 +29,7 @@
         <p>alexarawles@gmail.com</p>
       </div>
       <div class="btns">
-        <a href="e-editProfile.html" class="edit" style="text-decoration: none; padding: 0.5rem 1rem; border-radius: 6px; background-color: #45b5aa; color: white;">Edit</a>
+        <button id="edit-button" class="view-btn" >Edit</button>
         <button class="logout">Log out</button>
       </div>
     </div>
@@ -43,6 +43,39 @@
       <div class="info-item"><strong>Preferred Language</strong>English, Chinese</div>
     </div>
   </div>
+
+  <div id="form-container-edit" class="container" hidden>
+    <h2>Edit Profile</h2>
+    <form>
+      <div class="form-section">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" name="fullname" value="Alexa Rawles">
+
+        <label for="email">Email</label>
+        <input type="email" id="email" name="email" value="alexarawles@gmail.com">
+
+        <label for="phone">Phone Number</label>
+        <input type="text" id="phone" name="phone" value="8917 3798">
+
+        <label for="dob">Date of Birth</label>
+        <input type="date" id="dob" name="dob" value="1965-03-07">
+
+        <label for="gender">Gender</label>
+        <select id="gender" name="gender">
+          <option selected>Female</option>
+          <option>Male</option>
+          <option>Other</option>
+        </select>
+
+        <label for="language">Preferred Language</label>
+        <input type="text" id="language" name="language" value="English, Chinese">
+      </div>
+      <div class="form-actions">
+        <button type="submit" id="save-edit-btn" class="save-btn close-editbtn">Save</button>
+        <button type="button" id="cancel-btn-edit" class="cancel-btn close-editbtn">Cancel</button>
+      </div>
+    </form>
+    </div>
 
   <div class="container2">
     <div class="health-overview">
@@ -67,7 +100,7 @@
 
     <div class="tabs">
       <span>Medical Conditions</span>
-      <a>Add</a>
+      <button class="view-btn" >Add</button>
     </div>
 
     <div class="condition-box">
@@ -78,7 +111,7 @@
 
     <div class="tabs">
       <span>Medications</span>
-      <a href="e-addMedication.html">Add</a>
+      <button id="add-md-button" class="view-btn" >Add</button>
     </div>
 
     <div class="condition-box">
@@ -86,6 +119,31 @@
       <small>Last Updated: 8/7</small>
       <small>Updated by Margaret Tan</small>
     </div>
+
+    <div id="form-container-md" class="container" hidden>
+    <h2>Add Medication</h2>
+    <form>
+      <label for="medName">Medication Name</label>
+      <input type="text" id="medName" name="medName" placeholder="e.g., Aricept">
+
+      <label for="dosage">Dosage</label>
+      <input type="text" id="dosage" name="dosage" placeholder="e.g., 10mg daily">
+
+      <label for="startDate">Start Date</label>
+      <input type="date" id="startDate" name="startDate">
+
+      <label for="notes">Additional Notes</label>
+      <textarea id="notes" name="notes" rows="4" placeholder="Optional notes about this medication"></textarea>
+
+      <label for="updatedBy">Updated By</label>
+      <input type="text" id="updatedBy" name="updatedBy" placeholder="e.g., Margaret Tan">
+
+      <div class="form-actions">
+        <button type="submit" id="save-md-btn" class="save-btn close-mdbtn">Save</button>
+        <button type="button" id="cancel-btn-md" class="cancel-btn close-mdbtn">Cancel</button>
+      </div>
+    </form>
+  </div>
 
     <div class="caretakers">
       <h3>Care Taker</h3>
@@ -105,8 +163,59 @@
         </div>
         <a class="view-btn" href="e-viewCaretakerN.html">View Profile</a>
       </div>
-      <a class="view-btn" href="e-addCaretaker.html">Add Care Taker</a>
+      <div class="task-controls">
+        <button id="add-task-button" class="view-btn" >Add Care Taker</button>
+      </div>
     </div>
+  </div>
+  <div id="form-container-task" class="container" hidden>
+    <h2>Add Care Taker</h2>
+    <form>
+      <label for="name">Full Name</label>
+      <input type="text" id="name" name="name" placeholder="e.g., Margaret Tan">
+
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" placeholder="e.g., margaret.tan78@gmail.com">
+
+      <label for="phone">Phone Number</label>
+      <input type="text" id="phone" name="phone" placeholder="e.g., 8912 3768">
+
+      <label for="dob">Date of Birth</label>
+      <input type="date" id="dob" name="dob">
+
+      <label for="gender">Gender</label>
+      <select id="gender" name="gender">
+        <option>Female</option>
+        <option>Male</option>
+        <option>Other</option>
+      </select>
+
+      <label for="language">Preferred Language</label>
+      <input type="text" id="language" name="language" placeholder="e.g., English, Chinese">
+
+      <label for="job">Job</label>
+      <input type="text" id="job" name="job" placeholder="e.g., Home Nurse">
+
+      <label for="certs">Certifications & Licenses</label>
+      <input type="text" id="certs" name="certs" placeholder="e.g., CPR, First Aid">
+
+      <label for="education">Education Level</label>
+      <input type="text" id="education" name="education" placeholder="e.g., NUS PhD">
+
+      <label for="training">Special Training</label>
+      <input type="text" id="training" name="training" placeholder="e.g., Dementia Care">
+
+      <label for="days">Available Days</label>
+      <input type="text" id="days" name="days" placeholder="e.g., Monday to Saturday">
+
+      <label for="hours">Available Time</label>
+      <input type="text" id="hours" name="hours" placeholder="e.g., 8a.m. to 10p.m.">
+
+      <div class="form-actions">
+        <button type="submit" id="save-task-btn" class="save-btn close-btn">Save</button>
+        <button type="button" id="cancel-btn-task" class="cancel-btn close-btn">Cancel</button>
+      </div>
+    </form>
   </div>
 
   <footer class="footer">
@@ -152,5 +261,6 @@
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </footer>
+<script src="JS/e-profileYX.js"></script>
 </body>
 </html>

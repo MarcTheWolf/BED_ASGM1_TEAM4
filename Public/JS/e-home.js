@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
     if (user.account_type == "o") {
-        window.location.href = "o-home.html";
+        window.location.href = "e-events.html";
         return;
     } else if (user.account_type == "c") {
         window.location.href = "c-home.html";
@@ -27,7 +27,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 });
 
 function autoLogout(response) {
-if (response.status = 403) {
+if (response.status === 403) {
         alert("Session expired. Please log in again.");
         localStorage.removeItem("user");
         window.location.href = "login.html";

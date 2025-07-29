@@ -41,7 +41,7 @@ const {
 
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
+app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
@@ -83,7 +83,7 @@ app.get("/autocompleteMedicalCondition/:query", medicalInformationController.aut
 
 
 //Events Endpoints (By Ansleigh)
-app.get("/getEventRegisteredByID", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
 app.get("/getAllEvents", eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
@@ -130,6 +130,8 @@ app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, noti
 app.post("/postImage", authorization.verifyJWT); //WIP
 
 
+
+
 // Task management API endpoints (By Yuxuan)
 app.get("/tasks", taskController.getTasks);
 app.post("/tasks", taskController.addTask);
@@ -164,7 +166,7 @@ setInterval(async () => {
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`API documentation: http://localhost:${port}/api-docs`);
   console.log(`Index page: http://localhost:${port}/login.html`);
