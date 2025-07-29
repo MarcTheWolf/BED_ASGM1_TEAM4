@@ -1,4 +1,5 @@
 const jwt = require("jsonwebtoken");
+const { user } = require("../dbConfig");
 
 function verifyJWT(req, res, next) {
   const authHeader = req.headers.authorization;
@@ -16,10 +17,47 @@ function verifyJWT(req, res, next) {
     }
 
     req.user = decoded; // Attach decoded token to request object
+    console.log("Decoded token:", decoded);
     next(); // Continue to next middleware/route
   });
 }
 
+function authorization(req, res, next) {
+
+  const authorizedRoles = {
+        "POST /createEvent": ["o"], 
+
+        "PUT /updateEvent/:event_id": ["o"], 
+
+        "DELETE /deleteEvent/:event_id": ["o"], 
+    };
+
+  const requestedEndpoint = `${req.method} ${req.route.path}`;
+  const userRole = req.user.role; // Assuming user role is stored in the JWT token
+
+  
+  console.log("Authorization check");
+  console.log("User:", req.user);
+  console.log("User role:", userRole);
+  console.log("Requested endpoint:", requestedEndpoint);
+
+
+    const authorizedRole = Object.entries(authorizedRoles).find(
+      ([endpoint, roles]) => {
+        const regexPattern = endpoint.replace(/:[^/]+/g, "[^/]+");
+        const regex = new RegExp(`^${regexPattern}$`); // Create RegExp from endpoint
+        return regex.test(requestedEndpoint) && roles.includes(userRole);
+      }
+    );
+
+    if (!authorizedRole) {
+      return res.status(403).json({ message: "Forbidden" });
+    }
+
+    next();
+}
+
 module.exports = {
   verifyJWT,
+  authorization,
 };

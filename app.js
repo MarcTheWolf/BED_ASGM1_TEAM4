@@ -77,14 +77,14 @@ app.get("/autocompleteMedicalCondition/:query", medicalInformationController.aut
 //Events Endpoints (By Ansleigh)
 app.get("/getEventRegisteredByID", authorization.verifyJWT, eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
-app.get("/getAllEvents", eventController.getAllEvents);
+app.get("/getAllEvents", authorization.verifyJWT, eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
 app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventController.unregisterEvent);
 
 
-app.post("/createEvent", authorization.verifyJWT, eventController.createEvent);
-app.put("/updateEvent/:event_id", authorization.verifyJWT, eventController.updateEvent);
-app.delete("/deleteEvent/:event_id", authorization.verifyJWT, eventController.deleteEvent);
+app.post("/createEvent", authorization.verifyJWT, authorization.authorization, eventController.createEvent);
+app.put("/updateEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.updateEvent);
+app.delete("/deleteEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.deleteEvent);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
