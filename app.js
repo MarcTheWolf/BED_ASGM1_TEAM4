@@ -3,9 +3,17 @@ const sql = require("mssql");
 const dotenv = require("dotenv");
 const path = require("path");
 
+const http = require('http');
+const socketIo = require('socket.io');
+
 dotenv.config();
 
 const app = express();
+
+const server = http.createServer(app); // create HTTP server manually
+const io = socketIo(server); // attach socket.io to the server
+
+
 const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -134,19 +142,22 @@ app.post("/tasks", taskController.addTask);
 app.delete("/tasks/:task_id",  taskController.deleteTask);
 
 ////////////////////////////////////////////////////
-///////////////Main Engine Loop////////////////////
+///////////////WebSocket API////////////////////
 ////////////////////////////////////////////////////
-setInterval(async () => {
-  await notificationEngine.run();
-}, 10000);
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
 
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
 
 
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`API documentation: http://localhost:${port}/api-docs`);
   console.log(`Index page: http://localhost:${port}/login.html`);
@@ -173,3 +184,7 @@ const swaggerDocument = require("./swagger-output.json"); // Import generated sp
 
 // Serve the Swagger UI at a specific route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
+/////////////Exports Websocket io for controller use /////////////////////////////
+module.exports.io = io; // Export it
