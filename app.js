@@ -2,6 +2,7 @@ const express = require("express");
 const sql = require("mssql");
 const dotenv = require("dotenv");
 const path = require("path");
+const cloudinary = require('cloudinary').v2;
 
 dotenv.config();
 
@@ -83,6 +84,7 @@ app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventControlle
 
 app.post("/createEvent", authorization.verifyJWT, eventController.createEvent);
 app.put("/updateEvent/:event_id", authorization.verifyJWT, eventController.updateEvent);
+app.delete("/deleteEvent/:event_id", authorization.verifyJWT, eventController.deleteEvent);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

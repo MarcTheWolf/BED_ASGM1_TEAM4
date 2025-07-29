@@ -234,7 +234,8 @@ function renderEvent(event, userRole, view){
     if (view === "registered") {
         actionButton = `<button class="unregister-button" data-event-id="${event.id}">Unregister</button>`;
     } else if (userRole === "o") {
-        actionButton = `<button class="edit-button" data-event-id="${event.id}">Edit event</button>`;
+        actionButton = `<button class="edit-button" data-event-id="${event.id}">Edit event</button>
+                        <button class="delete-button" data-event-id="${event.id}">Delete event</button>`;
     } else if (userRole === "e" || userRole === "c") {
         actionButton = `<button class="register-button" data-event-id="${event.id}">Register</button>`;
     }
@@ -250,7 +251,7 @@ function renderEvent(event, userRole, view){
                 <p>Time: ${formattedTime}</p>
                 <p>Location: ${event.location}</p>
             </div>
-            ${actionButton}
+            <div class="action-buttons">${actionButton}</div>
         </div>
     `;
 }
@@ -261,7 +262,8 @@ document.addEventListener("click", function (e) {
     const card = e.target.closest(".event-card");
     const isButton = e.target.classList.contains("register-button") || 
                      e.target.classList.contains("unregister-button") || 
-                     e.target.classList.contains("edit-button");
+                     e.target.classList.contains("edit-button")||
+                     e.target.classList.contains("delete-button");
 
     if (card && !isButton) {
         const eventId = card.id.replace("event-", "");
@@ -309,17 +311,57 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
     const form = e.target;
     var user = JSON.parse(localStorage.getItem("user")) || {};
 
+    // 1. Get the image file from the form
+    const name = form.name.value
+    const description = form.description.value
+    const date = form.date.value
+    const time = form.time.value
+    const location = form.location.value
+    const equipment_required = form.equipment_required.value
+    const weekly = form.weekly.checked
+    const org_id = user.id
+    const imageFile = form.image.files[0];
+
+    let banner_image = "";
+    if (imageFile) {
+        const imageFormData = new FormData();
+        imageFormData.append("file", imageFile);
+        imageFormData.append("upload_preset", "bed-eventpics"); // Replace with your preset name
+        imageFormData.append("cloud_name", "dixpuc6o7"); // Replace with your Cloudinary cloud name
+
+        try {
+            const imageUploadResponse = await fetch("https://api.cloudinary.com/v1_1/dixpuc6o7/image/upload", {
+                method: "POST",
+                body: imageFormData,
+            });
+
+            if (!imageUploadResponse.ok) {
+                throw new Error(imageUploadResponse.body);
+            }
+
+            const imageData = await imageUploadResponse.json();
+            banner_image = imageData.secure_url; // Use the secure_url to get the image URL
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Failed to upload image.");
+            return;
+        }
+    }
+
     const formData = {
-        name: form.name.value,
-        description: form.description.value,
-        date: form.date.value,
-        time: form.time.value,
-        location: form.location.value,
-        equipment_required: form.equipment_required.value,
-        weekly: form.weekly.checked,
-        org_id: user.id
+        name: name,
+        description: description,
+        date: date,
+        time: time,
+        location: location,
+        equipment_required: equipment_required,
+        weekly: weekly,
+        org_id: org_id,
+        banner_image: banner_image
     };
+
     console.log("Form Data:", formData);
+
     try {
         const response = await fetch("/createEvent", {
             method: "POST",
@@ -354,13 +396,15 @@ const editEventModal = document.getElementById("editEventModalBackdrop");
 const closeEditEventModal = document.getElementById("closeEditEventModal");
 const editEventForm = document.getElementById("editEventForm");
 
+let editingEvent = null; // Store the event being edited
+
 document.addEventListener("click", function (e) {
     const editBtn = e.target.closest(".edit-button");
     if (editBtn) {
         const eventId = editBtn.dataset.eventId;
         const event = window.allEvents?.find(ev => ev.id == eventId);
         if (event) {
-            console.log("Opening modal for event", event);
+            editingEvent = event; // Save for later use
             openEditEventModal(event);
         } else {
             console.warn("Event not found for ID:", eventId);
@@ -369,7 +413,6 @@ document.addEventListener("click", function (e) {
 });
 
 function openEditEventModal(event) {
-
     editEventForm.id.value = event.id;
     editEventForm.name.value = event.name;
     editEventForm.description.value = event.description;
@@ -377,7 +420,8 @@ function openEditEventModal(event) {
     editEventForm.time.value = event.time;
     editEventForm.location.value = event.location;
     editEventForm.weekly.checked = !!event.weekly;
-
+    editEventForm.equipment_required.value = event.equipment_required || "";
+    // Don't set file input value for security reasons
     editEventModal.classList.remove("hidden");
 }
 
@@ -395,6 +439,38 @@ editEventForm.addEventListener("submit", async function (e) {
     e.preventDefault();
 
     const user = JSON.parse(localStorage.getItem("user")) || {};
+    const imageInput = editEventForm.banner_image;
+    const imageFile = imageInput && imageInput.files && imageInput.files[0];
+
+    let banner_image = editingEvent?.banner_image || ""; // Default to old image
+
+    if (imageFile) {
+        // If user uploads a new image, upload to Cloudinary and use new URL
+        const imageFormData = new FormData();
+        imageFormData.append("file", imageFile);
+        imageFormData.append("upload_preset", "bed-eventpics");
+        imageFormData.append("cloud_name", "dixpuc6o7");
+
+        try {
+            const imageUploadResponse = await fetch("https://api.cloudinary.com/v1_1/dixpuc6o7/image/upload", {
+                method: "POST",
+                body: imageFormData,
+            });
+
+            if (!imageUploadResponse.ok) {
+                throw new Error(await imageUploadResponse.text());
+            }
+
+            const imageData = await imageUploadResponse.json();
+            banner_image = imageData.secure_url;
+        } catch (error) {
+            console.error("Error uploading image:", error);
+            alert("Failed to upload image.");
+            return;
+        }
+    }
+    // If no new image, keep the old image URL
+
     const formData = {
         id: editEventForm.id.value,
         name: editEventForm.name.value,
@@ -403,7 +479,7 @@ editEventForm.addEventListener("submit", async function (e) {
         time: editEventForm.time.value,
         location: editEventForm.location.value,
         equipment_required: editEventForm.equipment_required.value,
-        //banner_image: editEventForm.banner_image.value || null,
+        banner_image: banner_image, // Use new image if uploaded, else old image
         weekly: editEventForm.weekly.checked,
         org_id: user.id
     };
@@ -428,6 +504,52 @@ editEventForm.addEventListener("submit", async function (e) {
         alert("Update failed.");
     }
 });
+
+//#endregion
+
+//#region Delete Event
+
+document.getElementById("EventsContainer").addEventListener("click", async function (event) {
+    if (event.target.classList.contains("delete-button")) {
+        const button = event.target;
+        const eventId = button.getAttribute("data-event-id");
+
+        const user = JSON.parse(localStorage.getItem("user"));
+        const token = user?.token;
+
+        if (!token) {
+            alert("You must be logged in to delete an event.");
+            return;
+        }
+
+        if (!confirm("Are you sure you want to delete this event?")) {
+            return;
+        }
+
+        try {
+            const response = await fetch(`/deleteEvent/${eventId}`, {
+                method: "DELETE",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`
+                },
+            });
+
+            if (!response.ok) {
+                const errorText = await response.text();
+                throw new Error(`Network error: ${response.status} - ${errorText}`);
+            }
+
+            alert("Event deleted successfully.");
+            document.getElementById(`event-${eventId}`).remove();
+        } catch (error) {
+            console.error("Delete error:", error);
+            alert("An error occurred while deleting the event.");
+        }
+    }
+});
+
+//#endregion
 
 
 

@@ -11,6 +11,7 @@
   "description": "Authenticates a user's login credentials. The server checks if the phone number exists in the database and verifies the provided password. If both match, it returns the account ID.",
   "dependencies": {
     "bcrypt": "^6.0.0",
+    "cloudinary": "^2.7.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
     "jest": "^30.0.5",

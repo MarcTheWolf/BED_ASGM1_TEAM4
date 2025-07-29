@@ -1,9 +1,9 @@
-const accountModel = require("../Models/eventModel.js");
+const eventModel = require("../Models/eventModel.js");
 
 async function getEventRegisteredByID(req, res) {
     const id = req.user.id;
     try {
-        const event = await accountModel.getEventRegisteredByID(id);
+        const event = await eventModel.getEventRegisteredByID(id);
         if (event) {
             res.status(200).json(event);
         } else {
@@ -18,7 +18,7 @@ async function getEventRegisteredByID(req, res) {
 async function getEventDetailsByID(req, res) {
     const id = req.params.id;
     try {
-        const event = await accountModel.getEventDetailsByID(id);
+        const event = await eventModel.getEventDetailsByID(id);
         if (event) {
             res.status(200).json(event);
         } else {
@@ -33,7 +33,7 @@ async function getEventDetailsByID(req, res) {
 
 async function getAllEvents(req, res) {
     try {
-        const events = await accountModel.getAllEvents();
+        const events = await eventModel.getAllEvents();
         if (events && events.length > 0) {
             res.status(200).json(events);
         } else {
@@ -50,7 +50,7 @@ async function registerEvent(req, res) {
     const accountId = req.user.id; // Assuming user ID is stored in the JWT token
 
     try {
-        const result = await accountModel.registerEvent(accountId, eventId);
+        const result = await eventModel.registerEvent(accountId, eventId);
         if (result) {
             res.status(200).json({ message: "Successfully registered for the event" });
         } else {
@@ -67,7 +67,7 @@ async function unregisterEvent(req, res) {
     const accountId = req.user.id; // Assuming user ID is stored in the JWT token
 
     try {
-        const result = await accountModel.unregisterEvent(accountId, eventId);
+        const result = await eventModel.unregisterEvent(accountId, eventId);
         if (result) {
             res.status(200).json({ message: "Successfully unregistered from the event" });
         } else {
@@ -84,7 +84,7 @@ async function createEvent(req, res) {
     const accountId = req.user.id;
 
     try {
-        const result = await accountModel.createEvent(eventData, accountId);
+        const result = await eventModel.createEvent(eventData, accountId);
         if (result) {
             res.status(201).json({ message: "Event created successfully" });
         } else {
@@ -102,7 +102,7 @@ async function updateEvent(req, res) {
     const accountId = req.user.id;
 
     try {
-        const result = await accountModel.updateEvent(eventId, eventData, accountId);
+        const result = await eventModel.updateEvent(eventId, eventData, accountId);
         if (result) {
             res.status(200).json({ message: "Event updated successfully" });
         } else {
@@ -114,10 +114,28 @@ async function updateEvent(req, res) {
     }
 }
 
+async function deleteEvent(req, res) {
+    const eventId = req.params.event_id;
+    const accountId = req.user.id;
+
+    try {
+        const result = await eventModel.deleteEvent(eventId, accountId);
+        if (result) {
+            res.status(200).json({ message: "Event deleted successfully" });
+        } else {
+            res.status(400).json({ message: "Failed to delete event" });
+        }
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 module.exports = {
     getEventRegisteredByID,
     getEventDetailsByID,
     getAllEvents,
+    deleteEvent,
     registerEvent,
     unregisterEvent,
     createEvent,
