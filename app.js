@@ -83,7 +83,7 @@ app.get("/autocompleteMedicalCondition/:query", medicalInformationController.aut
 
 
 //Events Endpoints (By Ansleigh)
-app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventRegisteredByID", authorization.verifyJWT, eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
 app.get("/getAllEvents", authorization.verifyJWT, eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
