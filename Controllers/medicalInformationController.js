@@ -350,6 +350,26 @@ async function autocompleteMedication(req, res) {
   }
 }
 
+async function resetWeeklyTiming(req, res) {
+  try {
+    const med_id = parseInt(req.params.med_id);
+    if (isNaN(med_id)) {
+      return res.status(400).json({ error: "Invalid medication ID." });
+    }
+
+    const success = await medicalModel.resetWeeklyTiming(med_id);
+    if (!success) {
+      return res.status(404).json({ error: "Weekly timing not found or could not be reset." });
+    }
+
+    res.status(200).json({ message: "Weekly timing reset successfully." });
+  }
+  catch (error) {
+    console.error("Controller error:", error);
+    res.status(500).json({ error: "Server error." });
+  }
+}
+
 
 module.exports = {
   getMedicationByAccountID,
@@ -368,5 +388,7 @@ module.exports = {
   getWeeklyTiming,
   saveWeeklyTiming,
   autocompleteMedicalCondition,
-  autocompleteMedication
+  autocompleteMedication,
+  resetWeeklyTiming
+  
 };

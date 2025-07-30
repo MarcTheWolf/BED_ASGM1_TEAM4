@@ -30,15 +30,19 @@ const medicationSchema = Joi.object({
     "any.required": "Dosage is required",
   }),
 
-  time: Joi.string()
-    .pattern(/^([01]\d|2[0-3]):([0-5]\d)$/)
-    .required()
-    .messages({
-      "string.pattern.base": "Time must be in HH:mm format (e.g., 08:00)",
-      "any.required": "Time is required",
-    }),
+  time: Joi.alternatives().conditional('frequency', {
+    is: 'D',
+    then: Joi.string()
+      .pattern(/^([01]\d|2[0-3]):([0-5]\d)(:[0-5]\d)?$/)
+      .required()
+      .messages({
+        "string.pattern.base": "Time must be in HH:mm format (e.g., 08:00)",
+        "any.required": "Time is required for daily medications",
+      }),
+    otherwise: Joi.any().valid(null, '').strip() // strips time if not daily
+  }),
 
-  frequency: Joi.string().min(1).max(50).required().messages({
+  frequency: Joi.string().min(1).max(100).required().messages({
     "string.base": "Frequency must be a string",
     "string.empty": "Frequency cannot be empty",
     "string.min": "Frequency must be at least 1 character",

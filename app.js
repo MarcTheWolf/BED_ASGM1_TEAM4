@@ -2,10 +2,17 @@ const express = require("express");
 const sql = require("mssql");
 const dotenv = require("dotenv");
 const path = require("path");
+const http = require('http');
+const socketIo = require('socket.io');
 
 dotenv.config();
 
 const app = express();
+
+const server = http.createServer(app); // create HTTP server manually
+const io = socketIo(server);
+
+
 const port = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -34,11 +41,11 @@ const {
 
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
+app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
-app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -60,9 +67,11 @@ app.post("/saveWeeklyTiming", authorization.verifyJWT, medicalInformationControl
 app.put("/updateMedication/:id", authorization.verifyJWT, medicalInformationController.updateMedication);
 app.put("/updateMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.updateMedicalCondition);
 
+
 app.delete("/deleteMedication/:id", authorization.verifyJWT, medicalInformationController.deleteMedication);
 app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.deleteMedicalCondition);
 app.delete("/deleteMedicationConditionAssociation", authorization.verifyJWT, medicalInformationController.deleteMedicationConditionAssociation);
+app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationController.resetWeeklyTiming);
 
 
 //Medical Information Autocomplete, Use of external API from backend (By Marcus)
@@ -74,7 +83,7 @@ app.get("/autocompleteMedicalCondition/:query", medicalInformationController.aut
 
 
 //Events Endpoints (By Ansleigh)
-app.get("/getEventRegisteredByID", authorization.verifyJWT, eventController.getEventRegisteredByID);
+app.get("/getEventRegisteredByID/:id", authorization.verifyJWT, eventController.getEventRegisteredByID);
 app.get("/getEventDetailsByID/:id", authorization.verifyJWT, eventController.getEventDetailsByID);
 app.get("/getAllEvents", authorization.verifyJWT, eventController.getAllEvents);
 app.post("/registerEvent/:event_id", authorization.verifyJWT, eventController.registerEvent);
@@ -128,11 +137,27 @@ app.post("/postImage", authorization.verifyJWT); //WIP
 
 
 
-
 // Task management API endpoints (By Yuxuan)
 app.get("/tasks", taskController.getTasks);
 app.post("/tasks", taskController.addTask);
+app.put("/tasks/:task_id", taskController.updateTask);
 app.delete("/tasks/:task_id",  taskController.deleteTask);
+
+
+
+////////////////////////////////////////////////////
+///////////////WebSocket API////////////////////
+////////////////////////////////////////////////////
+io.on('connection', (socket) => {
+  console.log('Client connected:', socket.id);
+
+  socket.on('disconnect', () => {
+    console.log('Client disconnected:', socket.id);
+  });
+});
+
+
+
 
 ////////////////////////////////////////////////////
 ///////////////Main Engine Loop////////////////////
@@ -142,12 +167,11 @@ setInterval(async () => {
 }, 10000);
 
 
-
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
 
-app.listen(port, () => {
+server.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`API documentation: http://localhost:${port}/api-docs`);
   console.log(`Index page: http://localhost:${port}/login.html`);
@@ -174,3 +198,7 @@ const swaggerDocument = require("./swagger-output.json"); // Import generated sp
 
 // Serve the Swagger UI at a specific route
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
+
+/////////////Exports Websocket io for controller use /////////////////////////////
+module.exports.io = io; // Export it

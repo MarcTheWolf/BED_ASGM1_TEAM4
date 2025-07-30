@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     medicationData = await fetchMedicationData();
     eventData = await fetchEventData();
     await getFinanceBarChart();
-    consolidateAndDisplayActivities();
+    await consolidateAndDisplayActivities();
     activityClicks();
 });
 
@@ -128,7 +128,7 @@ async function getFinanceBarChart() {
 }
 
 
-function consolidateAndDisplayActivities() {
+async function consolidateAndDisplayActivities() {
     if (!medicationData || !eventData) return;
 
     const dateMap = {};
@@ -147,11 +147,13 @@ function consolidateAndDisplayActivities() {
         dateMap[date] = [];
     });
 
-    medicationData.forEach(med => {
-        if (!med.start_date) return;
-        const freq = med.frequency;
-        const startDate = new Date(med.start_date);
+for (const med of medicationData) {
+    if (!med.start_date) continue;
 
+    const freq = med.frequency;
+    const startDate = new Date(med.start_date);
+
+    if (freq === 'D') {
         displayDates.forEach(dateStr => {
             const targetDate = new Date(dateStr);
             if (shouldIncludeDate(startDate, targetDate, freq)) {
@@ -164,7 +166,43 @@ function consolidateAndDisplayActivities() {
                 });
             }
         });
-    });
+    }
+
+    // 🔁 NEW: Fetch and process weekly timings
+    else if (freq === 'W') {
+        const res = await fetch(`/getWeeklyTiming/${med.med_id}`, {
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${user.token}`
+            }
+        });
+
+        if (!res.ok) {
+            autoLogout(res);
+            console.warn(`Failed to fetch weekly timing for med ${med.name}`);
+            continue;
+        }
+
+        const timings = await res.json(); // [{ day: 1, time: "14:00" }, ...]
+
+        for (const { day, time } of timings) {
+            displayDates.forEach(dateStr => {
+                const targetDate = new Date(dateStr);
+                if (targetDate.getDay() === (day % 7)) { // JS Sunday=0, SQL Sunday=7
+                    dateMap[dateStr].push({
+                        type: 'medication',
+                        time: time,
+                        name: med.name,
+                        dosage: med.dosage,
+                        id: med.med_id
+                    });
+                }
+            });
+        }
+    }
+
+    // Skip WR or any others
+}
 
     // Add events
     eventData.forEach(event => {
@@ -254,9 +292,7 @@ function shouldIncludeDate(start, target, freq) {
 
     switch (freq) {
         case 'D': return true;
-        case 'W': return start.getDay() === target.getDay();
-        case 'M': return start.getDate() === target.getDate();
-        case 'WR': return false;
+        case 'WR': return false; // only manual
         case 'O': return start.toDateString() === target.toDateString();
         default: return false;
     }

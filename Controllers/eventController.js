@@ -1,8 +1,10 @@
 const eventModel = require("../Models/eventModel.js");
+const eventModel = require("../Models/eventModel.js");
 
 async function getEventRegisteredByID(req, res) {
     const id = req.user.id;
     try {
+        const event = await eventModel.getEventRegisteredByID(id);
         const event = await eventModel.getEventRegisteredByID(id);
         if (event) {
             res.status(200).json(event);
@@ -19,6 +21,7 @@ async function getEventDetailsByID(req, res) {
     const id = req.params.id;
     try {
         const event = await eventModel.getEventDetailsByID(id);
+        const event = await eventModel.getEventDetailsByID(id);
         if (event) {
             res.status(200).json(event);
         } else {
@@ -33,6 +36,7 @@ async function getEventDetailsByID(req, res) {
 
 async function getAllEvents(req, res) {
     try {
+        const events = await eventModel.getAllEvents();
         const events = await eventModel.getAllEvents();
         if (events && events.length > 0) {
             res.status(200).json(events);
@@ -69,6 +73,7 @@ async function unregisterEvent(req, res) {
     const accountId = req.user.id; // Assuming user ID is stored in the JWT token
 
     try {
+        const result = await eventModel.unregisterEvent(accountId, eventId);
         const result = await eventModel.unregisterEvent(accountId, eventId);
         if (result) {
             res.status(200).json({ message: "Successfully unregistered from the event" });

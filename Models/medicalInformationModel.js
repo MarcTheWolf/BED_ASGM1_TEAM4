@@ -181,6 +181,7 @@ async function createMedication(accountId, medication) {
     );
 
     return result.recordset[0].success;
+    return result.recordset[0].success;
   } catch (error) {
     console.error("Model error:", error);
     throw error;
@@ -367,6 +368,28 @@ async function deleteMedicationConditionAssociation(med_id, medc_id) {
   }
 }
 
+async function resetWeeklyTiming(med_id) {
+  let connection;
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("med_id", sql.Int, med_id);
+
+    const result = await request.query(
+      "DELETE FROM WeeklyMedicationTiming WHERE med_id = @med_id"
+    );
+
+    return result.rowsAffected > 0; // Return true if reset was successful
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
 module.exports = {
   getMedicationByAccountID,
   getMedicationByID,
@@ -382,5 +405,6 @@ module.exports = {
   associateMedicationWithMedicalCondition,
   deleteMedicationConditionAssociation,
   getWeeklyTiming,
-  saveWeeklyTiming
+  saveWeeklyTiming,
+  resetWeeklyTiming,
 };
