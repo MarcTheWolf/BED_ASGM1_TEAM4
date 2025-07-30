@@ -2,7 +2,6 @@ const express = require("express");
 const sql = require("mssql");
 const dotenv = require("dotenv");
 const path = require("path");
-const cloudinary = require('cloudinary').v2;
 
 dotenv.config();
 
