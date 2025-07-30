@@ -190,6 +190,20 @@ body{
     transition: background-color 0.3s ease;
 }
 
+.action-buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+.action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+}
+
 .edit-button {
     margin-top: auto;
     background-color: #6fc1be;
@@ -210,6 +224,34 @@ body{
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     transform: translateY(-2px);
     transition: background-color 0.3s ease;
+}
+
+.delete-button {
+    margin-top: auto;
+    background-color: #e63946;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 14px ;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
+}
+
+.delete-button:hover {
+    background-color: #d62839;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease;
+}
+
+@media (max-width: 700px) {
+    .action-buttons {
+        gap: 12px;
+    }
 }
 
 @media (max-width: 700px) {
@@ -359,6 +401,62 @@ body{
     z-index: 1000;
 }
 
+
 .hidden {
     display: none;
+}
+.popover {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #222;
+    border: 2.5px solid #81C7BE; /* light green border */
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(81, 199, 190, 0.4);
+    padding: 28px 48px 28px 28px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 320px;
+    max-width: 520px;
+    font-size: 1.15rem;
+}
+.popover.hidden {
+    display: none;
+}
+#closePopover {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    margin-left: auto;
+}
+#closePopover:focus {
+    outline: 2px solid #0078d4;
+}
+
+
+#seeMoreBtn {
+    margin: 24px auto 0 auto;
+    display: block;
+    padding: 12px 32px;
+    background-color: #1d3557;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    box-shadow: 0 2px 8px rgba(81, 199, 190, 0.15);
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#seeMoreBtn:hover {
+    background-color: #457b9d;
+    transform: translateY(-2px) scale(1.03);
+    box-shadow: 0 4px 12px rgba(81, 199, 190, 0.25);
 }

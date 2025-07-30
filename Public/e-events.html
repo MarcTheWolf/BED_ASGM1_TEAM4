@@ -43,6 +43,7 @@
         <div class="event-container" id="AllEventsContainer">
             
         </div>
+        <button id="seeMoreBtn">See More</button>
     </div>
 
 
@@ -102,6 +103,11 @@
                     <input type="checkbox" name="weekly">
                 </label>
 
+                <label>
+                    Image File:
+                    <input type="file" name="image">
+                </label>
+
                 <div class="modal-actions">
                     <button type="button" id="closeAddEventModal">Cancel</button>
                     <button type="submit" id="createEventButton">Create Event</button>
@@ -146,12 +152,22 @@
                     <input type="checkbox" name="weekly">
                 </label>
 
+                <label>Banner Image:
+                    <input type="file" name="banner_image">
+                </label>
+
                 <div class="modal-actions">
                     <button type="button" id="closeEditEventModal">Cancel</button>
                     <button type="submit">Save Changes</button>
                 </div>
             </form>
         </div>
+    </div>
+
+    <!-- Popover for messages -->
+    <div id="messagePopover" class="popover hidden">
+        <span id="popoverMessage"></span>
+        <button id="closePopover" aria-label="Close">&times;</button>
     </div>
 
     <!-- Footer -->

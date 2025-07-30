@@ -11,6 +11,7 @@ async function authenticateAccount(req, res) {
     }
 
     const account = await accountModel.getAccountByPhone(phone_number);
+    const user = await accountModel.getAccountById(account.id);
 
     if (!account) {
       return res.status(404).json({ error: "Account not found." });
@@ -21,8 +22,9 @@ async function authenticateAccount(req, res) {
     if (isMatch) {
       const payload = {
       id: account.id,
-      role: account.account_type,
+      role: user.account_type,
       };
+      console.log(user.account_type);
       const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
       return res.status(200).json({
         message: "Password match.",
@@ -76,10 +78,11 @@ async function createAccount(req, res) {
     const accountId = await accountModel.createAccount(phone_number, hashedPassword);
     const payload = {
       id: accountId,
+      role: account.account_type,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
-    
-    res.status(201).json({ message: "Account created successfully.", account_id: accountId, token: token});
+
+    res.status(201).json({ message: "Account created successfully.", account_id: accountId, token: token });
   } catch (error) {
     console.error("Controller error:", error);
     res.status(500).json({ error: "Server error." });

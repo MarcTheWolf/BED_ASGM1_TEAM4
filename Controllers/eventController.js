@@ -51,8 +51,10 @@ async function registerEvent(req, res) {
 
     try {
         const result = await eventModel.registerEvent(accountId, eventId);
-        if (result) {
+        if (result !== false) {
             res.status(200).json({ message: "Successfully registered for the event" });
+        } else if (result === false) {
+            res.status(409).json({ message: "Already registered for this event" });
         } else {
             res.status(400).json({ message: "Failed to register for the event" });
         }
@@ -84,7 +86,7 @@ async function createEvent(req, res) {
     const accountId = req.user.id;
 
     try {
-        const result = await accountModel.createEvent(eventData, accountId);
+        const result = await eventModel.createEvent(eventData, accountId);
         if (result) {
             res.status(201).json({ message: "Event created successfully" });
         } else {
@@ -102,7 +104,7 @@ async function updateEvent(req, res) {
     const accountId = req.user.id;
 
     try {
-        const result = await accountModel.updateEvent(eventId, eventData, accountId);
+        const result = await eventModel.updateEvent(eventId, eventData, accountId);
         if (result) {
             res.status(200).json({ message: "Event updated successfully" });
         } else {
@@ -114,10 +116,28 @@ async function updateEvent(req, res) {
     }
 }
 
+async function deleteEvent(req, res) {
+    const eventId = req.params.event_id;
+    const accountId = req.user.id;
+
+    try {
+        const result = await eventModel.deleteEvent(eventId, accountId);
+        if (result) {
+            res.status(200).json({ message: "Event deleted successfully" });
+        } else {
+            res.status(400).json({ message: "Failed to delete event" });
+        }
+    } catch (error) {
+        console.error("Controller error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 module.exports = {
     getEventRegisteredByID,
     getEventDetailsByID,
     getAllEvents,
+    deleteEvent,
     registerEvent,
     unregisterEvent,
     createEvent,
