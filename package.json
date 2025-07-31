@@ -19,15 +19,13 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1",
-
     "node-fetch": "^3.3.2",
-
     "openai": "^5.11.0",
-
     "path": "^0.12.7",
     "socket.io": "^4.8.1",
     "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "websocketapi": "^1.1.17"
   },
   "repository": {
     "type": "git",
