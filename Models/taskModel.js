@@ -2,14 +2,15 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 // Get all tasks
-async function getTasks() {
+async function getTasks(userid) {
     let connection;
     try {
         connection = await sql.connect(dbConfig);
         const request = connection.request();
         
+        request.input("userid", sql.Int, userid);
         const result = await request.query(`
-            SELECT task_id, task_name, date, time FROM TaskList ORDER BY date, time;
+            SELECT task_id, task_name, date, time FROM TaskList WHERE acc_id = @userid ORDER BY date, time;
         `);
 
         return result.recordset;
@@ -24,14 +25,15 @@ async function getTasks() {
 }
 
 // Add task
-async function addTask(taskData) {
+async function addTask(taskData, userid) {
     let connection;
     try {
         connection = await sql.connect(dbConfig);
         const request = connection.request();
         request.input("task_name", sql.VarChar(50), taskData.task_name);
         request.input("date", sql.Date, taskData.date);
-        
+        request.input("userid", sql.Int, userid);
+
         // Handle time format properly - store as VARCHAR to avoid TIME type issues
         let timeValue = null;
         if (taskData.time && taskData.time.trim() !== '') {
@@ -54,9 +56,9 @@ async function addTask(taskData) {
         request.input("time", sql.VarChar(10), timeValue);
 
         const result = await request.query(`
-            INSERT INTO TaskList (task_name, date, time)
+            INSERT INTO TaskList (task_name, date, time, acc_id)
             OUTPUT INSERTED.task_id
-            VALUES (@task_name, @date, @time);
+            VALUES (@task_name, @date, @time, @userid);
         `);
 
         return result.recordset[0].task_id;

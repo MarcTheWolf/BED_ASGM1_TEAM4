@@ -234,6 +234,30 @@ async function updateProfile(accountId, newDetails) {
   }
 }
 
+async function updatePhoneNumber(accountId, newPhoneNumber) {
+  let connection;
+
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+    request.input("id", sql.Int, accountId);
+    request.input("phone_number", sql.VarChar, newPhoneNumber);
+
+    const result = await request.query(`
+      UPDATE AccountPassword SET phone_number = @phone_number WHERE id = @id
+    `);
+
+    return result.rowsAffected[0] > 0;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
+
 module.exports = {
   getAccountByPhone,
   getAccountById,
@@ -242,5 +266,6 @@ module.exports = {
   getPhoneByAccountID,
   updatePasswordById,
   updatePasswordByPhone,
-  updateProfile
+  updateProfile,
+  updatePhoneNumber
 };
