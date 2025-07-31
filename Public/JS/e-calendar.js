@@ -9,6 +9,8 @@ function toggleModal(modalId) {
   }
 }
 
+const user = JSON.parse(localStorage.getItem("user"));
+
 //add
 const addTaskBtn = document.getElementById('add-task-button');
 
@@ -103,7 +105,10 @@ function openEditModal(taskName, taskDate, taskTime) {
 
 // Load task list and render to page
 async function loadTasks() {
-  const res = await fetch('/tasks');
+  const res = await fetch('/tasks', {
+    method: 'GET',
+    headers: {'Authorization': `Bearer ${user.token}`}}
+  );
   if (!res.ok) return;
   const tasks = await res.json();
   renderTasks('.tasks-today', tasks); // Render all tasks in one area
@@ -161,7 +166,7 @@ if (addTaskForm) {
     };
     const res = await fetch('/tasks', {
       method: 'POST',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}`},
       body: JSON.stringify(data)
     });
     if (res.ok) {
@@ -191,7 +196,7 @@ if (editTaskForm) {
     };
     const res = await fetch(`/tasks/${taskId}`, {
       method: 'PUT',
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Content-Type': 'application/json', 'Authorization': `Bearer ${user.token}`},
       body: JSON.stringify(data)
     });
     if (res.ok) {
@@ -248,7 +253,7 @@ document.addEventListener('click', async function(e) {
   if (e.target.classList.contains('delete-task')) {
     const taskId = e.target.dataset.id;
     if (confirm('Are you sure you want to delete this task?')) {
-      const res = await fetch(`/tasks/${taskId}`, { method: 'DELETE' });
+      const res = await fetch(`/tasks/${taskId}`, { method: 'DELETE', headers: {'Authorization': `Bearer ${user.token}`} });
       if (res.ok) {
         loadTasks();
       } else {

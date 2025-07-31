@@ -22,7 +22,7 @@
       position: fixed;
       bottom: 150px;
       right: 70px;
-      width: 500px;
+      width: 25%;
       max-height: 800px;
       background: white;
       border-radius: 10px;
@@ -30,7 +30,7 @@
       display: none;
       flex-direction: column;
       overflow: hidden;
-      z-index: 999;
+      z-index: 3000;
       font-family: Arial, sans-serif;
     }
 
@@ -43,7 +43,7 @@
 
     .chatbox-body {
       padding: 10px;
-      height: 550px;
+      height: 400px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
