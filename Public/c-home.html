@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SeniorSync Caretaker Home</title>
+    <link rel="stylesheet" href="CSS/e-home.css">
+    <link rel="stylesheet" href="CSS/e-navbar.css">
+    <style>
+      .elderly-list {
+        margin: 2rem auto;
+        max-width: 700px;
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        padding: 2rem;
+      }
+      .elderly-item {
+        display: flex;
+        align-items: center;
+        background: #d7f5f4;
+        margin-bottom: 1rem;
+        padding: 0.8rem;
+        border-radius: 10px;
+        justify-content: space-between;
+      }
+      .elderly-avatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        object-fit: cover;
+        margin-right: 1rem;
+      }
+      .view-btn {
+        background: #55dbc2;
+        color: white;
+        border: none;
+        padding: 0.4rem 1rem;
+        border-radius: 8px;
+        cursor: pointer;
+      }
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar">
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="e-calendar.html">Calendar</a></li>
+            <li><a href="e-finance.html">Finance</a></li>
+            <li><a href="e-events.html">Events</a></li>
+            <li><a href="e-notifications.html">Notifications</a></li>
+            <li><a href="e-profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <script src="JS/e-navbar.js"></script>
+</header>
+
+<section class="hero">
+    <div class="hero-text">
+        <img id="banner-image" src="Assets/logo.png" alt="SeniorSync Logo" class="hero-logo">
+        <h2>Welcome Caretaker<br>Manage your Elderly connections</h2>
+        <button id="contact">Contact Us!</button>
+    </div>
+    <div class="hero-image">
+      <div class="circle-bg">
+        <img src="Assets/doctor.png" alt="Doctor">
+      </div>
+    </div>
+</section>
+
+<section class="elderly-list">
+  <h2 class="section-header">Associated Elderly</h2>
+  <div class="elderly-item">
+    <img src="Assets/Alexa Rawles.png" class="elderly-avatar" alt="Alexa Rawles">
+    <div>
+      <p><strong>Alexa Rawles</strong></p>
+      <p>alexarawles@gmail.com</p>
+    </div>
+    <a class="view-btn" href="e-profile.html">View Profile</a>
+  </div>
+  <div class="elderly-item">
+    <img src="https://via.placeholder.com/50" class="elderly-avatar" alt="John Tan">
+    <div>
+      <p><strong>John Tan</strong></p>
+      <p>johntan123@gmail.com</p>
+    </div>
+    <a class="view-btn" href="e-profile.html">View Profile</a>
+  </div>
+  <!-- Add more elderly items as needed -->
+</section>
+
+<div id="footer-placeholder"></div>
+<script src="js/footer.js"></script>
+<script src="/JS/notificationSystem.js" type="module"></script>
+<script src="/JS/chatbot.js" type="module"></script>
+</body>
+</html>

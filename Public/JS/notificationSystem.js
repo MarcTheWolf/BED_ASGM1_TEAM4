@@ -2,6 +2,9 @@
   let notiQueue = [];
   let isDisplaying = false;
 
+  // Connect to socket.io
+  const socket = io();
+
   function injectNotificationCSS() {
     if (document.getElementById('notification-css')) return;
 
@@ -39,28 +42,6 @@
     return bar;
   }
 
-  async function fetchNewNotifications() {
-    if (notiQueue.length > 0 || isDisplaying) return; // 💡 Only fetch if queue is empty and nothing is displaying
-
-    const user = JSON.parse(localStorage.getItem('user'));
-    try {
-      const res = await fetch('/getUnnotified', {
-        headers: {
-          'Authorization': 'Bearer ' + user.token
-        }
-      });
-
-      if (!res.ok) throw new Error('--');
-
-      const notifications = await res.json();
-      if (Array.isArray(notifications) && notifications.length > 0) {
-        notiQueue.push(...notifications);
-        displayNextNotification();
-      }
-    } catch (err) {
-    }
-  }
-
   async function displayNextNotification() {
     if (isDisplaying || notiQueue.length === 0) return;
     isDisplaying = true;
@@ -70,27 +51,36 @@
     const bar = createNotificationBar(noti.description);
 
     try {
-      const markRes = await fetch(`/markNotificationAsNotified/${noti.noti_id}`, {
+      await fetch(`/markNotificationAsNotified/${noti.noti_id}`, {
         method: 'DELETE',
         headers: {
           'Authorization': 'Bearer ' + user.token
         }
       });
-
-      if (!markRes.ok) {
-        console.warn(`Failed to mark noti ${noti.noti_id} as notified`);
-      }
     } catch (err) {
-      console.error(`[Mark Failed: noti_id ${noti.noti_id}]`, err);
+      console.warn(`Failed to mark notification ${noti.noti_id} as notified`);
     }
 
     setTimeout(() => {
       bar.remove();
       isDisplaying = false;
-      displayNextNotification(); // Show next in queue
+      displayNextNotification();
     }, 5000);
   }
 
+  // On receiving a new notification from the backend via socket
+  socket.on('notification', (notification) => {
+    notiQueue.push(notification);
+    displayNextNotification();
+  });
+  
+
+  // Send user ID to register for socket connection
+  const user = JSON.parse(localStorage.getItem('user'));
+  console.log("User ID for socket registration:", user?.id);
+  if (user?.id) {
+    socket.emit('register', user.id);
+  }
+
   injectNotificationCSS();
-  setInterval(fetchNewNotifications, 5000); // Poll every 5s only if queue is clear
 })();
