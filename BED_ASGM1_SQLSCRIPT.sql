@@ -49,23 +49,37 @@ CREATE TABLE MedicationList (
     description VARCHAR(200) NULL,
     dosage VARCHAR(50) NOT NULL,
     time TIME NULL,
-    frequency VARCHAR(2) NOT NULL CHECK (frequency IN ('D', 'W', 'M', 'WR')), -- D for daily, W for weekly, M for Monthly, WR for When Required
+    frequency VARCHAR(2) NOT NULL CHECK (frequency IN ('D', 'W', 'WR')), -- D for daily, W for weekly, WR for When Required
     start_date DATE NOT NULL,
     FOREIGN KEY (account_id) REFERENCES AccountPassword(id)
 );
+
 
 -- Insert medications for account_id = 1
 INSERT INTO MedicationList (account_id, name, description, dosage, time, frequency, start_date) VALUES
 -- For acc_id 1
 (1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
-(1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', '21:00', 'D', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
+(1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', Null, 'W', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38�C', '1 tablet', NULL, 'WR', '2025-06-01'),
 
 -- For acc_id 4
 (4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),
 (4, 'Salbutamol Inhaler', 'Relief inhaler for Asthma symptoms', '2 puffs', NULL, 'WR', '2025-07-01'),
 (4, 'Paracetamol', 'For joint pain associated with Osteoarthritis', '1 tablet', '13:00', 'D', '2025-07-01'),
 (4, 'Losartan', 'Kidney protection for Chronic Kidney Disease', '1 tablet', '09:00', 'D', '2025-07-01');
+
+
+
+CREATE TABLE WeeklyMedicationTiming (
+	medTime_id INT PRIMARY KEY IDENTITY(1,1),
+	med_id INT NOT NULL,
+	day INT NOT NULL check (day <=7 ),
+	time TIME NOT NULL,
+)
+
+INSERT INTO WeeklyMedicationTiming (med_id, day, time) VALUES
+(2, 1, '14:00'), -- Monday at 2 PM
+(2, 4, '14:00'); -- Thursday at 2 PM
 
 
 
@@ -163,16 +177,32 @@ INSERT INTO MedicalConditionList (name, descr, acc_id, prescription_date, update
 ('Chronic Kidney Disease', 'Stage 2; requires dietary control and kidney-protective medication.', 4, '2024-03-18', GETDATE(), 2);
 
 
+Create table MedicationConditionAssociationList(
+	id INT PRIMARY KEY IDENTITY(1,1),
+	med_id INT NOT NULL,
+	medc_id INT NOT NULL,
+
+)
+
+INSERT INTO MedicationConditionAssociationList (med_id, medc_id) VALUES 
+(1, 1),
+(2, 2),
+(4, 3),
+(5, 4)
+
+
 Create table MonthlyExpenseGoal(
 	id INT PRIMARY KEY,
 	monthly_goal DECIMAL(10, 2),
 
+
 	FOREIGN KEY (id) REFERENCES AccountPassword(id)
 )
 
+
 Insert INTO MonthlyExpenseGoal(id, monthly_goal)
 VALUES
-(1, 5000)
+(1, 500)
 
 
 CREATE TABLE ExpensesList (
@@ -231,6 +261,7 @@ INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
 
 ('other', 'New phone', 1200.00, 4, '2025-06-01'),
 ('food', 'Anniversary dinner', 200.00, 4, '2025-06-06'),
+
 ('transport', 'Top-up petrol', 70.00, 4, '2025-07-04'),
 ('entertainment', 'Disney+', 49.99, 4, '2025-07-07');
 
@@ -248,11 +279,12 @@ create table notificationList(
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
+drop table notificationList;
+
 CREATE TABLE TaskList(
     task_id INT PRIMARY KEY IDENTITY(1,1),
     task_name VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
     time VARCHAR(10) NULL
 );
-
 
