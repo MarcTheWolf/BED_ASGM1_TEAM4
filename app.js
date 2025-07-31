@@ -28,7 +28,11 @@ const financeController = require("./Controllers/financeController.js");
 const taskController = require("./Controllers/taskController.js");
 const notificationsController = require("./Controllers/notificationsController.js");
 
+
 const mapRoutes = require('./Controllers/mapController.js');
+
+const chatbotController = require("./Controllers/chatbotController.js");
+
 
 
 const authorization = require("./Middlewares/authorization.js");
@@ -82,6 +86,10 @@ app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInforma
 //Medical Information Autocomplete, Use of external API from backend (By Marcus)
 app.get("/autocompleteMedication/:query", medicalInformationController.autocompleteMedication);
 app.get("/autocompleteMedicalCondition/:query", medicalInformationController.autocompleteMedicalCondition);
+
+//AI Chatbot Endpoints, Use of external API (By Marcus)
+app.post("/chatbot/chat", authorization.verifyJWT, chatbotController.getChatbotResponse);
+app.delete("/chatbot/clearHistory", authorization.verifyJWT, chatbotController.clearChatHistory);
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
