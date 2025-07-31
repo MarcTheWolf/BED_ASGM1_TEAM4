@@ -17,7 +17,6 @@ function verifyJWT(req, res, next) {
     }
 
     req.user = decoded; // Attach decoded token to request object
-    console.log("Decoded token:", decoded);
     next(); // Continue to next middleware/route
   });
 }
