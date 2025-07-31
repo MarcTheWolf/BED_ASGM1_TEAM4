@@ -88,7 +88,7 @@ router.put('/updateAddress', async (req, res) => {
     }
     try {
         const updatedAddress = await geoService.updateUserAddress(accountId, address);
-        res.json({ address: updatedAddress });
+        return res.json({ address: updatedAddress });
     } catch (err) {
         console.error('Error updating user address:', err.message);
         res.status(500).json({ error: 'Failed to update user address' });
