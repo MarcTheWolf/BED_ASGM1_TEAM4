@@ -19,6 +19,8 @@ app.use(express.urlencoded({ extended: true }));
 
 const notificationEngine = require("./Services/notificationEngine.js");
 
+
+
 const accountController = require("./Controllers/accountController.js");
 const medicalInformationController = require("./Controllers/medicalInformationController.js");
 const eventController = require("./Controllers/eventController.js");
@@ -26,7 +28,11 @@ const financeController = require("./Controllers/financeController.js");
 const taskController = require("./Controllers/taskController.js");
 const notificationsController = require("./Controllers/notificationsController.js");
 
+
+const mapRoutes = require('./Controllers/mapController.js');
+
 const chatbotController = require("./Controllers/chatbotController.js");
+
 
 
 const authorization = require("./Middlewares/authorization.js");
@@ -36,6 +42,7 @@ const {
   validateMedicalCondition,
 } = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
 
+app.use("/api/maps", mapRoutes);
 
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
@@ -99,6 +106,7 @@ app.delete("/unregisterEvent/:event_id", authorization.verifyJWT, eventControlle
 app.post("/createEvent", authorization.verifyJWT, authorization.authorization, eventController.createEvent);
 app.put("/updateEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.updateEvent);
 app.delete("/deleteEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.deleteEvent);
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

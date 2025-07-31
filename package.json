@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "Authenticates a user's login credentials. The server checks if the phone number exists in the database and verifies the provided password. If both match, it returns the account ID.",
   "dependencies": {
+    "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",
     "dotenv": "^16.5.0",
@@ -18,7 +19,11 @@
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^11.0.1",
+
+    "node-fetch": "^3.3.2",
+
     "openai": "^5.11.0",
+
     "path": "^0.12.7",
     "socket.io": "^4.8.1",
     "swagger-autogen": "^2.23.7",

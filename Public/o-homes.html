@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title>Events Page</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="CSS/e-events.css">
+    </head>
+    <body>
+<header>
+    <link rel="stylesheet" href="CSS/e-navbar.css">
+    <nav class="navbar">
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="e-calendar.html"></a></li>
+            <li><a href="e-finance.html"></a></li>
+            <li><a href="e-events.html"></a></li>
+            <li><a href="e-notifications.html"></a></li>
+            <li><a href="e-profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <script src="JS/e-navbar.js"></script>
+</header>
+
+    <!-- Title header-->
+    <div class="event-title-container">
+        <span class="highlight-box"></span>
+        <h1 class="event-title">Event Details</h1>
+    </div>
+
+    <!-- Event Button Container -->
+    <div class="event-button-container">
+        <button class="event-button selected" id="AllEventsButton">All Events</button>
+        <button class="event-button" id="RegisteredEventsButton">Registered Events</button>
+        <button class="event-button" id="addEventButton" hidden>Add Event</button>
+    </div>
+
+    <!-- Events Container -->
+    <div class="events-container" id="EventsContainer">
+
+        <div class="event-container" id="AllEventsContainer">
+            
+        </div>
+        <button id="seeMoreBtn">See More</button>
+    </div>
+
+
+    <!-- Event Details Popup-->
+    <div id="eventModal" class="modal hidden">
+      <div class="modal-content">
+        <span class="close" id="modalClose">&times;</span>
+        <img id="modalImage" src="" alt="Event image" />
+        <h2 id="modalName"></h2>
+        <p><strong>Description:</strong> <span id="modalDescription"></span></p>
+        <p><strong>Date:</strong> <span id="modalDate"></span></p>
+        <p><strong>Time:</strong> <span id="modalTime"></span></p>
+        <p><strong>Location:</strong> <span id="modalLocation"></span></p>
+        <p><strong>Weekly:</strong> <span id="modalWeekly"></span></p>
+        <p><strong>Equipment Required:</strong> <span id="modalEquipment"></span></p>
+      </div>
+    </div>
+
+    <!-- Add Event Form -->
+     <div id="addEventModalBackdrop" class="modal-AddEvent hidden">
+        <div class="modal-contents">
+            <form id="addEventForm">
+                <h2>Add New Event</h2>
+
+                <label>
+                    Event Name:
+                    <input type="text" name="name" required>
+                </label>
+
+                <label>
+                    Description:
+                    <textarea name="description" required></textarea>
+                </label>
+
+                <label>
+                    Date:
+                    <input type="date" name="date" required>
+                </label>
+
+                <label>
+                    Time:
+                    <input type="time" name="time" required>
+                </label>
+
+                <label>
+                    Location:
+                    <input type="text" name="location" required>
+                </label>
+
+                <label>
+                    Equipment Required:
+                    <input type="text" name="equipment_required">
+                </label>
+
+                <label>
+                    Weekly:
+                    <input type="checkbox" name="weekly">
+                </label>
+
+                <label>
+                    Image File:
+                    <input type="file" name="image">
+                </label>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeAddEventModal">Cancel</button>
+                    <button type="submit" id="createEventButton">Create Event</button>
+                </div>
+            </form>
+        </div>
+      </div>
+
+    <!-- Edit Event Details form-->
+     <div id="editEventModalBackdrop" class="modal-EditEvent hidden">
+        <div class="modal-contents">
+            <form id="editEventForm">
+                <h2>Edit Event</h2>
+
+                <input type="hidden" name="id">
+
+                <label>Event Name:
+                    <input type="text" name="name" required>
+                </label>
+
+                <label>Description:
+                    <textarea name="description" required></textarea>
+                </label>
+
+                <label>Date:
+                    <input type="date" name="date" required>
+                </label>
+
+                <label>Time:
+                    <input type="time" name="time" required>
+                </label>
+
+                <label>Location:
+                    <input type="text" name="location" required>
+                </label>
+
+                <label>Equipment Required:
+                    <input type="text" name="equipment_required">
+                </label>
+
+                <label>Weekly:
+                    <input type="checkbox" name="weekly">
+                </label>
+
+                <label>Banner Image:
+                    <input type="file" name="banner_image">
+                </label>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeEditEventModal">Cancel</button>
+                    <button type="submit">Save Changes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Popover for messages -->
+    <div id="messagePopover" class="popover hidden">
+        <span id="popoverMessage"></span>
+        <button id="closePopover" aria-label="Close">&times;</button>
+    </div>
+
+    <!-- Footer -->
+      
+      <div id="footer-placeholder"></div>
+      <script src="js/footer.js"></script>
+      <script src="JS/e-events.js"></script>
+        <script src="/JS/notificationSystem.js" type="module"></script>
+    </body>
+</html>
