@@ -10,6 +10,7 @@
   "license": "ISC",
   "description": "Authenticates a user's login credentials. The server checks if the phone number exists in the database and verifies the provided password. If both match, it returns the account ID.",
   "dependencies": {
+    "@mapbox/polyline": "^1.2.1",
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
     "cloudinary": "^2.7.0",

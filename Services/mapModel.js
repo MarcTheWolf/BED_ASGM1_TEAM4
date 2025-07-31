@@ -1,5 +1,7 @@
 const axios = require("axios");
 const dotenv = require("dotenv");
+const sql = require("mssql");
+const dbConfig = require("../dbConfig");
 dotenv.config();
 
 let inMemoryToken = null;
@@ -63,6 +65,9 @@ async function geocode(address) {
             return {
                 lat: data.results[0].LATITUDE,
                 lng: data.results[0].LONGITUDE,
+                address: data.results[0].ADDRESS,
+                postalcode: data.results[0].POSTAL,
+                data: data.results[0],
             };
         } else {
             throw new Error("Address not found");
@@ -73,9 +78,110 @@ async function geocode(address) {
     }
 }
 
+
+async function getUserAddress(accountId) {
+    let connection;
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+        request.input("accountId", sql.Int, accountId);
+
+        const result = await request.query(`
+            SELECT address FROM AccountProfile
+            WHERE id = @accountId
+        `);
+
+        if (result.recordset.length > 0) {
+            return result.recordset[0].address;
+        } else {
+            throw new Error("Address not found for this account");
+        }
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
+async function updateUserAddress(accountId, address) {
+    let connection;
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+        request.input("accountId", sql.Int, accountId);
+        request.input("address", sql.NVarChar, address);
+
+        const result = await request.query(`
+            UPDATE AccountProfile
+            SET address = @address
+            WHERE id = @accountId
+        `);
+
+        return result.rowsAffected > 0;
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
+async function deleteAddress(accountId) {
+    let connection;
+    try {
+        connection = await sql.connect(dbConfig);
+        const request = connection.request();
+        request.input("accountId", sql.Int, accountId);
+        const result = await request.query(`
+            UPDATE AccountProfile
+            SET address = NULL
+            WHERE id = @accountId;
+        `);
+
+        return result.rowsAffected > 0; // Return true if delete was successful
+    } catch (error) {
+        console.error("Model error:", error);
+        throw error;
+    } finally {
+        if (connection) {
+            connection.close();
+        }
+    }
+}
+
+async function getRoute(startLat, startLng, endLat, endLng, routeType = 'walk') {
+  let accessToken = getInMemoryAccessToken();
+        if (!accessToken) {
+            accessToken = await getAccessToken();
+        }
+
+  const res = await axios.get(`${process.env.ONE_MAP_BASE_URL}/api/routingsvc/route`, {
+    params: {
+      start: `${startLat},${startLng}`,
+      end: `${endLat},${endLng}`,
+      routeType,
+    },
+    headers: {
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
+
+  return res.data;
+}
+
+
 module.exports = {
     geocode,
+    getRoute,
     getAccessToken,
     setAccessToken,
+    getUserAddress,
+    deleteAddress,
+    updateUserAddress,
     getInMemoryAccessToken,
 };

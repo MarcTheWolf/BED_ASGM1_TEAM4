@@ -1,88 +1,217 @@
-/* e-maps.css */
-
-body {
-    font-family: 'Segoe UI', Arial, sans-serif;
-    background: #f4f6fb;
+body{
+    height: 100vh;
     margin: 0;
-    padding: 0;
-    min-height: 100vh;
+    width: 100vw;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
 }
 
-.container {
-    max-width: 500px;
-    margin: 60px auto 0 auto;
-    background: #fff;
-    border-radius: 12px;
-    box-shadow: 0 4px 24px rgba(0,0,0,0.08);
-    padding: 32px 28px 28px 28px;
+::-webkit-scrollbar {
+    display: none;
 }
 
-h1 {
-    text-align: center;
-    color: #2d3a4b;
-    margin-bottom: 28px;
-    font-size: 2rem;
-    letter-spacing: 1px;
+header {
+    margin-bottom: 0;
 }
 
-form#searchForm {
+
+.map-title-container {
     display: flex;
-    gap: 10px;
-    margin-bottom: 24px;
+    flex-direction: row;
+    text-align: left;
+    margin-top: 80px;
+    align-items: center;
+    background-color: #ffffff;
 }
 
-#searchInput {
-    flex: 1;
-    padding: 10px 14px;
-    border: 1px solid #cfd8dc;
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s;
+.map-title {
+    font-size: 2rem;
+    color: #1d3557;
 }
 
-#searchInput:focus {
-    border-color: #1976d2;
-    outline: none;
+.highlight-box {
+    width: 20px;
+    height: 50px;
+    background-color: #81C7BE;
+    margin: 10px;
+    border-radius: 10px;
 }
 
-button[type="submit"] {
-    background: #1976d2;
-    color: #fff;
+.account-bar {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    padding: 18px 32px;
+    background: white;
+    border-radius: 10px;
+    border: 5px solid #6fc1be;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    margin: 24px 0 0 0;
+    max-width: 100%;
+
+}
+
+.account-title {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #1d3557;
+}
+
+.homeAddress {
+    font-size: 20px;
+    font-weight: bolder;
+    color: #457b9d;
+    margin-left: 16px;
+}
+
+.account-actions {
+    display: flex;
+    flex-direction: row;
+    gap: 18px;
+    margin-left: auto;
+}
+
+.account-actions button {
+    background-color: #6fc1be;
+    color: white;
+    font-weight: bold;
     border: none;
-    border-radius: 6px;
-    padding: 10px 22px;
-    font-size: 1rem;
+    padding: 10px 14px;
+    border-radius: 16px;
     cursor: pointer;
-    transition: background 0.2s;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
 }
 
-button[type="submit"]:hover,
-button[type="submit"]:focus {
-    background: #125ea7;
+.account-actions button:hover {
+    background-color: #5da9a7;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease;
 }
 
-#results {
-    margin-top: 18px;
-    min-height: 40px;
-    font-size: 1rem;
-    color: #374151;
-    word-break: break-word;
+@media (max-width: 700px) {
+    .account-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 18px 16px;
+        height: fit-content;
+        gap: 20px;
+    }
+    .account-title {
+        font-size: 1.2rem;
+    }
+    .homeAddress {
+        font-size: 18px;
+    }
+    .account-actions {
+        flex-direction: column;
+        gap: 12px;
+        align-self: center;
+        margin-left: 0;
+        width: 90%
+    }
 }
 
-/* Responsive */
-@media (max-width: 600px) {
-    .container {
+.modal-AddAddress {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.modal-contents {
+    background: white;
+    padding: 2rem;
+    border-radius: 10px;
+    max-width: 500px;
+    width: 90%;
+    border: 5px solid #6fc1be;
+}
+
+.modal-contents form {
+    display: flex;
+    flex-direction: column;
+}
+.modal-contents form input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    width: 100%;
+}
+
+.modal-actions {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-top: 1rem;
+}
+
+.modal-actions button {
+    margin-top: auto;
+    background-color: #6fc1be;
+    color: white;
+    font-weight: bold;
+    border: none;
+    padding: 10px 14px ;
+    border-radius: 16px;
+    cursor: pointer;
+    font-size: 12px;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: background-color 0.2s ease;
+}
+
+.modal-actions button:hover {
+    background-color: #5da9a7;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transform: translateY(-2px);
+    transition: background-color 0.3s ease;
+}
+
+
+@media (max-width: 900px) {
+    .map-container {
         max-width: 98vw;
-        padding: 18px 6vw;
+        padding: 18px 2vw;
+    }
+    iframe {
+        max-width: 100vw;
+        min-height: 260px;
+    }
+}
+
+@media (max-width: 700px) {
+    .map-container {
+        margin-top: 60px;
+        padding: 14px 2vw;
+        border-radius: 10px;
     }
     h1 {
         font-size: 1.3rem;
+        margin-bottom: 18px;
     }
     form#searchForm {
         flex-direction: column;
-        gap: 8px;
-    }
-    button[type="submit"] {
+        gap: 10px;
         width: 100%;
     }
+    iframe {
+        margin-top: 18px;
+        min-height: 180px;
+    }
+}
+
+.hidden{
+    display: none;
 }

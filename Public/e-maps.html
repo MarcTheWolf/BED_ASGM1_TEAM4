@@ -7,6 +7,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="CSS/e-maps.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     </head>
     <body>
 
@@ -25,14 +26,60 @@
     <script src="JS/e-navbar.js"></script>
 </header>
 
-        <div class="container">
+    <div class="map-title-container">
+        <span class="highlight-box"></span>
+        <h1 class="map-title">Mapping</h1>
+    </div>
+
+    <div class="account-bar">
+
+        <div class="address-info">
+        <h2 class="account-title">Current Home Address:  </h2>
+        <h3 id="homeAddress"></h3>
+        </div>
+
+        <div class="account-actions">
+            <button id="updateAddressModalButton">Update Home Address</button>
+            <button id="deleteAddressBtn">Delete Home Address</button>
+        </div>
+    </div>
+
+    <div id="addAddressModalBackdrop" class="modal-AddAddress hidden">
+        <div class="modal-contents">
+            <form id="addAddressForm">
+                <h2 class="modal-title"><b>Add New Address</b></h2>
+
+                <div class="form-group">
+                    <h3>New Address:</h3>
+                    <input type="text" id="addressInput" name="address" placeholder="Enter new address, the clearer the address the clearer the location" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeAddAddressModal">Cancel</button>
+                    <button type="submit" id="updateAddressBtn">Update Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <div class="map-container">
             <h1>Map Search</h1>
             <form id="searchForm">
-                <input type="text" id="searchInput" placeholder="Search for a location" required>
+                <input type="text" id="addressInput" placeholder="Enter Starting Location" required>
+                <button type="submit">Use Home Address</button>
+                <input type="text" id="searchInput" placeholder="Search for Destination location" required>
                 <button type="submit">Search</button>
             </form>
             <div id="results"></div>
 
+            <div id="map">
+                            
+            </div>
+        </div>
+
+        
+        <script src="https://unpkg.com/@mapbox/polyline"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
         <script src="JS/e-maps.js" async defer></script>
     </body>
 </html>
