@@ -52,7 +52,6 @@ const {
   validateMedicalCondition,
 } = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
 
-app.use("/api/maps", mapRoutes);
 
 ////////////////////////////////////////////////////
 /////////////API Endpoints//////////////////////////
@@ -119,6 +118,7 @@ app.post("/createEvent", authorization.verifyJWT, authorization.authorization, e
 app.put("/updateEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.updateEvent);
 app.delete("/deleteEvent/:event_id", authorization.verifyJWT, authorization.authorization, eventController.deleteEvent);
 
+app.use("/api/maps", authorization.verifyJWT, mapRoutes);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
