@@ -6,7 +6,7 @@ async function getExpenditureGoalByID(accountId) {
         const pool = await sql.connect(dbConfig);
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
-            .query("SELECT * FROM MonthlyExpenseGoal WHERE id = @accountId");
+            .query("SELECT * FROM MonthlyExpenseGoal WHERE acc_id = @accountId");
 
             
         return result;
@@ -112,12 +112,13 @@ async function getAllTransactionsByID(accountId) {
     }
 }
 
-async function getAccountBudget(accountId) {
+async function getAccountBudget(accountId, month) {
   try {
     const pool = await sql.connect(dbConfig);
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
-      .query("SELECT monthly_goal FROM MonthlyExpenseGoal WHERE id = @accountId");
+      .input("month", sql.NVarChar, month) // Ensure the month is passed correctly
+      .query("SELECT monthly_goal FROM MonthlyExpenseGoal WHERE acc_id = @accountId AND month = @month");
     if (result.recordset.length === 0) {
       return { monthly_goal: 0, found: false };
     }
@@ -151,14 +152,15 @@ async function addTransactionToAccount(accountId, transaction) {
     }
 }
 
-async function addExpenditureGoal(accountId, goal) {
+async function addExpenditureGoal(accountId, goal, Month) {
   try {
     const pool = await sql.connect(dbConfig);
 
     // Check if an expenditure goal already exists for this account
     const existingRecord = await pool.request()
       .input("accountId", sql.Int, accountId)
-      .query("SELECT COUNT(*) AS count FROM MonthlyExpenseGoal WHERE id = @accountId");
+        .input("Month", sql.NVarChar, Month) // Ensure the month is passed correctly
+      .query("SELECT COUNT(*) AS count FROM MonthlyExpenseGoal WHERE acc_id = @accountId AND month = @Month");
 
     // If the record exists, return a message
     if (existingRecord.recordset[0].count > 0) {
@@ -169,9 +171,10 @@ async function addExpenditureGoal(accountId, goal) {
     await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("monthlyGoal", sql.Decimal(10, 2), goal)  // Ensure the correct property name
+      .input("Month", sql.NVarChar, Month) // Ensure the month is passed correctly
       .query(`
-        INSERT INTO MonthlyExpenseGoal (id, monthly_goal)
-        VALUES (@accountId, @monthlyGoal)
+        INSERT INTO MonthlyExpenseGoal (id, monthly_goal, month)
+        VALUES (@accountId, @monthlyGoal, @Month)
       `);
 
     return { message: "Expenditure goal added successfully" };
@@ -181,16 +184,17 @@ async function addExpenditureGoal(accountId, goal) {
   }
 }
 // Modify an existing expenditure goal
-async function modifyExpenditureGoal(accountId, newGoal) {
+async function modifyExpenditureGoal(accountId, newGoal, month) {
   try {
     const pool = await sql.connect(dbConfig);
     await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("newGoal", sql.Decimal(10, 2), newGoal)
+      .input("month", sql.NVarChar, month) // Ensure the month is passed correctly
       .query(`
         UPDATE MonthlyExpenseGoal
         SET monthly_goal = @newGoal
-        WHERE id = @accountId
+        WHERE id = @accountId AND month = @month
       `);
 
     return { message: "Expenditure goal updated successfully" };

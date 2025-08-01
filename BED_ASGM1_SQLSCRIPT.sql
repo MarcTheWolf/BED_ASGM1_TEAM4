@@ -163,16 +163,25 @@ INSERT INTO MedicalConditionList (name, descr, acc_id, prescription_date, update
 ('Chronic Kidney Disease', 'Stage 2; requires dietary control and kidney-protective medication.', 4, '2024-03-18', GETDATE(), 2);
 
 
-Create table MonthlyExpenseGoal(
-	id INT PRIMARY KEY,
-	monthly_goal DECIMAL(10, 2),
+drop table MonthlyExpenseGoal;
 
-	FOREIGN KEY (id) REFERENCES AccountPassword(id)
-)
+CREATE TABLE MonthlyExpenseGoal (
+    id INT IDENTITY(1,1) PRIMARY KEY,
+    acc_id INT NOT NULL,
+    month VARCHAR(7) NOT NULL, -- Format: YYYY-MM (e.g., 2025-01)
+    monthly_goal DECIMAL(10, 2) NOT NULL,
+    FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
+);
 
-Insert INTO MonthlyExpenseGoal(id, monthly_goal)
-VALUES
-(1, 5000)
+INSERT INTO MonthlyExpenseGoal (acc_id, month, monthly_goal)
+VALUES 
+(1, '2025-01', 500.00),
+(1, '2025-02', 480.00),
+(1, '2025-03', 490.00),
+(1, '2025-04', 510.00),
+(1, '2025-05', 500.00),
+(1, '2025-06', 495.00),
+(1, '2025-07', 505.00);
 
 
 CREATE TABLE ExpensesList (

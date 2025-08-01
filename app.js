@@ -94,12 +94,14 @@ app.get("/getTotalExpenditureByID", authorization.verifyJWT, financeController.g
 app.get("/getMonthlyExpenditureByID", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
 app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.getAllTransactionsByID);
 app.get("/getTransactionByID/:id", authorization.verifyJWT, financeController.getTransactionByID);
+app.get("/getTransactionsByMonth/:month", authorization.verifyJWT, financeController.getTransactionsByMonth);
 
 app.post("/addTransactionToAccount", authorization.verifyJWT, financeController.addTransactionToAccount);
 app.post("/addExpenditureGoal", authorization.verifyJWT, financeController.updateExpenditureGoal);
 
 app.put("/updateTransaction/:id", authorization.verifyJWT, financeController.updateTransaction);
 app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.deleteTransaction);
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Displaying data as graphs/charts, use of external API from backend (By Belle) ////////////////////////////////////////////////////////////////

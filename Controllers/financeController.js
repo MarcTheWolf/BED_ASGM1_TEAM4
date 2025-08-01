@@ -52,6 +52,7 @@ async function getMonthlyExpenditureByID(req, res) {
 async function getExpenditureByMonthBarChart(req, res) {
   try {
     const userId = req.user.id;
+    
     const data = await financeModel.getMonthlyExpenditureByID(userId);
 
     if (!Array.isArray(data)) {
@@ -155,7 +156,7 @@ async function getBudgetExpenditureDoughnutChart(req, res) {
     const month = req.params.month; // 'YYYY-MM'
 
     const { transactions, total } = await financeModel.getExpenditureForMonth(userId, month);
-    let budgetData = await financeModel.getAccountBudget(userId);
+    let budgetData = await financeModel.getAccountBudget(userId, month);
 
     if (!budgetData || budgetData.monthly_goal == null) {
       budgetData = { monthly_goal: 0 };
@@ -376,17 +377,19 @@ async function updateExpenditureGoal(req, res) {
   const accountId = req.user.id; // Get account ID from the user object
   const monthly_Goal = req.body.monthly_goal; // Get new goal from request body
 
+  const currentMonth = new Date().toISOString().slice(0, 7);
+
   try {
     // Check if an expenditure goal already exists for this account
     const existingGoal = await financeModel.getExpenditureGoalByID(accountId);
 
     if (existingGoal.recordset.length > 0) {
       // If a goal exists, update it
-      await financeModel.modifyExpenditureGoal(accountId, monthly_Goal);
+      await financeModel.modifyExpenditureGoal(accountId, monthly_Goal, currentMonth);
       return res.status(200).json({ message: "Expenditure goal updated successfully." });
     } else {
       // If no goal exists, create a new one
-      await financeModel.addExpenditureGoal(accountId, monthly_Goal );
+      await financeModel.addExpenditureGoal(accountId, monthly_Goal, currentMonth);
       return res.status(201).json({ message: "Expenditure goal created successfully." });
     }
 
@@ -458,8 +461,21 @@ async function deleteTransaction(req, res) {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+async function getTransactionsByMonth(req, res) {
+  try {
+    const accountId = req.user.id;
+    const month = req.params.month; // 'YYYY-MM'
+
+    const { transactions } = await financeModel.getExpenditureForMonth(accountId, month);
+    res.status(200).json(transactions);
+  } catch (error) {
+    console.error("Error fetching transactions by month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
 
 module.exports = {
+    getTransactionsByMonth,
     getExpenditureGoalByID,
     getTotalExpenditureByID,
     getMonthlyExpenditureByID,

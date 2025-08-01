@@ -29,11 +29,65 @@
     </div>
 
 
-    <div class="budget-section">
-        <h2>Spendings This Month</h2>
-        <img src="" alt="Finance Breakdown" class="finance-pie-chart">
-        <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+<div class="budget-section finance-container">
+    <div class="chart-wrapper">
+    <div class="chart-header">
+        <h2 class="section-title">Spendings This Month</h2>
+
+        <label for="month-select" class="month-filter-label">Filter:</label>
+        <select id="month-select" class="month-select"></select>
     </div>
+
+    <img src="" alt="Finance Breakdown" class="finance-pie-chart">
+    </div>
+
+    <div class="category-breakdown">
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="Groceries" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Groceries</span>
+                    <span class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" class="bar-base">
+                </div>
+            </div>
+        </div>
+
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="Groceries" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Groceries</span>
+                    <span class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" class="bar-base">
+                </div>
+            </div>
+        </div>
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="Groceries" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Groceries</span>
+                    <span class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" class="bar-base">
+                </div>
+            </div>
+        </div>
+        <div>
+            <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+        </div>
+        
+    </div>
+</div>
 
 
     <!-- Transaction Records Section-->
@@ -81,7 +135,6 @@
             <option value="" disabled selected>Select category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
-            <option value="rent">Rent</option>
             <option value="utilities">Utilities</option>
             <option value="entertainment">Entertainment</option>
             <option value="other">Other</option>
