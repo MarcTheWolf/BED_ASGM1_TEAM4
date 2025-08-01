@@ -65,8 +65,9 @@
       bar.remove();
       isDisplaying = false;
       displayNextNotification();
-    }, 5000);
+    }, 10000);
   }
+
 
   // On receiving a new notification from the backend via socket
   socket.on('notification', (notification) => {
@@ -106,4 +107,32 @@
       console.error("❌ Error fetching unnotified notifications:", err);
     }
   });
+
+  window.showCustomNotification = function(message) {
+  injectNotificationCSS();
+  const bar = createNotificationBar(message);
+  setTimeout(() => bar.remove(), 5000);
+};
+
+function createNotificationBar(message) {
+  const bar = document.createElement('div');
+  bar.className = 'global-notification-bar';
+  bar.innerText = message;
+  document.body.prepend(bar);
+  return bar;
+}
+
+window.showCustomNotification = function(message) {
+  injectNotificationCSS();
+  const bar = createNotificationBar(message);
+  setTimeout(() => bar.remove(), 5000);
+};
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const testBtn = document.getElementById('test-noti-btn');
+    testBtn?.addEventListener('click', () => {
+      window.showCustomNotification("🔔 This is a test notification!");
+    });
+  });
+
 })();
