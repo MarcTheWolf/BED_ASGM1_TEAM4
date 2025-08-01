@@ -1,3 +1,5 @@
+let map;
+
 document.addEventListener("DOMContentLoaded", async function () {
     console.log("DOMContentLoaded event fired");
 
@@ -21,11 +23,10 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    const map = L.map('map').setView([mapCoords.lat, mapCoords.lng], 13); //Display map
+    map = L.map('map').setView([mapCoords.lat, mapCoords.lng], 13); //Display map
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}, { maxZoom: 19 }).addTo(map);
 
-    window.map = map;
 
 });
 
@@ -274,6 +275,7 @@ function displayMarkersAndRoute(startCoords, destCoords, routeData){
     routeMarkers = [];
 
     const coords = polyline.decode(routeData.route_geometry);
+    console.log("Decoded route coordinates:", coords);
 
     const latLngs = coords.map(([lat, lng]) => ({ lat, lng }));
     // add the route line to the map
