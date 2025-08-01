@@ -34,7 +34,7 @@
         <input type="text" id="phone" name="phone" value="8917 3798">
 
         <label for="dob">Date of Birth</label>
-        <input type="date" id="dob" name="dob" value="1965-03-07">
+        <input type="date" id="dob" name="dob" value="1965-03-07" required>
 
         <label for="gender">Gender</label>
         <select id="gender" name="gender">
@@ -44,7 +44,13 @@
         </select>
 
         <label for="language">Preferred Language</label>
-        <input type="text" id="language" name="language" value="English, Chinese">
+        <select id="language" name="language">
+          <option selected value="English">English</option>
+          <option value="Chinese">Chinese</option>
+          <option value="Malay">Malay</option>
+          <option value="Tamil">Tamil</option>
+          <option value="Other">Other</option>
+        </select>
 
         <label for="oldPassword">Old Password</label>
         <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter old password">

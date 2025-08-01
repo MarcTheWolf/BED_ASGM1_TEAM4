@@ -7,11 +7,15 @@ const socketIo = require('socket.io');
 
 dotenv.config();
 
+
 const app = express();
+
+
 
 const server = http.createServer(app); // create HTTP server manually
 const io = socketIo(server);
 
+app.set("io", io);
 
 const port = process.env.PORT || 3000;
 app.use(express.json());
@@ -19,6 +23,12 @@ app.use(express.urlencoded({ extended: true }));
 
 const notificationEngine = require("./Services/notificationEngine.js");
 
+// Inject socket instance and map AFTER everything is initialized
+const userSocketMap = {};
+notificationEngine.init({
+  io: app.get("io"),
+  userSocketMap
+});
 
 
 const accountController = require("./Controllers/accountController.js");
@@ -49,10 +59,12 @@ const {
 
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
+app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
+app.put("/updatePhoneNumber", authorization.verifyJWT, accountController.updatePhoneNumber);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -141,6 +153,7 @@ app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, noti
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
 //app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -152,10 +165,10 @@ app.post("/postImage", authorization.verifyJWT); //WIP
 
 
 // Task management API endpoints (By Yuxuan)
-app.get("/tasks", taskController.getTasks);
-app.post("/tasks", taskController.addTask);
-app.put("/tasks/:task_id", taskController.updateTask);
-app.delete("/tasks/:task_id",  taskController.deleteTask);
+app.get("/tasks", authorization.verifyJWT, taskController.getTasks);
+app.post("/tasks", authorization.verifyJWT, taskController.addTask);
+app.put("/tasks/:task_id", authorization.verifyJWT, taskController.updateTask);
+app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask);
 
 
 
@@ -165,20 +178,24 @@ app.delete("/tasks/:task_id",  taskController.deleteTask);
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
+  // Client must emit their accountId after connecting
+  socket.on('register', (accountId) => {
+    userSocketMap[accountId] = socket.id;
+    console.log(`User ${accountId} registered with socket ID ${socket.id}`);
+  });
+
   socket.on('disconnect', () => {
+    // Optional: Remove the mapping on disconnect
+    for (const [accountId, sockId] of Object.entries(userSocketMap)) {
+      if (sockId === socket.id) {
+        delete userSocketMap[accountId];
+        break;
+      }
+    }
     console.log('Client disconnected:', socket.id);
   });
 });
 
-
-
-
-////////////////////////////////////////////////////
-///////////////Main Engine Loop////////////////////
-////////////////////////////////////////////////////
-setInterval(async () => {
-  await notificationEngine.run();
-}, 10000);
 
 
 ////////////////////////////////////////////////////
@@ -215,4 +232,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 
 /////////////Exports Websocket io for controller use /////////////////////////////
-module.exports.io = io; // Export it
+setInterval(() => {
+  notificationEngine.run().catch(err => console.error("notificationEngine.run() error:", err));
+}, 5000);
+
+
+module.exports = { app, server, userSocketMap };
