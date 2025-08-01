@@ -44,15 +44,17 @@ async function getAccountById(id) {
   }
 }
 
+const bcrypt = require("bcrypt");
+
 async function createAccount(phone_number, password) {
   let connection;
 
   try {
+    const hashedPassword = await bcrypt.hash(password, 10);   //hashing
     connection = await sql.connect(dbConfig);
     const request = connection.request  ();
-    request.input("phone_number", sql.VarChar, phone_number);
-
-    request.input("password", sql.VarChar, password);
+    request.input("phone_number", sql.VarChar, phone_number); //saved hashed
+    request.input("password", sql.VarChar, hashedPassword);
 
     const result = await request.query(
       "INSERT INTO AccountPassword (phone_number, password) VALUES (@phone_number, @password); SELECT SCOPE_IDENTITY() AS id"
