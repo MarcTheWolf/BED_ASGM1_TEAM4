@@ -4,8 +4,6 @@ const addEventButton = document.getElementById("addEventButton");
 let visibleCount = 5;
 
 //#region Show All Events
-
-
 document.addEventListener("DOMContentLoaded", async () => {
     const account_id = localStorage.getItem("account_id")? parseInt(localStorage.getItem("account_id")) : 1;
     const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -18,11 +16,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (user.account_type === "o") {
         addEventButton.hidden = false; // Show add event button for organizers
-        RegisteredEvents.hidden = true; // Hide registered events button for organizers
+        RegisteredEvents.hidden = true;
     }
     else {
         addEventButton.hidden = true; // Hide add event button for non-organizers
-        RegisteredEvents.hidden = false; // Show registered events button for non-organizers
+        RegisteredEvents.hidden = false;
         }
 
     await displayAllEvents();
@@ -53,7 +51,7 @@ async function displayAllEvents() {
         console.error("EventsContainer element not found in the DOM.");
         return;
     }
-
+    //get all events from the database
     try {
         const response = await fetch("/getAllEvents", {
             method: "GET",
@@ -92,7 +90,7 @@ RegisteredEvents.addEventListener("click", async (event) => {
 });
 
 async function displayRegistered() {
-        AllEvents.classList.remove("selected")
+    AllEvents.classList.remove("selected")
     RegisteredEvents.classList.add("selected")
 
     const account_id = localStorage.getItem("account_id") ? parseInt(localStorage.getItem("account_id")) : null;
@@ -102,7 +100,7 @@ async function displayRegistered() {
         console.error("EventsContainer element not found in the DOM.");
         return;
     }
-
+    //get all registered events from the database for specific user
     try {
         const response = await fetch(`/getEventRegisteredByID`, {
             method: "GET",
@@ -138,7 +136,7 @@ async function displayRegistered() {
 }
 //#endregion
 
-
+//#region Event Registration and Unregistration
 document.getElementById("EventsContainer").addEventListener("click", async function (event) {
   if (event.target.classList.contains("unregister-button")) {
     const button = event.target;
@@ -149,7 +147,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
     const accId = user?.id;
 
     if (!token || !accId) {
-      alert("You must be logged in to unregister.");
+      showMessagePopover("You must be logged in to unregister.");
       return;
     }
 
@@ -177,7 +175,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
   }
 });
 
-
+//Event registration
 document.getElementById("EventsContainer").addEventListener("click", async function (event) {
   if (event.target.classList.contains("register-button")) {
     const button = event.target;
@@ -191,7 +189,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
       showMessagePopover("You must be logged in to register.");
       return;
     }
-
+//fetch request to register for the event
     try {
       const response = await fetch(`/registerEvent/${eventId}`, {
         method: "POST",
@@ -215,7 +213,10 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
     }
   }
 });
+//#endregion
 
+
+//#region Render Events for All Events and Registered Events
 function renderEvents(){
     const EventsContainer = document.getElementById("AllEventsContainer");
     const user = JSON.parse(localStorage.getItem("user")) || {};
@@ -331,9 +332,10 @@ function showEventModal(event) {
 document.getElementById("modalClose").addEventListener("click", () => {
     document.getElementById("eventModal").classList.remove("show");
 });
+//#endregion
 
-//#region Add Event
-// Add Event Modal
+
+//#region Add Event for organizers only
 const addEventModal = document.getElementById("addEventModalBackdrop");
 const closeAddEventModal = document.getElementById("closeAddEventModal");
 
@@ -351,7 +353,6 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
     const form = e.target;
     var user = JSON.parse(localStorage.getItem("user")) || {};
 
-    // 1. Get the image file from the form
     const name = form.name.value
     const description = form.description.value
     const date = form.date.value
@@ -361,15 +362,15 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
     const weekly = form.weekly.checked
     const org_id = user.id
     const imageFile = form.image.files[0];
-
+//form inputs
     let banner_image = "";
     if (imageFile) {
         const imageFormData = new FormData();
         imageFormData.append("file", imageFile);
-        imageFormData.append("upload_preset", "bed-eventpics"); // Replace with your preset name
-        imageFormData.append("cloud_name", "dixpuc6o7"); // Replace with your Cloudinary cloud name
+        imageFormData.append("upload_preset", "bed-eventpics"); 
+        imageFormData.append("cloud_name", "dixpuc6o7");
 
-        try {
+        try { //post image to cloudinary first
             const imageUploadResponse = await fetch("https://api.cloudinary.com/v1_1/dixpuc6o7/image/upload", {
                 method: "POST",
                 body: imageFormData,
@@ -387,7 +388,7 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
             return;
         }
     }
-
+//upload event data to the database
     const formData = {
         name: name,
         description: description,
@@ -427,11 +428,9 @@ document.getElementById("addEventForm").addEventListener("submit", async functio
     }
 });
 
-
 //#endregion
 
-//#region Edit Event Modal
-
+//#region Edit Event for organizers only
 const editEventModal = document.getElementById("editEventModalBackdrop");
 const closeEditEventModal = document.getElementById("closeEditEventModal");
 const editEventForm = document.getElementById("editEventForm");
@@ -444,7 +443,7 @@ document.addEventListener("click", function (e) {
         const eventId = editBtn.dataset.eventId;
         const event = window.allEvents?.find(ev => ev.id == eventId);
         if (event) {
-            editingEvent = event; // Save for later use
+            editingEvent = event; 
             openEditEventModal(event);
         } else {
             console.warn("Event not found for ID:", eventId);
@@ -456,7 +455,7 @@ function openEditEventModal(event) {
     editEventForm.id.value = event.id;
     editEventForm.name.value = event.name;
     editEventForm.description.value = event.description;
-
+    //show only event details besides the banner image
      if (event.date) {
         const date = new Date(event.date);
         editEventForm.date.value = date.toISOString().split("T")[0];
@@ -464,12 +463,11 @@ function openEditEventModal(event) {
 
     if (event.time) {
         editEventForm.time.value = event.time.substring(11,16);
-    }
+    } 
 
     editEventForm.location.value = event.location;
     editEventForm.weekly.checked = !!event.weekly;
     editEventForm.equipment_required.value = event.equipment_required || "";
-    // Don't set file input value for security reasons
     editEventModal.classList.remove("hidden");
 }
 
@@ -490,8 +488,8 @@ editEventForm.addEventListener("submit", async function (e) {
     const imageInput = editEventForm.banner_image;
     const imageFile = imageInput && imageInput.files && imageInput.files[0];
 
-    let banner_image = editingEvent?.banner_image || ""; // Default to old image
-
+    let banner_image = editingEvent?.banner_image || "";
+// If no new image is uploaded, keep the old image URL
     if (imageFile) {
         // If user uploads a new image, upload to Cloudinary and use new URL
         const imageFormData = new FormData();
@@ -517,7 +515,7 @@ editEventForm.addEventListener("submit", async function (e) {
             return;
         }
     }
-    // If no new image, keep the old image URL
+
 
     const formData = {
         id: editEventForm.id.value,
@@ -527,12 +525,12 @@ editEventForm.addEventListener("submit", async function (e) {
         time: editEventForm.time.value,
         location: editEventForm.location.value,
         equipment_required: editEventForm.equipment_required.value,
-        banner_image: banner_image, // Use new image if uploaded, else old image
+        banner_image: banner_image,
         weekly: editEventForm.weekly.checked,
         org_id: user.id
     };
 
-    try {
+    try { // Send the updated event data to the server
         const response = await fetch(`/updateEvent/${formData.id}`, {
             method: "PUT",
             headers: {
@@ -552,11 +550,9 @@ editEventForm.addEventListener("submit", async function (e) {
         showMessagePopover("Update failed.");
     }
 });
-
 //#endregion
 
-//#region Delete Event
-
+//#region Delete Event for organizers only
 document.getElementById("EventsContainer").addEventListener("click", async function (event) {
     if (event.target.classList.contains("delete-button")) {
         const button = event.target;
@@ -573,7 +569,7 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
         if (!confirm("Are you sure you want to delete this event?")) {
             return;
         }
-
+// Send a DELETE request to the server to delete the event
         try {
             const response = await fetch(`/deleteEvent/${eventId}`, {
                 method: "DELETE",
@@ -596,10 +592,10 @@ document.getElementById("EventsContainer").addEventListener("click", async funct
         }
     }
 });
-
 //#endregion
 
 
+//#region Message Popover for any messages
 function showMessagePopover(message, timeout = 3000) {
     const popover = document.getElementById('messagePopover');
     const msgSpan = document.getElementById('popoverMessage');

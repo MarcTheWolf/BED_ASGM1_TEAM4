@@ -151,7 +151,7 @@ deleteAddressButton.addEventListener("click", async function (event) {
 
     try{
     await deleteAddress();
-    alert("Address deleted successfully!");
+    showMessagePopover("Address deleted successfully!");
     await displayAddress();
     } catch (error) {
         console.error("Error deleting address:", error);

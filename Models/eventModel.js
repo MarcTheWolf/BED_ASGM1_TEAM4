@@ -100,7 +100,7 @@ async function registerEvent(accountId, eventId) {
             VALUES (@accountId, @eventId);
         `);
 
-        return result.rowsAffected > 0; // Return true if insert was successful
+        return result.rowsAffected > 0;
     } catch (error) {
         console.error("Model error:", error);
         throw error;
@@ -124,7 +124,7 @@ async function unregisterEvent(accountId, eventId) {
             WHERE account_id = @accountId AND event_id = @eventId;
         `);
 
-        return result.rowsAffected > 0; // Return true if delete was successful
+        return result.rowsAffected > 0;
     } catch (error) {
         console.error("Model error:", error);
         throw error;
@@ -157,7 +157,7 @@ async function createEvent(eventData) {
             VALUES (@name, @description, @date, @time, @location, @org_id, @weekly, @equipment_required, @banner_image);
         `);
 
-        return result.rowsAffected > 0; // Return true if insert was successful
+        return result.rowsAffected > 0;
     } catch (error) {
         console.error("Model error:", error);
         throw error;
@@ -176,10 +176,10 @@ async function updateEvent(eventId, eventData, accountId) {
         request.input("id", sql.Int, eventId);
         request.input("name", sql.NVarChar, eventData.name);
         request.input("description", sql.NVarChar, eventData.description);
-        request.input("date", sql.DateTime, new Date(eventData.date)); // safer
+        request.input("date", sql.DateTime, new Date(eventData.date)); 
         request.input("time", sql.NVarChar, eventData.time);
         request.input("location", sql.NVarChar, eventData.location);
-        request.input("org_id", sql.Int, accountId); // only trust backend
+        request.input("org_id", sql.Int, accountId);
         request.input("weekly", sql.Bit, eventData.weekly ? 1 : 0);
         request.input("equipment_required", sql.NVarChar, eventData.equipment_required);
         request.input("banner_image", sql.NVarChar, eventData.banner_image || "");
@@ -218,19 +218,19 @@ async function deleteEvent(eventId, accountId) {
         request.input("id", sql.Int, eventId);
         request.input("account_id", sql.Int, accountId);
 
-        // First, delete from RegisteredList to avoid foreign key constraint
+        //delete from reference table
         await request.query(`
             DELETE FROM RegisteredList
             WHERE event_id = @id;
         `);
 
-        // Then, delete the event itself
+        //delete from event list
         const result = await request.query(`
             DELETE FROM EventList
             WHERE id = @id AND org_id = @account_id;
         `);
 
-        return result.rowsAffected > 0; // Return true if delete was successful
+        return result.rowsAffected > 0; 
     } catch (error) {
         console.error("Model error:", error);
         throw error;
