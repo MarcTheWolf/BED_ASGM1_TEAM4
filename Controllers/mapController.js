@@ -83,6 +83,7 @@ router.get('/getAddress', async (req, res) => {
 
 router.put('/updateAddress', async (req, res) => {
     const { accountId, address } = req.body;
+    
     if (!accountId || !address) {
         return res.status(400).json({ error: 'Account ID and address are required' });
     }

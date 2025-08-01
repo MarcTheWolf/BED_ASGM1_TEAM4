@@ -51,7 +51,7 @@
 
                 <div class="form-group">
                     <h3>New Address:</h3>
-                    <input type="text" id="addressInput" name="address" placeholder="Enter new address, the clearer the address the clearer the location" required>
+                    <input type="text" id="newAddressInput" name="address" placeholder="Enter new address, the clearer the address the clearer the location" required>
                 </div>
 
                 <div class="modal-actions">
@@ -64,22 +64,78 @@
 
         <div class="map-container">
             <h1>Map Search</h1>
-            <form id="searchForm">
+            <form id="searchForm" class="searchForm">
+                <div class="form-group1">
                 <input type="text" id="addressInput" placeholder="Enter Starting Location" required>
-                <button type="submit">Use Home Address</button>
+                <button type="button" id="use-home-btn" class="use-home-btn">Use Home Address</button>
+                </div>
+                <div class="form-group2">
                 <input type="text" id="searchInput" placeholder="Search for Destination location" required>
-                <button type="submit">Search</button>
+                <button type="submit" class="search-btn">Search</button>
+                </div>
             </form>
-            <div id="results"></div>
 
             <div id="map">
                             
             </div>
         </div>
 
+
+        
+
+
+        <footer id="footer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <div style="text-align: center;">
+        <img src="Assets/logo-icon.png" alt="product image">
+    </div>
+    <div id="footer1" style="margin-top: 0px;">
+        <div id="part1">
+            <h1 class="signature signature_footer">SeniorSync</h1>
+            <p>Web shop fulfilled by <span style="text-decoration: underline">Star <br> Editions</span></p>
+            <div style="display: flex; justify-content: space-between">
+                <div class="part1-icon">
+                    <i class="fa-brands fa-facebook"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-twitter"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2>Information</h2>
+            <p>About</p>
+            <p>Contact us</p>
+            <p>FAQs</p>
+            <p>Account</p>
+        </div>
+        <div>
+            <h2>Contact</h2>
+            <p>Stanley House </p> 
+            <p>Masterlord Village,</p> 
+            <p>West Rd, Ipswich<br> 95X</p>
+        </div>
+        <div>
+            <h2>Legal</h2>
+            <p>Cookie Policy</p>
+            <p>Privacy Policy</p>
+            <p>Privacy Policy</p>
+        </div>
+        <div id="modal-placeholder"></div>
+    </div>
+
+</footer>
+
         
         <script src="https://unpkg.com/@mapbox/polyline"></script>
         <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-        <script src="JS/e-maps.js" async defer></script>
+        <script src="JS/e-maps.js"></script>
     </body>
 </html>

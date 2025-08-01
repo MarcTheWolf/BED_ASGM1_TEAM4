@@ -180,35 +180,103 @@ header {
 }
 
 
-@media (max-width: 900px) {
-    .map-container {
-        max-width: 98vw;
-        padding: 18px 2vw;
-    }
-    iframe {
-        max-width: 100vw;
-        min-height: 260px;
-    }
+
+.map-container{
+    max-width: 100%;
+    max-height: 80vh;
+    height: 80vh;
+    margin: 0 auto;
+    padding: 24px 2vw;
 }
 
-@media (max-width: 700px) {
-    .map-container {
-        margin-top: 60px;
-        padding: 14px 2vw;
-        border-radius: 10px;
-    }
-    h1 {
-        font-size: 1.3rem;
-        margin-bottom: 18px;
-    }
-    form#searchForm {
+.map-container h1 {
+    margin-bottom: 24px;
+    border-bottom: 8px solid #81C7BE;
+    border-radius: 10px;
+}
+
+.searchForm {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    margin-bottom: 24px;
+}
+
+.form-group1 {
+    display: flex;
+    gap: 1rem;
+}
+
+#addressInput,
+.use-home-btn {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #4adb6c;
+    border-radius: 6px;
+    background-color: #d4edda;
+}
+
+.use-home-btn {
+    cursor: pointer;
+    max-width: 200px;
+    white-space: nowrap;
+    background-color: #54d071;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.use-home-btn:hover {
+    background-color: #218838;
+}
+
+.form-group2 {
+    display: flex;
+    gap: 1rem;
+}
+
+#searchInput,
+.search-btn {
+    flex: 1;
+    padding: 1rem;
+    font-size: 1rem;
+    border: 2px solid #007bff;
+    border-radius: 6px;
+    background-color: #cce5ff;
+    color: #004085;
+}
+
+.search-btn {
+    cursor: pointer;
+    max-width: 200px;
+    white-space: nowrap;
+    background-color: #4889ce;
+    color: white;
+    transition: background-color 0.3s ease;
+}
+
+.search-btn:hover {
+    background-color: #0056b3;
+}
+
+#map{
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+@media (max-width: 800px) {
+    .searchForm {
         flex-direction: column;
-        gap: 10px;
-        width: 100%;
+
     }
-    iframe {
-        margin-top: 18px;
-        min-height: 180px;
+    .form-group1, .form-group2 {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+    #addressInput, #searchInput, .use-home-btn, .search-btn {
+        width: 100%;
     }
 }
 

@@ -120,7 +120,9 @@ async function updateUserAddress(accountId, address) {
             WHERE id = @accountId
         `);
 
-        return result.rowsAffected > 0;
+        if (result.rowsAffected > 0){
+            return address;
+        };
     } catch (error) {
         console.error("Model error:", error);
         throw error;

@@ -1,19 +1,44 @@
-document.addEventListener("DOMContentLoaded", displayAddress)
+document.addEventListener("DOMContentLoaded", async function () {
+    console.log("DOMContentLoaded event fired");
+
+    var address = await getAddress();
+    console.log("Fetched address:", address);
+
+    displayAddress(address);
 
 
-async function displayAddress() {
-    let currentAddress = document.getElementById("homeAddress");
+    console.log("Display map function called with address:", address);
     
-    getAddress().then(address => {
-            if (address) {
-                currentAddress.textContent = address;
-            } else {
-                currentAddress.textContent = "No address recorded";
-            }
-        }).catch(err => {
-            console.error("Error fetching address:", err);
-            currentAddress.textContent = "Error fetching address";
-        });
+    if (!address) {
+        console.error("No address provided for map display");
+        return;
+    }
+
+    const mapCoords = await getCoordinates(address);
+
+    if (!mapCoords) {
+        console.error("Failed to get coordinates for address:", address);
+        return;
+    }
+
+    const map = L.map('map').setView([mapCoords.lat, mapCoords.lng], 15);
+
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}, { maxZoom: 19 }).addTo(map);
+
+    window.map = map;
+
+});
+
+function displayAddress(address) {
+    let currentAddress = document.getElementById("homeAddress");
+    console.log("currentAddress element:", currentAddress);
+    console.log("Address to display:", address);
+
+    if (!address) {
+        currentAddress.textContent = "No address recorded";
+    } else {
+        currentAddress.textContent = address;
+    }
 }
 
 async function getAddress() {
@@ -67,14 +92,14 @@ closeAddAddressModal.addEventListener("click", function () {
 updateAddressForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const address = document.getElementById("addressInput").value;
+    const address = document.getElementById("newAddressInput").value;
 
     try {
-        await updateAddress(address);
+        var updatedAddress = await updateAddress(address);
         alert("Address updated successfully!");
         addAddressModal.classList.add("hidden");
         updateAddressForm.reset();
-        await displayAddress();
+        await displayAddress(updatedAddress);
     } catch (error) {
         console.error("Error updating address:", error);
         alert("Failed to update address. Please try again.");
@@ -87,6 +112,7 @@ async function updateAddress(address) {
 
     const user = JSON.parse(localStorage.getItem('user'));
     console.log("Update address function called");
+    console.log("User from localStorage:", user);
 
     if (!user || !user.token) {
         console.error("User is not authenticated");
@@ -101,7 +127,7 @@ async function updateAddress(address) {
                 'Authorization': `Bearer ${user.token}`
             },
             body: JSON.stringify({
-                accountId: user.id,
+                accountId: parseInt(user.id),
                 address: address
             })
         });
@@ -112,6 +138,7 @@ async function updateAddress(address) {
 
         const data = await response.json();
         console.log("Address updated successfully:", data);
+        return data.address;
     } catch (error) {
         console.error("Error updating address:", error);
     }
@@ -163,7 +190,14 @@ async function deleteAddress() {
 }
 
 async function getCoordinates(address) {
-    const res = await fetch(`/api/maps/geocode?address=${encodeURIComponent(address)}`);
+    const res = await fetch(`/api/maps/geocode?address=${encodeURIComponent(address)}`,{
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+        }
+        
+    });
     const data = await res.json();
     if (data.lat && data.lng) {
         console.log("Lat:", data.lat, "Lng:", data.lng);
@@ -175,11 +209,20 @@ async function getCoordinates(address) {
 
 
 
+document.getElementById('use-home-btn').addEventListener('click', function() {
+    var home = document.getElementById('homeAddress').textContent;
+    if (home === "No address recorded") {
+        alert("No home address set. Please update your address first.");
+        return;
+    }
+    document.getElementById('addressInput').value = home;
+    console.log("Home address used for search:", home);
+})
 
-const map = L.map('map').setView([1.3521, 103.8198], 12);
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
-let markerGroup = L.layerGroup().addTo(map);
+//######################################################3
+
 let routeLayer;
+let routeMarkers = []; 
 
 document.getElementById('searchForm').addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -191,11 +234,35 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
     const startCoords = await getCoordinates(startAddress);
     const destCoords = await getCoordinates(destAddress);
 
-    const routeRes = await fetch(`/api/maps/route?startLat=${startCoords.lat}&startLng=${startCoords.lng}&endLat=${destCoords.lat}&endLng=${destCoords.lng}&routeType=drive`);
+    const routeRes = await fetch(`/api/maps/route?startLat=${startCoords.lat}&startLng=${startCoords.lng}&endLat=${destCoords.lat}&endLng=${destCoords.lng}&routeType=drive`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem('user')).token}`
+        }
+    });
+
     const routeData = await routeRes.json();
+    console.log("Route data:", routeData);
 
     if (routeData.error) throw new Error(routeData.error);
 
+    displayMarkersAndRoute(startCoords, destCoords, routeData);
+
+    } catch (err) {
+        alert(`Error: ${err.message}`);
+    }
+});
+
+
+function displayMarkersAndRoute(startCoords, destCoords, routeData){
+
+    if (routeLayer) {
+        map.removeLayer(routeLayer);
+    }
+
+    routeMarkers.forEach(marker => map.removeLayer(marker));
+    routeMarkers = [];
 
     const coords = polyline.decode(routeData.route_geometry);
 
@@ -210,20 +277,16 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
         properties: {
         }
     }
-    if (routeLayer) map.removeLayer(routeLayer);
 
     routeLayer = L.geoJSON(geojson, {
         style: { color: 'blue' }
     }).addTo(map);
 
     map.fitBounds(routeLayer.getBounds());
-        // Markers
+
         L.marker([startCoords.lat, startCoords.lng]).addTo(map).bindPopup('Start').openPopup();
         L.marker([destCoords.lat, destCoords.lng]).addTo(map).bindPopup('Destination');
 
         map.fitBounds(routeLayer.getBounds());
-
-    } catch (err) {
-        alert(`Error: ${err.message}`);
-    }
-});
+    
+}
