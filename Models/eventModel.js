@@ -241,6 +241,39 @@ async function deleteEvent(eventId, accountId) {
     }
 }
 
+async function getAllUpcomingEvents() {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const result = await pool.request().query(`
+      SELECT *
+      FROM EventList
+      WHERE canceled = 0
+    `);
+    return result.recordset;
+  } catch (err) {
+    console.error("Error fetching events:", err);
+    throw err;
+  }
+}
+
+async function getRegisteredUsers(eventId) {
+  try {
+    const pool = await sql.connect(dbConfig);
+    const request = pool.request();
+    request.input("event_id", sql.Int, eventId);
+
+    const result = await request.query(`
+      SELECT account_id
+      FROM RegisteredList
+      WHERE event_id = @event_id
+    `);
+    return result.recordset;
+  } catch (err) {
+    console.error("Error fetching registered users:", err);
+    throw err;
+  }
+}
+
 module.exports = {
     getEventRegisteredByID,
     getEventDetailsByID,
@@ -249,5 +282,7 @@ module.exports = {
     createEvent,
     updateEvent,
     registerEvent,
-    unregisterEvent
+    unregisterEvent,
+    getAllUpcomingEvents,
+    getRegisteredUsers
 };
