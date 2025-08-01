@@ -62,26 +62,44 @@
         </div>
     </div>
 
-        <div class="map-container">
+        <div class="mapSearch-container">
             <h1>Map Search</h1>
             <form id="searchForm" class="searchForm">
                 <div class="form-group1">
-                <input type="text" id="addressInput" placeholder="Enter Starting Location" required>
-                <button type="button" id="use-home-btn" class="use-home-btn">Use Home Address</button>
+                    <input type="text" id="addressInput" placeholder="Enter Starting Location" required>
+                    <button type="button" id="use-home-btn" class="use-home-btn">Use Home Address</button>
                 </div>
                 <div class="form-group2">
-                <input type="text" id="searchInput" placeholder="Search for Destination location" required>
-                <button type="submit" class="search-btn">Search</button>
+                    <input type="text" id="searchInput" placeholder="Search for Destination location" required>
+                    <button type="submit" class="search-btn">Search</button>
                 </div>
             </form>
+            <div class="routeType-options">
+                    <label>
+                    <input type="radio" name="routeType" value="drive" checked>
+                    Drive
+                    </label>
+                    <label>
+                    <input type="radio" name="routeType" value="walk">
+                    Walk
+                    </label>
+                    <label>
+                    <input type="radio" name="routeType" value="cycle">
+                    Cycle
+                    </label>
+                </div>
+            </div>
 
-            <div id="map">
-                            
+            <div id="map-container">
+                <div id="map"></div>       
             </div>
         </div>
 
+        <div id="messagePopover" class="popover hidden">
+            <span id="popoverMessage"></span>
+            <button id="closePopover" aria-label="Close">&times;</button>
+        </div>
 
-        
 
 
         <footer id="footer">

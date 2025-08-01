@@ -181,15 +181,14 @@ header {
 
 
 
-.map-container{
+.mapSearch-container{
     max-width: 100%;
-    max-height: 80vh;
-    height: 80vh;
+    height: fit-content;
     margin: 0 auto;
     padding: 24px 2vw;
 }
 
-.map-container h1 {
+.mapSearch-container h1 {
     margin-bottom: 24px;
     border-bottom: 8px solid #81C7BE;
     border-radius: 10px;
@@ -259,11 +258,55 @@ header {
     background-color: #0056b3;
 }
 
-#map{
+.routeType-options {
+    margin-top: 10px;
+    display: flex;
+    gap: 15px;
+    margin-left: 20px
+}
+
+.routeType-options label {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 5px 10px;
+    background: #eaf8f6;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    transition: background 0.2s;
+}
+
+.routeType-options input[type="radio"]:checked + span {
+    font-weight: bold;
+    color: #122046;
+}
+
+@media (max-width: 800px) {
+    .routeType-options {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+    }
+}
+
+
+#map-container {
+    display: flex;
+    justify-self: center;
+    align-items: center;  
+    padding: 20px;
+    box-sizing: border-box;
+    width: 90%;
+    height: 90%;
+}
+
+#map {
     width: 100%;
     height: 100%;
     border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    align-items: center;
 }
 
 @media (max-width: 800px) {
@@ -282,4 +325,38 @@ header {
 
 .hidden{
     display: none;
+}
+
+.popover {
+    position: fixed;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #fff;
+    color: #222;
+    border: 2.5px solid #81C7BE;
+    border-radius: 12px;
+    box-shadow: 0 6px 24px rgba(81, 199, 190, 0.4);
+    padding: 28px 48px 28px 28px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 320px;
+    max-width: 520px;
+    font-size: 1.15rem;
+}
+.popover.hidden {
+    display: none;
+}
+#closePopover {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    margin-left: auto;
+}
+#closePopover:focus {
+    outline: 2px solid #0078d4;
 }

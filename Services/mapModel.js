@@ -13,7 +13,7 @@ function setAccessToken(token) {
 function getInMemoryAccessToken() {
     return inMemoryToken;
 }
-
+// get access token from OneMap API
 async function getAccessToken() {
     try {
         console.log("BASE_URL:", process.env.ONEMAP_BASE_URL);
@@ -78,7 +78,7 @@ async function geocode(address) {
     }
 }
 
-
+//get user address
 async function getUserAddress(accountId) {
     let connection;
     try {
@@ -105,7 +105,7 @@ async function getUserAddress(accountId) {
         }
     }
 }
-
+// Update user address
 async function updateUserAddress(accountId, address) {
     let connection;
     try {
@@ -132,7 +132,7 @@ async function updateUserAddress(accountId, address) {
         }
     }
 }
-
+// Delete user address
 async function deleteAddress(accountId) {
     let connection;
     try {
@@ -145,7 +145,7 @@ async function deleteAddress(accountId) {
             WHERE id = @accountId;
         `);
 
-        return result.rowsAffected > 0; // Return true if delete was successful
+        return result.rowsAffected > 0; 
     } catch (error) {
         console.error("Model error:", error);
         throw error;
@@ -156,7 +156,7 @@ async function deleteAddress(accountId) {
     }
 }
 
-async function getRoute(startLat, startLng, endLat, endLng, routeType = 'walk') {
+async function getRoute(startLat, startLng, endLat, endLng, routeType) {
   let accessToken = getInMemoryAccessToken();
         if (!accessToken) {
             accessToken = await getAccessToken();

@@ -4,7 +4,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     var address = await getAddress();
     console.log("Fetched address:", address);
 
-    displayAddress(address);
+    displayAddress(address);    // Display the address on the page
 
 
     console.log("Display map function called with address:", address);
@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", async function () {
         return;
     }
 
-    const map = L.map('map').setView([mapCoords.lat, mapCoords.lng], 15);
+    const map = L.map('map').setView([mapCoords.lat, mapCoords.lng], 13); //Display map
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png?{foo}', {foo: 'bar', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'}, { maxZoom: 19 }).addTo(map);
 
@@ -41,7 +41,7 @@ function displayAddress(address) {
     }
 }
 
-async function getAddress() {
+async function getAddress() { 
 
     const user = JSON.parse(localStorage.getItem('user'));
     console.log("DOMContentLoaded fired");
@@ -52,7 +52,7 @@ async function getAddress() {
         return '';
     }
     try {
-        const response = await fetch(`/api/maps/getAddress`,{
+        const response = await fetch(`/api/maps/getAddress`,{ // Fetch address from the server
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -88,7 +88,7 @@ closeAddAddressModal.addEventListener("click", function () {
     addAddressModal.classList.add("hidden");
 });
 
-
+//Update address form submission
 updateAddressForm.addEventListener("submit", async function (event) {
     event.preventDefault();
 
@@ -96,13 +96,13 @@ updateAddressForm.addEventListener("submit", async function (event) {
 
     try {
         var updatedAddress = await updateAddress(address);
-        alert("Address updated successfully!");
+        showMessagePopover("Address updated successfully!");
         addAddressModal.classList.add("hidden");
         updateAddressForm.reset();
         await displayAddress(updatedAddress);
     } catch (error) {
         console.error("Error updating address:", error);
-        alert("Failed to update address. Please try again.");
+        showMessagePopover("Failed to update address. Please try again.");
     }
 });
 
@@ -118,7 +118,7 @@ async function updateAddress(address) {
         console.error("User is not authenticated");
         return;
     }
-
+    //update address in db
     try {
         const response = await fetch(`/api/maps/updateAddress`, {
             method: 'PUT',
@@ -145,7 +145,7 @@ async function updateAddress(address) {
 }
 
 const deleteAddressButton = document.getElementById("deleteAddressBtn");
-
+//delete address
 deleteAddressButton.addEventListener("click", async function (event) {
     event.preventDefault();
 
@@ -189,6 +189,7 @@ async function deleteAddress() {
     }
 }
 
+//get geochache coords for locations
 async function getCoordinates(address) {
     const res = await fetch(`/api/maps/geocode?address=${encodeURIComponent(address)}`,{
         method: 'GET',
@@ -212,7 +213,7 @@ async function getCoordinates(address) {
 document.getElementById('use-home-btn').addEventListener('click', function() {
     var home = document.getElementById('homeAddress').textContent;
     if (home === "No address recorded") {
-        alert("No home address set. Please update your address first.");
+        showMessagePopover("No home address set. Please update your address first.");
         return;
     }
     document.getElementById('addressInput').value = home;
@@ -223,7 +224,7 @@ document.getElementById('use-home-btn').addEventListener('click', function() {
 
 let routeLayer;
 let routeMarkers = []; 
-
+//Add routing on the map
 document.getElementById('searchForm').addEventListener('submit', async (e) => {
   e.preventDefault();
 
@@ -231,10 +232,18 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
     const startAddress = document.getElementById('addressInput').value;
     const destAddress = document.getElementById('searchInput').value;
 
+    const routeType = document.querySelector('input[name="routeType"]:checked').value;
+
     const startCoords = await getCoordinates(startAddress);
     const destCoords = await getCoordinates(destAddress);
 
-    const routeRes = await fetch(`/api/maps/route?startLat=${startCoords.lat}&startLng=${startCoords.lng}&endLat=${destCoords.lat}&endLng=${destCoords.lng}&routeType=drive`, {
+    if (!startCoords || !destCoords) {
+        showMessagePopover("Failed to get coordinates for start or destination address. Please check the addresses.");
+        return;
+    }
+
+    //get the route
+    const routeRes = await fetch(`/api/maps/route?startLat=${startCoords.lat}&startLng=${startCoords.lng}&endLat=${destCoords.lat}&endLng=${destCoords.lng}&routeType=${routeType}`, {
         method: 'GET',
         headers: {
             'Content-Type': 'application/json',
@@ -250,24 +259,24 @@ document.getElementById('searchForm').addEventListener('submit', async (e) => {
     displayMarkersAndRoute(startCoords, destCoords, routeData);
 
     } catch (err) {
-        alert(`Error: ${err.message}`);
+        showMessagePopover(`Error: ${err.message}`);
     }
 });
 
-
+//display markers and route on the map
 function displayMarkersAndRoute(startCoords, destCoords, routeData){
 
     if (routeLayer) {
         map.removeLayer(routeLayer);
     }
-
+    // Remove existing markers
     routeMarkers.forEach(marker => map.removeLayer(marker));
     routeMarkers = [];
 
     const coords = polyline.decode(routeData.route_geometry);
 
     const latLngs = coords.map(([lat, lng]) => ({ lat, lng }));
-
+    // add the route line to the map
     const geojson = {
         type: 'Feature',
         geometry: {
@@ -276,7 +285,7 @@ function displayMarkersAndRoute(startCoords, destCoords, routeData){
         },
         properties: {
         }
-    }
+    };
 
     routeLayer = L.geoJSON(geojson, {
         style: { color: 'blue' }
@@ -284,9 +293,30 @@ function displayMarkersAndRoute(startCoords, destCoords, routeData){
 
     map.fitBounds(routeLayer.getBounds());
 
-        L.marker([startCoords.lat, startCoords.lng]).addTo(map).bindPopup('Start').openPopup();
-        L.marker([destCoords.lat, destCoords.lng]).addTo(map).bindPopup('Destination');
-
-        map.fitBounds(routeLayer.getBounds());
+    L.marker([startCoords.lat, startCoords.lng]).addTo(map).bindPopup('Start').openPopup();
+    L.marker([destCoords.lat, destCoords.lng]).addTo(map).bindPopup('Destination');
+    // Add markers for start and destination
+    map.fitBounds(routeLayer.getBounds());
     
 }
+
+
+
+function showMessagePopover(message, timeout = 3000) { //Popup message
+    const popover = document.getElementById('messagePopover');
+    const msgSpan = document.getElementById('popoverMessage');
+    if (popover && msgSpan) {
+        msgSpan.textContent = message;
+        popover.classList.remove('hidden');
+        if (timeout > 0) {
+            setTimeout(() => popover.classList.add('hidden'), timeout);
+        }
+    } else {
+        console.error("Popover or message span not found in the DOM.");
+    }
+}
+
+
+document.getElementById('closePopover').onclick = function() {
+    document.getElementById('messagePopover').classList.add('hidden');
+};
