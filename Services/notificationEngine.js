@@ -19,7 +19,6 @@ function init(dependencies) {
 
 
 async function run() {
-    console.log("Scheduling notifications...");
     try {
         await scheduleFinanceNotifications();
         await scheduleEventNotifications();
@@ -36,7 +35,7 @@ async function run() {
 
 async function scheduleMedicationNotifications() {
   try {
-    console.log("Scheduling medication notifications...");
+
     const users = await account.getAllUsers(); // get all user accounts
     const now = new Date();
 
@@ -98,7 +97,7 @@ async function scheduleMedicationNotifications() {
 
 
 async function scheduleWeeklyNotifications() {
-  console.log("Scheduling weekly notifications...");
+
   try {
     const users = await account.getAllUsers();
     const now = new Date();
@@ -194,7 +193,7 @@ async function scheduleFinanceNotifications() {
 }
 
 async function scheduleEventNotifications() {
-  console.log("Scheduling event notifications...");
+
   try {
     const now = new Date();
 

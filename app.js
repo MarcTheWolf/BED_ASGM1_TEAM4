@@ -246,7 +246,7 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 /////////////Exports Websocket io for controller use /////////////////////////////
 setInterval(() => {
   notificationEngine.run().catch(err => console.error("notificationEngine.run() error:", err));
-}, 1000);
+}, 5000);
 
 
 

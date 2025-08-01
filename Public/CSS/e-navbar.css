@@ -16,7 +16,11 @@ body {
     z-index: 2000;
 }
 
+.nav-logo {
+  padding-left: 40px; /* increase/decrease as needed */
+}
 .nav-logo img {
+
   height: 40px;
   filter: drop-shadow(0 0 3px white);
 }
