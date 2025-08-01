@@ -60,7 +60,7 @@ INSERT INTO MedicationList (account_id, name, description, dosage, time, frequen
 -- For acc_id 1
 (1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
 (1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', Null, 'W', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38�C', '1 tablet', NULL, 'WR', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
 
 -- For acc_id 4
 (4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),
@@ -191,18 +191,35 @@ INSERT INTO MedicationConditionAssociationList (med_id, medc_id) VALUES
 (5, 4)
 
 
+
 Create table MonthlyExpenseGoal(
-	id INT PRIMARY KEY,
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	acc_id INT,
 	monthly_goal DECIMAL(10, 2),
+	category varchar(20) not null,
+	month varchar(7) Not Null
 
-
-	FOREIGN KEY (id) REFERENCES AccountPassword(id)
+	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
 
-Insert INTO MonthlyExpenseGoal(id, monthly_goal)
-VALUES
-(1, 500)
+INSERT INTO MonthlyExpenseGoal (acc_id, monthly_goal, category, month) VALUES
+(1, 300.00, 'Food',      '2025-06'),
+(1, 100.00, 'Utilities', '2025-06'),
+(1, 80.00,  'Transport', '2025-06'),
+(1, 300.00, 'Others', '2025-06'),
+
+(1, 320.00, 'Food',      '2025-07'),
+(1, 110.00, 'Utilities', '2025-07'),
+(1, 90.00,  'Transport', '2025-07'),
+(1, 200.00, 'Others', '2025-07'),
+
+(1, 310.00, 'Food',      '2025-08'),
+(1, 105.00, 'Utilities', '2025-08'),
+(1, 85.00,  'Transport', '2025-08'),
+(1, 200.00, 'Others', '2025-08');
+
+
 
 
 CREATE TABLE ExpensesList (
@@ -268,23 +285,48 @@ INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
 
 create table notificationList(
 	noti_id INT PRIMARY KEY IDENTITY(1,1),
-	type varchar(25) NOT NULL check (type in ('event', 'finance', 'medication', 'announcement', 'calendar', 'social', 'profile')),
+	type varchar(25) NOT NULL check (type in ('event', 'finance', 'medication', 'announcement', 'calendar', 'social', 'profile', 'weekly')),
 	time DATETIME NOT NULL,
 	description VARCHAR(255) NOT NULL,
 	acc_id INT NOT NULL,
 	notified BIT DEFAULT 0,
-	seen BIT Default 0
+	seen BIT Default 0,
+	asso_id INT NULL,
 
 
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
-drop table notificationList;
+
 
 CREATE TABLE TaskList(
     task_id INT PRIMARY KEY IDENTITY(1,1),
+	acc_id INT NOT NULL,
     task_name VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
     time VARCHAR(10) NULL
 );
+
+
+
+CREATE TABLE syncCodes (
+	code_id INT PRIMARY KEY IDENTITY(1,1),
+    acc_id INT,
+    code INT CHECK (code BETWEEN 0 AND 999999),
+);
+
+
+INSERT INTO syncCodes (acc_id, code) VALUES
+(2, 384729);
+
+
+
+Create Table syncAccounts (
+	sync_id INT PRIMARY KEY IDENTITY(1,1),
+	elderly_id INT,
+	caretaker_id INT,
+)
+
+INSERT INTO syncAccounts(elderly_id, caretaker_id) values
+(1, 2)
 
