@@ -18,8 +18,9 @@ function init(dependencies) {
 }
 
 
+
+
 async function run() {
-    console.log("Scheduling notifications...");
     try {
         await scheduleFinanceNotifications();
         await scheduleEventNotifications();
@@ -36,7 +37,6 @@ async function run() {
 
 async function scheduleMedicationNotifications() {
   try {
-    console.log("Scheduling medication notifications...");
     const users = await account.getAllUsers(); // get all user accounts
     const now = new Date();
 
@@ -98,7 +98,6 @@ async function scheduleMedicationNotifications() {
 
 
 async function scheduleWeeklyNotifications() {
-  console.log("Scheduling weekly notifications...");
   try {
     const users = await account.getAllUsers();
     const now = new Date();
@@ -194,7 +193,6 @@ async function scheduleFinanceNotifications() {
 }
 
 async function scheduleEventNotifications() {
-  console.log("Scheduling event notifications...");
   try {
     const now = new Date();
 
@@ -260,6 +258,108 @@ async function scheduleEventNotifications() {
 }
 
 
+async function scheduleTaskNotifications() {
+  try {
+    const users = await account.getAllUsers();
+    const now = new Date();
+
+    for (const user of users) {
+      const { id } = user;
+
+      const tasks = await task.getTasks(id);
+      if (!tasks || tasks.length === 0) continue;
+
+      for (const task of tasks) {
+        const { task_id, task_name, date, time } = task;
+        if (!date || !time) continue;
+
+        const taskDate = new Date(date);
+        const [hour, minute] = time.split(":").map(Number);
+        taskDate.setHours(hour, minute, 0, 0); // Construct full datetime for task
+
+        const diffInMinutes = Math.round((taskDate - now) / (1000 * 60));
+
+        let payload = null;
+
+        if (diffInMinutes === 0) {
+          payload = {
+            type: 'task',
+            acc_id: id,
+            description: `You have a task now: ${task_name}`,
+            time: now,
+          };
+        }
+
+        if (payload) {
+          const alreadyNotified = await notifications.hasSentTaskNotificationToday(task_id);
+          if (alreadyNotified) continue;
+
+          payload.asso_id = task_id;
+          const noti_id = await notifications.createNotification(payload);
+          payload.noti_id = noti_id;
+
+          await sendNotification(payload, id);
+          console.log(`[Task]: Notification sent to user ${id}: ${payload.description}`);
+        }
+      }
+    }
+  } catch (err) {
+    console.error("Task Notification Engine Error:", err);
+  }
+}
+
+
+async function updateEventNotification(event_id, changes) {
+  try {
+    const participants = await event.getRegisteredUsers(event_id);
+    for (const { account_id } of participants) {
+
+      const payload = {
+        type: 'event updated',
+        acc_id: account_id,
+        description: `Announcement: ${changes}`,
+        asso_id: event_id,
+        time: new Date(),
+      };
+
+      const noti_id = await notifications.createNotification(payload);
+      payload.noti_id = noti_id;
+
+      await sendNotification(payload, account_id);
+      console.log(`✅ [Event] Notification sent to user ${account_id}"`);
+    }
+  } catch (err) {
+    console.error("❌ Event Notification Engine Error:", err);
+  }
+}
+
+async function deleteEventNotification(event_id, changes) {
+  try {
+    const participants = await event.getRegisteredUsers(event_id);
+    for (const { account_id } of participants) {
+      const payload = {
+        type: 'event deleted',
+        acc_id: account_id,
+        description: `Announcement: ${changes}`,
+        asso_id: event_id,
+        time: new Date(),
+      };
+
+      const noti_id = await notifications.createNotification(payload);
+      payload.noti_id = noti_id;
+
+      await sendNotification(payload, account_id);
+      console.log(`✅ [Event] Notification sent to user ${account_id} for "${name}"`);
+    }
+  } catch (err) {
+    console.error("❌ Event Notification Engine Error:", err);
+  }
+}
+
+
+
+
+
 async function sendNotification(payload, accountId) {
   const socketId = sockets[accountId];
 
@@ -280,5 +380,8 @@ async function sendNotification(payload, accountId) {
 
 module.exports = {
   init,
-  run
+  run,
+
+  updateEventNotification,
+  deleteEventNotification
 };

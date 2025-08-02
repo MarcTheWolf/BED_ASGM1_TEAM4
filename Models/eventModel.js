@@ -1,10 +1,11 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
+const { getPool } = require('../Services/pool');
 
 async function getEventRegisteredByID(id) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const result = await connection.request()
             .input("account_id", sql.Int, id)  // Use 'id' here
             .query(`
@@ -30,18 +31,14 @@ async function getEventRegisteredByID(id) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
-    }
+    } 
 }
 
 async function getEventDetailsByID(id) {
     let connection;
 
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("id", sql.Int, id);
 
@@ -53,10 +50,6 @@ async function getEventDetailsByID(id) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
@@ -64,7 +57,7 @@ async function getAllEvents() {
     let connection;
 
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
 
         const result = await request.query("SELECT * FROM EventList where date >= CONVERT(DATE, GETDATE()) ORDER BY date asc");
@@ -72,18 +65,14 @@ async function getAllEvents() {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function registerEvent(accountId, eventId) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
-        const request = connection.request();
+        connection = await getPool();
+        const request = await connection.request();
         request.input("accountId", sql.Int, accountId);
         request.input("eventId", sql.Int, eventId);
 
@@ -104,17 +93,13 @@ async function registerEvent(accountId, eventId) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function unregisterEvent(accountId, eventId) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("accountId", sql.Int, accountId);
         request.input("eventId", sql.Int, eventId);
@@ -128,17 +113,13 @@ async function unregisterEvent(accountId, eventId) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function createEvent(eventData) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("name", sql.NVarChar, eventData.name);
         request.input("description", sql.NVarChar, eventData.description);
@@ -161,17 +142,13 @@ async function createEvent(eventData) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function updateEvent(eventId, eventData, accountId) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("id", sql.Int, eventId);
         request.input("name", sql.NVarChar, eventData.name);
@@ -203,18 +180,14 @@ async function updateEvent(eventId, eventData, accountId) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function deleteEvent(eventId, accountId) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
-        const request = connection.request();
+        connection = await getPool();
+        const request = await connection.request();
         request.input("id", sql.Int, eventId);
         request.input("account_id", sql.Int, accountId);
 
@@ -230,20 +203,16 @@ async function deleteEvent(eventId, accountId) {
             WHERE id = @id AND org_id = @account_id;
         `);
 
-        return result.rowsAffected > 0; // Return true if delete was successful
+        return result.rowsAffected[0] > 0;
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
 async function getAllUpcomingEvents() {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request().query(`
       SELECT *
       FROM EventList
@@ -258,7 +227,7 @@ async function getAllUpcomingEvents() {
 
 async function getRegisteredUsers(eventId) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const request = pool.request();
     request.input("event_id", sql.Int, eventId);
 

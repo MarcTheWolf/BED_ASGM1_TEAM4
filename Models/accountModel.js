@@ -1,12 +1,14 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
+const { getPool } = require('../Services/pool');
+
 
 async function getAccountByPhone(phone_number) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("phone_number", sql.VarChar, phone_number);
 
@@ -18,8 +20,6 @@ async function getAccountByPhone(phone_number) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) await connection.close();
   }
 }
 
@@ -27,7 +27,7 @@ async function getAccountById(id) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("id", sql.Int, id);
 
@@ -39,8 +39,6 @@ async function getAccountById(id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) await connection.close();
   }
 }
 
@@ -48,8 +46,8 @@ async function createAccount(phone_number, password) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
-    const request = connection.request  ();
+    connection = await getPool();
+    const request = connection.request();
     request.input("phone_number", sql.VarChar, phone_number);
 
     request.input("password", sql.VarChar, password);
@@ -66,10 +64,6 @@ async function createAccount(phone_number, password) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -77,7 +71,7 @@ async function initializeAccountDetails(accountId, details) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
 
     request.input("id", sql.Int, accountId);
@@ -103,10 +97,6 @@ async function initializeAccountDetails(accountId, details) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -114,7 +104,7 @@ async function getPhoneByAccountID(accountId) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
 
@@ -126,17 +116,13 @@ async function getPhoneByAccountID(accountId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function updatePasswordById(accountId, hashedPassword) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("id", sql.Int, accountId);
     request.input("password", sql.VarChar, hashedPassword);
@@ -149,17 +135,13 @@ async function updatePasswordById(accountId, hashedPassword) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function updatePasswordByPhone(phone_number, hashedPassword) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("phone_number", sql.VarChar, phone_number);
     request.input("password", sql.VarChar, hashedPassword);
@@ -172,10 +154,6 @@ async function updatePasswordByPhone(phone_number, hashedPassword) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -183,7 +161,7 @@ async function updateProfile(accountId, newDetails) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
 
     request.input("id", sql.Int, accountId);
@@ -227,10 +205,6 @@ async function updateProfile(accountId, newDetails) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -238,7 +212,7 @@ async function updatePhoneNumber(accountId, newPhoneNumber) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("id", sql.Int, accountId);
     request.input("phone_number", sql.VarChar, newPhoneNumber);
@@ -251,10 +225,6 @@ async function updatePhoneNumber(accountId, newPhoneNumber) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -263,7 +233,7 @@ async function getAllUsers() {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
 
     const result = await request.query("SELECT * FROM AccountProfile");
@@ -272,10 +242,6 @@ async function getAllUsers() {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 module.exports = {

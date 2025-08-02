@@ -1,4 +1,5 @@
 const eventModel = require("../Models/eventModel.js");
+const notification = require("../Services/notificationEngine.js");
 
 async function getEventRegisteredByID(req, res) {
     const id = req.user.id;
@@ -106,6 +107,8 @@ async function updateEvent(req, res) {
     try {
         const result = await eventModel.updateEvent(eventId, eventData, accountId);
         if (result) {
+            const Changes = `Changes have been made to "${eventData.name}". Please check the event details.`
+            await notification.updateEventNotification(eventId, Changes)
             res.status(200).json({ message: "Event updated successfully" });
         } else {
             res.status(400).json({ message: "Failed to update event" });
@@ -121,8 +124,13 @@ async function deleteEvent(req, res) {
     const accountId = req.user.id;
 
     try {
+        const eventData = await eventModel.getEventDetailsByID(eventId);
         const result = await eventModel.deleteEvent(eventId, accountId);
         if (result) {
+            console.log("Event data for deletion:", eventData);
+            const Changes = `Changes have been made to "${eventData.name}". Please check the event details.`
+            console.log("Changes to be notified:", Changes);
+            await notification.deleteEventNotification(eventId, Changes)
             res.status(200).json({ message: "Event deleted successfully" });
         } else {
             res.status(400).json({ message: "Failed to delete event" });
