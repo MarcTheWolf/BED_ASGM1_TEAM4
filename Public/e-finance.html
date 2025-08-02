@@ -4,6 +4,7 @@
     <meta charset='utf-8'>
     <meta http-equiv='X-UA-Compatible' content='IE=edge'>
     <title>Finance Page</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='CSS/e-finance.css'>
 </head>
@@ -44,7 +45,7 @@
 
     <div class="category-breakdown">
         <div class="category-item">
-            <img src="Assets/logo-icon.png" alt="transport" class="category-icon">
+            <img src="Assets/transportation.jpg" alt="transport" class="category-icon">
             <div class="category-details">
                 <div class="category-label">
                     <span class="category-name">Transportation</span>
@@ -58,7 +59,7 @@
         </div>
 
         <div class="category-item">
-            <img src="Assets/logo-icon.png" alt="food" class="category-icon">
+            <img src="Assets/food.png" alt="food" class="category-icon">
             <div class="category-details">
                 <div class="category-label">
                     <span class="category-name">Food</span>
@@ -71,7 +72,7 @@
             </div>
         </div>
         <div class="category-item">
-            <img src="Assets/logo-icon.png" alt="utilities" class="category-icon">
+            <img src="Assets/utilities.png" alt="utilities" class="category-icon">
             <div class="category-details">
                 <div class="category-label">
                     <span class="category-name">Utilities</span>
@@ -85,7 +86,7 @@
         </div>
         <div>
         <div class="category-item">
-            <img src="Assets/logo-icon.png" alt="others" class="category-icon">
+            <img src="Assets/others.png" alt="others" class="category-icon">
             <div class="category-details">
                 <div class="category-label">
                     <span class="category-name">Others</span>
@@ -144,8 +145,10 @@
         <label for="amount">Amount</label>
         <input type="number" id="amount" name="amount" placeholder="0.00" step="0.01" required>
 
+
         <label for="category">Category</label>
-        <select id="category" name="category" required>
+        <select id="category" class="category-dropdown" name="category" required>
+
             <option value="" disabled selected>Select category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
@@ -164,7 +167,7 @@
 
     <div id="form-container-budget" class="form-container" hidden>
     <form id="budget-form" class="budget-form">
-        <h2>Update Monthly Budget Goals</h2>
+        <h2>Monthly Budget Goals</h2>
 
         <label for="transport-budget">Transport Budget ($)</label>
         <input type="number" id="transport-budget" name="transportBudget" placeholder="e.g. 100" required>
@@ -214,12 +217,12 @@
     </p>
 
     <p><strong>Amount:</strong> $
-        <span id="transaction-amount"></span>
+        <span id="transaction-amount"></span>   
         <input type="number" id="transaction-amount-input" class="edit-input hidden" step="0.01">
     </p>
 
     <button id="close-button" class="close-button">Close</button>
-    <button id="delete-button" class="delete-button hidden" style="background-color: red; color: white;">Delete</button>
+    <button id="delete-button" class="delete-button hidden" style="background-color: rgb(200, 123, 123); color: rgb(94, 37, 37);">Delete</button>
     </div>
 
 

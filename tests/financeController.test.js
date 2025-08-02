@@ -145,7 +145,7 @@ describe("financeController", () => {
 
   it("should return 404 if not found", async () => {
     req.params.id = 1;
-    financeModel.deleteTransaction.mockResolvedValue({ rowsAffected: [0] });
+    financeModel.deleteTransaction.mockResolvedValue({ rowsAffected: 0 });
 
     await financeController.deleteTransaction(req, res);
     expect(res.status).toHaveBeenCalledWith(404);

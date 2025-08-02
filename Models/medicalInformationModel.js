@@ -117,26 +117,6 @@ async function getWeeklyTimingsByAccountID(accountId) {
   }
 }
 
-async function getWeeklyTimingsByAccountID(accountId) {
-  let connection;
-  try {
-    connection = await getPool();
-    const request = connection.request();
-    request.input("accountId", sql.Int, accountId);
-
-    const result = await request.query(`
-      SELECT w.medTime_id, w.med_id, w.day, w.time, m.name, m.frequency
-      FROM WeeklyMedicationTiming w
-      INNER JOIN MedicationList m ON w.med_id = m.med_id
-      WHERE m.account_id = @accountId
-    `);
-
-    return result.recordset;
-  } catch (error) {
-    console.error("Model error:", error);
-    throw error;
-  }
-}
 
 
 async function getMedicalConditionByAccountID(accountId) {

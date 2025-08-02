@@ -246,42 +246,9 @@ async function getAllUsers() {
   }
 }
 
-async function updatePhoneNumber(accountId, newPhoneNumber) {
-  let connection;
-
-  try {
-    connection = await getPool();
-    const request = connection.request();
-    request.input("id", sql.Int, accountId);
-    request.input("phone_number", sql.VarChar, newPhoneNumber);
-
-    const result = await request.query(`
-      UPDATE AccountPassword SET phone_number = @phone_number WHERE id = @id
-    `);
-
-    return result.rowsAffected[0] > 0;
-  } catch (error) {
-    console.error("Model error:", error);
-    throw error;
-  }
-}
 
 
-async function getAllUsers() {
-  let connection;
 
-  try {
-    connection = await getPool();
-    const request = connection.request();
-
-    const result = await request.query("SELECT * FROM AccountProfile");
-
-    return result.recordset; // Return all users
-  } catch (error) {
-    console.error("Model error:", error);
-    throw error;
-  }
-}
 module.exports = {
   getAccountByPhone,
   getAccountById,
@@ -294,6 +261,4 @@ module.exports = {
   updatePhoneNumber,
   getAllUsers,
   updateProfile,
-  updatePhoneNumber,
-  getAllUsers
 };
