@@ -23,11 +23,12 @@
     <script src="JS/e-navbar.js"></script>
 </header>
 <!-- Title header-->
-    <div class="finance-title-container">
-        <span class="highlight-box"></span>
-        <h1 class="finance-title">Financial Details</h1>
-    </div>
-
+<div class="finance-title-wrapper">
+  <div class="finance-title-container">
+    <span class="highlight-box"></span>
+    <h1 class="finance-title">Financial Details</h1>
+  </div>
+</div>
 
 <div class="budget-section finance-container">
     <div class="chart-wrapper">
@@ -83,6 +84,19 @@
             </div>
         </div>
         <div>
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="others" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Others</span>
+                    <span id="others-data" class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" id ="food  -bar" class="bar-base">
+                </div>
+            </div>
+        </div>
             <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
         </div>
         
