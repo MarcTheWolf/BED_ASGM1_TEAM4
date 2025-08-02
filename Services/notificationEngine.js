@@ -155,18 +155,21 @@ async function scheduleWeeklyNotifications() {
 
 async function scheduleFinanceNotifications() {
     try {
-    const users = await finance.getAllUserBudget();
+          const now = new Date();
+    const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    const users = await finance.getAllUserBudget(monthStr);
 
     for (const user of users) {
-      const { id, monthly_goal } = user;
+      const { id, monthly_goal, acc_id } = user;
       if (!monthly_goal) continue;
-        const now = new Date();
-        const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
-        const expenditure = await finance.getExpenditureForMonth(id, monthStr);
+      console.log(`📊 Checking budget for user ${acc_id} for month ${monthStr}: $${monthly_goal}`);
+      const expenditure = await finance.getExpenditureForMonth(acc_id, monthStr);
+      console.log(`Expenditure for user ${acc_id} in ${monthStr}:`, expenditure);
 
       const usageRatio = expenditure.total / monthly_goal;
 
-      const alreadyNotified = await notifications.hasSentBudgetNotificationThisMonth(id);
+      const alreadyNotified = await notifications.hasSentBudgetNotificationThisMonth(acc_id);
 
       if (usageRatio >= 0.8 && !alreadyNotified) {
         const percentage = Math.round(usageRatio * 100);
@@ -174,7 +177,7 @@ async function scheduleFinanceNotifications() {
 
         let payload = {
             type: 'finance',
-            acc_id: id,
+            acc_id: acc_id,
             description: message,
             time: new Date(),
         }
@@ -184,7 +187,7 @@ async function scheduleFinanceNotifications() {
         payload.noti_id = noti_id;
 
         console.log(`[Finance]: Notification created for user ${id}: ${message}`);
-        await sendNotification(payload, id);
+        await sendNotification(payload, acc_id);
         console.log(`[Finance]: Notification Scheduled for account ${id}`);
       }
     }

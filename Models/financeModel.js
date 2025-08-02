@@ -339,19 +339,28 @@ async function deleteTransaction(accountId, transactionId) {
     }
 }
 
-async function getAllUserBudget() {
-    try {
-        const pool = await getPool();
-        const result = await pool.request()
-            .query("SELECT * FROM MonthlyExpenseGoal");
+async function getAllUserBudget(month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('month', sql.VarChar, month)
+      .query(`
+        SELECT 
+          acc_id, 
+          month, 
+          SUM(monthly_goal) AS monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE month = @month
+        GROUP BY acc_id, month
+        ORDER BY acc_id
+      `);
 
-        return result.recordset; // Return the array of all user budgets
-    } catch (error) {
-        console.error("Error fetching all user budgets:", error);
-        throw error;
-    }
+    return result.recordset; // [{ acc_id, month, total_budget }]
+  } catch (error) {
+    console.error("Error fetching total user budget for month:", error);
+    throw error;
+  }
 }
-
 async function getTransportationExpenditure(accountId, month) {
   try {
     const pool = await getPool();

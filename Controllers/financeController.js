@@ -469,7 +469,7 @@ async function deleteTransaction(req, res) {
 
         const result = await financeModel.deleteTransaction(accountId, transactionId);
 
-        if (result.rowsAffected[0] === 0) {
+        if (result.rowsAffected === 0) {
             return res.status(404).json({ message: "Transaction not found." });
         }
 
