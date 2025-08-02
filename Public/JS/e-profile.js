@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
+  await loadCaretakerList();
   loadMedical();
   console.log(Medication);
   console.log(MedicalCondition);
@@ -1249,7 +1250,44 @@ async function reloadProfileData() {
 
 
 
+async function loadCaretakerList() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const caretakerListContainer = document.querySelector(".caretaker-list");
 
+  try {
+    const response = await fetch(`/getSyncedAccounts`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${user.token}`
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch caretaker list.');
+    const caretakerList = await response.json();
+    console.log('Caretaker list loaded:', caretakerList);
+
+    caretakerListContainer.innerHTML = ''; // Clear old entries
+
+    caretakerList.forEach(caretaker => {
+      const item = document.createElement('div');
+      item.classList.add('caretaker-item');
+
+      item.innerHTML = `
+        <img src="${caretaker.pfp_link || 'https://via.placeholder.com/50'}" class="avatar" alt="${caretaker.name}">
+        <div>
+          <p><strong>${caretaker.name}</strong></p>
+          <p>${caretaker.email}</p>
+        </div>
+        <button class="view-btn">View Profile</button>
+      `;
+
+      caretakerListContainer.appendChild(item);
+    });
+
+  } catch (error) {
+    console.error('Error loading caretaker list:', error);
+  }
+}
 
 
 

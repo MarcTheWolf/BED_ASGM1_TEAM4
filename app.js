@@ -38,11 +38,14 @@ const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 const taskController = require("./Controllers/taskController.js");
 const notificationsController = require("./Controllers/notificationsController.js");
+const syncingController = require("./Controllers/syncingController.js");
 
 
 const mapRoutes = require('./Controllers/mapController.js');
 
 const chatbotController = require("./Controllers/chatbotController.js");
+
+const liveChatController = require("./Controllers/liveChatController.js");
 
 
 
@@ -98,6 +101,9 @@ app.delete("/deleteMedication/:id", authorization.verifyJWT, medicalInformationC
 app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.deleteMedicalCondition);
 app.delete("/deleteMedicationConditionAssociation", authorization.verifyJWT, medicalInformationController.deleteMedicationConditionAssociation);
 app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationController.resetWeeklyTiming);
+
+//Account Syncing Endpoints (By Marcus)
+app.get("/getSyncedAccounts", authorization.verifyJWT, syncingController.getSyncedAccounts);
 
 
 //Medical Information Autocomplete, Use of external API from backend (By Marcus)
@@ -167,6 +173,11 @@ app.put("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notific
 
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
 app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
+
+
+//Live Chat API Endpoints (By Belle)
+app.post("/sendMessage", authorization.verifyJWT, liveChatController.sendMessage);
+app.get("/messages/:with_id", authorization.verifyJWT, liveChatController.getMessages);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SeniorSync Profile</title>
+  <link rel="stylesheet" href="CSS/c-profile.css">
+</head>
+<body>
+<header>
+      <link rel="stylesheet" href="CSS/e-navbar.css">
+    <nav class="navbar">
+        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+        <ul class="nav-links">
+            <li><a href="c-profile.html">Profile</a></li>
+        </ul>
+    </nav>
+    <script src="JS/e-navbar.js"></script>
+</header>
+
+  <section class="profile-section">
+    <h2 id="display-shortname">Welcome xxx</h2>
+    <div class="profile-box">
+      <div class="profile-left">
+        <img src="https://via.placeholder.com/80" alt="Avatar" class="avatar">
+        <p id="display-name"><strong>Full Name:</strong> Alexa Rawles</p>
+      </div>
+      <div class="profile-right">
+        <button class="edit-btn">Edit</button>
+        <button class="logout-btn">Log out</button>
+      </div>
+    </div>
+
+    <div class="profile-details">
+      <p id="display-gender"><strong>Gender:</strong> Female</p>
+      <p id="display-phone"><strong>Phone Number:</strong> 89187210</p>
+      <p id="display-dob"><strong>Date of Birth:</strong> 27/06/1950</p>
+      <p id="display-email"><strong>Email:</strong> alexarawles@gmail.com</p>
+      <p id="display-language"><strong>Preferred Language:</strong> English</p>
+      <p id="display-address"><strong>My Address:</strong> Bishan</p>
+    </div>
+  </section>
+
+  <section class="care-taker">
+    <h3>Elderly <button class="add-btn">Add</button></h3>
+    <div class="caretaker-list">
+      <div class="caretaker-item">
+        <img src="https://via.placeholder.com/50" class="avatar">
+        <div>
+          <p><strong>Margaret Tan</strong></p>
+          <p>margarettan78@gmail.com</p>
+        </div>
+        <button class="view-btn">View Profile</button>
+      </div>
+      <div class="caretaker-item">
+        <img src="https://via.placeholder.com/50" class="avatar">
+        <div>
+          <p><strong>Max Ng</strong></p>
+          <p>maxng7898@gmail.com</p>
+        </div>
+        <button class="view-btn">View Profile</button>
+      </div>
+    </div>
+  </section>
+
+
+  <div id="footer-placeholder"></div>
+  <script src="js/footer.js"></script>
+    <script src="JS/e-role.js"></script>
+    <script src="JS/c-profile.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/JS/notificationSystem.js" type="module"></script>
+        <script src="/JS/chatbot.js" type="module"></script>
+</body>
+</html>

@@ -7,6 +7,7 @@ const event = require("../Models/eventModel.js");
 const finance = require("../Models/financeModel.js");
 const task = require("../Models/taskModel.js");
 const notifications = require("../Models/notificationsModel.js");
+const { get } = require("../Controllers/mapController.js");
 
 
 let io = null;
@@ -425,6 +426,18 @@ async function sendNotification(payload, accountId) {
 }
 
 
+async function chatRefresh(accountId, payload) {
+  const socketId = sockets[accountId];
+  if (io && socketId) {
+    io.to(socketId).emit("new_message", payload);
+    console.log(`✅ Chat refresh sent to user ${accountId}`);
+  }
+  else {
+    console.warn(`⚠️ No socket found for user ${accountId}`);
+  }
+}
+
+
 
 
 
@@ -434,7 +447,8 @@ async function sendNotification(payload, accountId) {
 module.exports = {
   init,
   run,
-
+  getIO: () => io,
+  chatRefresh,
   updateEventNotification,
   deleteEventNotification
 };
