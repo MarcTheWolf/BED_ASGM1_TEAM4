@@ -52,7 +52,7 @@
 
     try {
       await fetch(`/markNotificationAsNotified/${noti.noti_id}`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
           'Authorization': 'Bearer ' + user.token
         }
@@ -73,6 +73,16 @@
   socket.on('notification', (notification) => {
     notiQueue.push(notification);
     displayNextNotification();
+  });
+
+  socket.on('requestRegistration', () => {
+  const user = JSON.parse(localStorage.getItem('user'));
+  if (user?.id) {
+    socket.emit('register', user.id);
+    console.log("🔐 Responded to registration request with user ID:", user.id);
+  } else {
+    console.warn("⚠️ No user ID found in localStorage for registration");
+  }
   });
 
   // On DOM load: fetch all unnotified notifications

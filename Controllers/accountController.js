@@ -2,6 +2,8 @@ const accountModel = require("../Models/accountModel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+
 async function authenticateAccount(req, res) {
   try {
     const { phone_number, password } = req.body;

@@ -1,11 +1,13 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
+const { getPool } = require('../Services/pool');
+
 // Get all tasks
 async function getTasks(userid) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         
         request.input("userid", sql.Int, userid);
@@ -17,10 +19,6 @@ async function getTasks(userid) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
@@ -28,7 +26,7 @@ async function getTasks(userid) {
 async function addTask(taskData, userid) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("task_name", sql.VarChar(50), taskData.task_name);
         request.input("date", sql.Date, taskData.date);
@@ -65,10 +63,6 @@ async function addTask(taskData, userid) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
     }
 }
 
@@ -76,7 +70,7 @@ async function addTask(taskData, userid) {
 async function deleteTask(task_id) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("task_id", sql.Int, task_id);
 
@@ -88,18 +82,14 @@ async function deleteTask(task_id) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
-    }
+    } 
 }
 
 // Update task
 async function updateTask(task_id, taskData) {
     let connection;
     try {
-        connection = await sql.connect(dbConfig);
+        connection = await getPool();
         const request = connection.request();
         request.input("task_id", sql.Int, task_id);
         request.input("task_name", sql.VarChar(50), taskData.task_name);
@@ -136,11 +126,7 @@ async function updateTask(task_id, taskData) {
     } catch (error) {
         console.error("Model error:", error);
         throw error;
-    } finally {
-        if (connection) {
-            connection.close();
-        }
-    }
+    } 
 }
 
 module.exports = {

@@ -7,6 +7,7 @@ const socketIo = require('socket.io');
 
 dotenv.config();
 
+const {closePool} = require("./Services/pool.js");
 
 const app = express();
 
@@ -161,7 +162,7 @@ app.get("/getAllNotifications", authorization.verifyJWT, notificationsController
 app.get("/getUnnotified", authorization.verifyJWT, notificationsController.getUnnotified);
 
 
-app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
+app.put("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
 //app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
 
@@ -190,14 +191,17 @@ app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
-  // Client must emit their accountId after connecting
+  // Prompt the client to register
+  if (!Object.keys(userSocketMap).includes(socket.id)) {
+    socket.emit('requestRegistration');
+  }
+  
   socket.on('register', (accountId) => {
     userSocketMap[accountId] = socket.id;
     console.log(`User ${accountId} registered with socket ID ${socket.id}`);
   });
 
   socket.on('disconnect', () => {
-    // Optional: Remove the mapping on disconnect
     for (const [accountId, sockId] of Object.entries(userSocketMap)) {
       if (sockId === socket.id) {
         delete userSocketMap[accountId];
@@ -223,7 +227,7 @@ server.listen(port, () => {
 // Graceful shutdown
 process.on("SIGINT", async () => {
   console.log("Server is gracefully shutting down");
-  await sql.close();
+  await closePool(); // Close the database connection pool
   console.log("Database connections closed");
   process.exit(0);
 });
