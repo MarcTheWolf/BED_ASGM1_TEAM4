@@ -258,6 +258,26 @@ async function updatePhoneNumber(accountId, newPhoneNumber) {
   }
 }
 
+
+async function getAllUsers() {
+  let connection;
+
+  try {
+    connection = await sql.connect(dbConfig);
+    const request = connection.request();
+
+    const result = await request.query("SELECT * FROM AccountProfile");
+
+    return result.recordset; // Return all users
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  } finally {
+    if (connection) {
+      connection.close();
+    }
+  }
+}
 module.exports = {
   getAccountByPhone,
   getAccountById,
@@ -267,5 +287,6 @@ module.exports = {
   updatePasswordById,
   updatePasswordByPhone,
   updateProfile,
-  updatePhoneNumber
+  updatePhoneNumber,
+  getAllUsers
 };

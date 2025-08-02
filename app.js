@@ -50,7 +50,12 @@ const authorization = require("./Middlewares/authorization.js");
 const {
   validateMedication,
   validateMedicalCondition,
-} = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
+} = require("./Middlewares/medicalInformationValidation.js"); 
+
+const {
+  validateTransaction,
+  validateExpenditureGoal
+} = require('./Middlewares/financeValidation.js');
 
 app.use("/api/maps", mapRoutes);
 
@@ -130,9 +135,10 @@ app.get("/getTotalExpenditureByID", authorization.verifyJWT, financeController.g
 app.get("/getMonthlyExpenditureByID", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
 app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.getAllTransactionsByID);
 app.get("/getTransactionByID/:id", authorization.verifyJWT, financeController.getTransactionByID);
+app.get("/getTransactionsByMonth/:month", authorization.verifyJWT, financeController.getTransactionsByMonth);
 
-app.post("/addTransactionToAccount", authorization.verifyJWT, financeController.addTransactionToAccount);
-app.post("/addExpenditureGoal", authorization.verifyJWT, financeController.updateExpenditureGoal);
+app.post("/addTransactionToAccount", authorization.verifyJWT, validateTransaction, financeController.addTransactionToAccount);
+app.post("/addExpenditureGoal", authorization.verifyJWT,  financeController.updateExpenditureGoal);
 
 app.put("/updateTransaction/:id", authorization.verifyJWT, financeController.updateTransaction);
 app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.deleteTransaction);
@@ -141,6 +147,12 @@ app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.
 //Displaying data as graphs/charts, use of external API from backend (By Belle) ////////////////////////////////////////////////////////////////
 app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
 app.get("/getBudgetExpenditureDoughnutChart/:month", authorization.verifyJWT, financeController.getBudgetExpenditureDoughnutChart);
+app.get('/transportBarChart/:month', authorization.verifyJWT, financeController.getTransportationBarChart);
+app.get('/getFoodBarChart/:month', authorization.verifyJWT, financeController.getFoodBarChart);
+app.get('/getUtilityBarChart/:month', authorization.verifyJWT, financeController.getUtilityBarChart);
+
+app.get('/getExpenditurePerCategoryMonth/:month', authorization.verifyJWT, financeController.getExpenditureGoalPerCategoryMonth);
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -173,7 +185,7 @@ app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask
 
 
 ////////////////////////////////////////////////////
-///////////////WebSocket API////////////////////
+///////////////WebSocket API (Belle)////////////////////
 ////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
@@ -234,7 +246,9 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 /////////////Exports Websocket io for controller use /////////////////////////////
 setInterval(() => {
   notificationEngine.run().catch(err => console.error("notificationEngine.run() error:", err));
-}, 5000);
+}, 1000);
+
+
 
 
 module.exports = { app, server, userSocketMap };

@@ -29,11 +29,65 @@
     </div>
 
 
-    <div class="budget-section">
-        <h2>Spendings This Month</h2>
-        <img src="" alt="Finance Breakdown" class="finance-pie-chart">
-        <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+<div class="budget-section finance-container">
+    <div class="chart-wrapper">
+    <div class="chart-header">
+        <h2 class="section-title">Spendings This Month</h2>
+
+        <label for="month-select" class="month-filter-label">Filter:</label>
+        <select id="month-select" class="month-select"></select>
     </div>
+
+    <img src="" alt="Finance Breakdown" class="finance-pie-chart">
+    </div>
+
+    <div class="category-breakdown">
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="transport" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Transportation</span>
+                    <span id="transport-data" class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" id ="transport-bar" class="bar-base">
+                </div>
+            </div>
+        </div>
+
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="food" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Food</span>
+                    <span id="food-data" class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" id ="food-bar" class="bar-base">
+                </div>
+            </div>
+        </div>
+        <div class="category-item">
+            <img src="Assets/logo-icon.png" alt="utilities" class="category-icon">
+            <div class="category-details">
+                <div class="category-label">
+                    <span class="category-name">Utilities</span>
+                    <span id="utilities-data" class="amount-left">Left: $70/130 😊</span>
+                </div>
+
+                <div class="bar-wrapper">
+                    <img src="Assets/BudgetLine.png" id ="utilities-bar" class="bar-base">
+                </div>
+            </div>
+        </div>
+        <div>
+            <button id="open-budgetform-btn" class="edit-budget-btn">Edit Budget</button>
+        </div>
+        
+    </div>
+</div>
 
 
     <!-- Transaction Records Section-->
@@ -81,9 +135,7 @@
             <option value="" disabled selected>Select category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
-            <option value="rent">Rent</option>
             <option value="utilities">Utilities</option>
-            <option value="entertainment">Entertainment</option>
             <option value="other">Other</option>
         </select>
 
@@ -97,17 +149,26 @@
 
 
     <div id="form-container-budget" class="form-container" hidden>
-        <form id="budget-form" class="budget-form">
-            <h2>Update Monthly Budget</h2>
+    <form id="budget-form" class="budget-form">
+        <h2>Update Monthly Budget Goals</h2>
 
-            <label for="monthly-budget">Monthly Budget ($)</label>
-            <input type="number" id="monthly-budget" name="monthlyBudget" placeholder="e.g. 1000" required>
+        <label for="transport-budget">Transport Budget ($)</label>
+        <input type="number" id="transport-budget" name="transportBudget" placeholder="e.g. 100" required>
 
-            <div class="form-buttons">
-                <button type="button" id="cancel-budget">Cancel</button>
-                <button type="button" id="save-budget">Save Budget</button>
-            </div>
-        </form>
+        <label for="food-budget">Food Budget ($)</label>
+        <input type="number" id="food-budget" name="foodBudget" placeholder="e.g. 300" required>
+
+        <label for="utilities-budget">Utilities Budget ($)</label>
+        <input type="number" id="utilities-budget" name="utilitiesBudget" placeholder="e.g. 150" required>
+
+        <label for="other-budget">Others ($)</label>
+        <input type="number" id="other-budget" name="otherBudget" placeholder="e.g. 200" required>
+
+        <div class="form-buttons">
+        <button type="button" id="cancel-budget">Cancel</button>
+        <button type="button" id="save-budget">Save Budget</button>
+        </div>
+    </form>
     </div>
 
 
@@ -133,9 +194,7 @@
             <option value="" disabled selected>Select category</option>
             <option value="food">Food</option>
             <option value="transport">Transport</option>
-            <option value="rent">Rent</option>
             <option value="utilities">Utilities</option>
-            <option value="entertainment">Entertainment</option>
             <option value="other">Other</option>
         </select>
     </p>
@@ -161,5 +220,5 @@
     <script src='JS/e-finance.js'></script>
     <script src="/socket.io/socket.io.js"></script>
     <script src="/JS/notificationSystem.js" type="module"></script>
-      <script src="/JS/chatbot.js" type="module"></script>
+        <script src="/JS/chatbot.js" type="module"></script>
 </html>

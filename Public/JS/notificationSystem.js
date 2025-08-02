@@ -73,14 +73,37 @@
     notiQueue.push(notification);
     displayNextNotification();
   });
-  
 
-  // Send user ID to register for socket connection
-  const user = JSON.parse(localStorage.getItem('user'));
-  console.log("User ID for socket registration:", user?.id);
-  if (user?.id) {
+  // On DOM load: fetch all unnotified notifications
+  document.addEventListener('DOMContentLoaded', async () => {
+    injectNotificationCSS();
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user?.token) return;
+
+    console.log("User ID for socket registration:", user?.id);
     socket.emit('register', user.id);
-  }
 
-  injectNotificationCSS();
+    try {
+      const res = await fetch("/getUnnotified", {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + user.token
+        }
+      });
+
+      if (res.ok) {
+        const unnotified = await res.json();
+        if (Array.isArray(unnotified)) {
+          console.log("🔄 Loading unnotified notifications:", unnotified.length);
+          notiQueue.push(...unnotified);
+          displayNextNotification();
+        }
+      } else {
+        console.warn("⚠️ Failed to load unnotified notifications");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching unnotified notifications:", err);
+    }
+  });
 })();

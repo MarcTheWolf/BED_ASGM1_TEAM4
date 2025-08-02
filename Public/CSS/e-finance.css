@@ -1,4 +1,4 @@
-body{
+body {
     height: 100%;
     margin: 0;
     width: 100%;
@@ -12,7 +12,7 @@ body{
     display: flex;
     flex-direction: row;
     text-align: left;
-    margin-top: 80px;
+    margin-top: 65px;
     align-items: center;
     background-color: #EAF8F6;
 }
@@ -22,21 +22,134 @@ body{
     color: #1d3557;
 }
 
-.budget-section {
+/* Combined layout: chart + category breakdown */
+.finance-container {
     display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 2rem;
     margin: 2rem auto;
-    text-align: center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    margin-top: 80px;;
 }
 
-.finance-pie-chart {
-    max-width: 40%;
-    height: auto;
+/* Chart and header layout */
+.chart-wrapper {
+    flex: 1;
+    min-width: 300px;
+    margin-left: 10px;
+    margin-top: 30px;
+}
+
+.chart-header {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 1rem;
     margin-bottom: 1rem;
 }
 
+.section-title {
+    font-size: 1.5rem;
+    color: #1d3557;
+    margin: 0;
+
+}
+
+.month-filter-label {
+    font-weight: 600;
+    margin-left: 1rem;
+}
+
+.month-select {
+    padding: 0.4rem 0.75rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    font-size: 1rem;
+}
+
+.finance-pie-chart {
+    width: 650px;
+    height: auto;
+    margin-bottom: 1rem;
+    align-self: flex-start;
+}
+
+/* Category Breakdown Section */
+.category-breakdown {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 12rem;
+    margin-left: 0rem;                 
+}
+
+.category-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.category-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.category-details {
+    flex: 1;
+}
+.category-label {
+  display: flex;
+  gap: 1rem;           /* ✅ Space between name and amount */
+  align-items: center;
+  flex-wrap: wrap;     /* Allows wrapping if too narrow */
+}
+
+.category-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #222;
+}
+
+.amount-left {
+  margin-left: 12rem;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+
+
+.amount-left {
+    font-weight: normal;
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.bar-wrapper {
+    position: relative;
+    height: 12px;
+    width: 100%;
+}
+
+.bar-base {
+    width: 400px;
+    height: auto;
+    display: block;
+}
+
+.bar-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    object-fit: none;
+}
+
+/* Buttons */
 .edit-budget-btn {
     padding: 0.75rem 1.5rem;
     background-color: #4CAF50;
@@ -46,10 +159,13 @@ body{
     cursor: pointer;
     font-size: 1rem;
     transition: background-color 0.3s ease;
+    margin-top: 300px;
+    position: relative;
+    right: 60px;
 }
 
 .edit-budget-btn:hover {
-    background-color: #45a049;
+    background-color: #5b8882;
 }
 
 .highlight-box {
@@ -66,7 +182,6 @@ body{
     align-items: center;
     margin: 20px 0;
 }
-
 
 .transaction-records-container {
     margin: 20px;
@@ -95,7 +210,7 @@ body{
     transform: translateY(-2px);
 }
 
-.transaction-record-list{
+.transaction-record-list {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -110,16 +225,16 @@ body{
 }
 
 .transaction-month-header {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 4px;
-  border-bottom: 2px solid #ccc;
-  background-color: #f8f9fa;
-  padding: 8px 12px;
-  border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #ccc;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
 }
 
 .transaction-date {
@@ -154,6 +269,7 @@ body{
     border-radius: 5px;
     cursor: pointer;
 }
+
 .transaction-records-footer .see-more-button:hover {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
     transform: translateY(-2px);
@@ -176,66 +292,57 @@ body{
 }
 
 .budget-form h2 {
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #333;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #333;
 }
 
 .budget-form label {
-  display: block;
-  margin: 0.75rem 0 0.25rem;
-  font-weight: 600;
-  color: #555;
+    display: block;
+    margin: 0.75rem 0 0.25rem;
+    font-weight: 600;
+    color: #555;
 }
 
 .budget-form input,
 .budget-form select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.3s ease;
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
 }
 
 .budget-form input:focus,
 .budget-form select:focus {
-  outline: none;
-  border-color: #007BFF;
-  box-shadow: 0 0 3px #007BFF;
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 3px #007BFF;
 }
 
 .budget-form button {
-  margin-top: 1.5rem;
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #007BFF;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .budget-form button:hover {
-  background-color: #0056b3;
+    background-color: #0056b3;
 }
 
 .form-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 1rem;
-}
-
-.edit-budget-btn {
-  background-color: #6ab8a7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
 }
 
 .popup {
@@ -248,7 +355,7 @@ body{
     border-radius: 10px;
     box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
     max-width: 400px;
-    display: none; /* Hide by default */
+    display: none;
     z-index: 1000;
     width: 90%;
 }
@@ -308,8 +415,6 @@ body{
     background-color: #ffa9a9;
 }
 
-
-/* Optional: Add animation for opening the popup */
 @keyframes popupFadeIn {
     from {
         opacity: 0;
@@ -326,5 +431,5 @@ body{
 }
 
 .hidden {
-  display: none;
+    display: none;
 }
