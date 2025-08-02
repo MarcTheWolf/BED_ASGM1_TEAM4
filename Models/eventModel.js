@@ -253,7 +253,7 @@ module.exports = {
     registerEvent,
     unregisterEvent,
     getAllUpcomingEvents,
-    getRegisteredUsers
+    getRegisteredUsers,
     unregisterEvent,
     getAllUpcomingEvents,
     getRegisteredUsers
