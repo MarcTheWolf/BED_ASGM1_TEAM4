@@ -17,6 +17,24 @@ async function getExpenditureGoalByID(req, res) {
     }
 }
 
+async function getExpenditureGoalPerCategoryMonth(req, res) {
+    try {
+        const accountId = req.user.id;
+        const month = req.params.month; // 'YYYY-MM'
+
+        const result = await financeModel.getExpenditureGoalPerCategoryMonth(accountId, month);
+        
+        if (!result || result.length === 0) {
+            return res.status(404).json({ message: "No expenditure records found for this month." });
+        }
+        
+        res.status(200).json(result);
+    } catch (error) {
+        console.error("Error fetching expenditure per category:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+}
+
 async function getTotalExpenditureByID(req, res) {
     try {
         const accountId = req.user.id;
@@ -52,6 +70,7 @@ async function getMonthlyExpenditureByID(req, res) {
 async function getExpenditureByMonthBarChart(req, res) {
   try {
     const userId = req.user.id;
+    
     const data = await financeModel.getMonthlyExpenditureByID(userId);
 
     if (!Array.isArray(data)) {
@@ -155,7 +174,7 @@ async function getBudgetExpenditureDoughnutChart(req, res) {
     const month = req.params.month; // 'YYYY-MM'
 
     const { transactions, total } = await financeModel.getExpenditureForMonth(userId, month);
-    let budgetData = await financeModel.getAccountBudget(userId);
+    let budgetData = await financeModel.getAccountBudget(userId, month);
 
     if (!budgetData || budgetData.monthly_goal == null) {
       budgetData = { monthly_goal: 0 };
@@ -374,7 +393,9 @@ async function addTransactionToAccount(req, res) {
 // Modify `updateExpenditureGoal` to handle both update and insert operations
 async function updateExpenditureGoal(req, res) {
   const accountId = req.user.id; // Get account ID from the user object
-  const monthly_Goal = req.body.monthly_goal; // Get new goal from request body
+  const monthly_Goal = req.body; // Get new goal from request body
+
+  const currentMonth = new Date().toLocaleDateString('sv-SE').slice(0, 7);
 
   try {
     // Check if an expenditure goal already exists for this account
@@ -382,11 +403,11 @@ async function updateExpenditureGoal(req, res) {
 
     if (existingGoal.recordset.length > 0) {
       // If a goal exists, update it
-      await financeModel.modifyExpenditureGoal(accountId, monthly_Goal);
+      await financeModel.modifyExpenditureGoal(accountId, monthly_Goal, currentMonth);
       return res.status(200).json({ message: "Expenditure goal updated successfully." });
     } else {
       // If no goal exists, create a new one
-      await financeModel.addExpenditureGoal(accountId, monthly_Goal );
+      await financeModel.addExpenditureGoal(accountId, monthly_Goal, currentMonth);
       return res.status(201).json({ message: "Expenditure goal created successfully." });
     }
 
@@ -458,8 +479,285 @@ async function deleteTransaction(req, res) {
         res.status(500).json({ message: "Internal server error" });
     }
 }
+async function getTransactionsByMonth(req, res) {
+  try {
+    const accountId = req.user.id;
+    const month = req.params.month; // 'YYYY-MM'
 
+    const { transactions } = await financeModel.getExpenditureForMonth(accountId, month);
+    res.status(200).json(transactions);
+  } catch (error) {
+    console.error("Error fetching transactions by month:", error);
+    res.status(500).json({ message: "Internal server error" });
+  }
+}
+
+async function getTransportationBarChart(req, res) {
+  try {
+    const userId = req.user.id;
+    const month = req.params.month;
+
+    const spent = await financeModel.getTransportationExpenditure(userId, month) || 0;
+    const goal = await financeModel.getTransportationGoal(userId, month) || 0;
+
+    const spentAmount = parseFloat(spent.toFixed(2));
+    const goalAmount = parseFloat(goal.toFixed(2));
+    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+const chartData = {
+  type: 'bar',
+  data: {
+    labels: [''],
+datasets: [
+  {
+    data: [spentPercentage],
+    backgroundColor: '#A0DDBD',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: 30,
+      bottomLeft: 30,
+      topRight: spent > goal ? 30 : 0,
+      bottomRight: spent > goal ? 30 : 0
+    },
+    borderSkipped: false
+  },
+  {
+    data: [remainingPercentage],
+    backgroundColor: '#e0e0e0',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: spent == 0 || goal == 0 ? 30 : 0,
+      bottomLeft: spent == 0 || goal == 0 ? 30 : 0,
+      topRight: 30,
+      bottomRight: 30
+    },
+    borderSkipped: false
+  }
+]
+
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+      title: { display: false }
+    }
+  }
+};
+
+
+const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' +
+  encodeURIComponent(JSON.stringify(chartData));
+
+    res.json({
+      chartUrl,
+      spent: spentAmount.toFixed(2),
+      goal: goalAmount.toFixed(2) == 0 ? "No Goal Set" : goalAmount.toFixed(2),
+      spentPercentage: spentPercentage.toFixed(2)
+    });
+
+  } catch (error) {
+    console.error("Error generating transportation bar chart:", error);
+    res.status(500).json({ message: "Failed to generate transportation bar chart" });
+  }
+}
+
+async function getFoodBarChart(req, res) {
+    try {
+    const userId = req.user.id;
+    const month = req.params.month;
+
+    const spent = await financeModel.getFoodExpenditure(userId, month) || 0;
+    const goal = await financeModel.getFoodGoal(userId, month) || 0;
+
+    const spentAmount = parseFloat(spent.toFixed(2));
+    const goalAmount = parseFloat(goal.toFixed(2));
+    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+const chartData = {
+  type: 'bar',
+  data: {
+    labels: [''],
+datasets: [
+  {
+    data: [spentPercentage],
+    backgroundColor: '#A0DDBD',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: 30,
+      bottomLeft: 30,
+      topRight: spent > goal ? 30 : 30,
+      bottomRight: spent > goal ? 30 : 0
+    },
+    borderSkipped: false
+  },
+  {
+    data: [remainingPercentage],
+    backgroundColor: '#e0e0e0',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: spent == 0 || goal == 0 ? 30 : 0,
+      bottomLeft: spent == 0 || goal == 0 ? 30 : 0,
+      topRight: 30,
+      bottomRight: 30
+    },
+    borderSkipped: false
+  }
+]
+
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+      title: { display: false }
+    }
+  }
+};
+
+
+const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' +
+  encodeURIComponent(JSON.stringify(chartData));
+
+    res.json({
+      chartUrl,
+      spent: spentAmount.toFixed(2),
+      goal: goalAmount.toFixed(2) == 0 ? "No Goal Set" : goalAmount.toFixed(2),
+      spentPercentage: spentPercentage.toFixed(2)
+    });
+
+  } catch (error) {
+    console.error("Error generating transportation bar chart:", error);
+    res.status(500).json({ message: "Failed to generate transportation bar chart" });
+  }
+}
+
+
+async function getUtilityBarChart(req, res) {
+    try {
+    const userId = req.user.id;
+    const month = req.params.month;
+
+    const spent = await financeModel.getUtilityExpenditure(userId, month) || 0;
+    const goal = await financeModel.getUtilityGoal(userId, month) || 0;
+
+    const spentAmount = parseFloat(spent.toFixed(2));
+    const goalAmount = parseFloat(goal.toFixed(2));
+    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+const chartData = {
+  type: 'bar',
+  data: {
+    labels: [''],
+datasets: [
+  {
+    data: [spentPercentage],
+    backgroundColor: '#A0DDBD',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: 30,
+      bottomLeft: 30,
+      topRight: spent > goal ? 30 : 30,
+      bottomRight: spent > goal ? 30 : 0
+    },
+    borderSkipped: false
+  },
+  {
+    data: [remainingPercentage],
+    backgroundColor: '#e0e0e0',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: spent == 0 || goal == 0 ? 30 : 0,
+      bottomLeft: spent == 0 || goal == 0 ? 30 : 0,
+      topRight: 30,
+      bottomRight: 30
+    },
+    borderSkipped: false
+  }
+]
+
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+      title: { display: false }
+    }
+  }
+};
+
+
+const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' +
+  encodeURIComponent(JSON.stringify(chartData));
+
+    res.json({
+      chartUrl,
+      spent: spentAmount.toFixed(2),
+      goal: goalAmount.toFixed(2) == 0 ? "No Goal Set" : goalAmount.toFixed(2),
+      spentPercentage: spentPercentage.toFixed(2)
+    });
+
+  } catch (error) {
+    console.error("Error generating utilities bar chart:", error);
+    res.status(500).json({ message: "Failed to generate utilities bar chart" });
+  }
+}
 module.exports = {
+    getTransactionsByMonth,
     getExpenditureGoalByID,
     getTotalExpenditureByID,
     getMonthlyExpenditureByID,
@@ -470,5 +768,9 @@ module.exports = {
     updateExpenditureGoal,
     getTransactionByID,
     updateTransaction,
-    deleteTransaction
+    deleteTransaction,
+    getTransportationBarChart,
+    getFoodBarChart,
+    getUtilityBarChart,
+    getExpenditureGoalPerCategoryMonth
 };
