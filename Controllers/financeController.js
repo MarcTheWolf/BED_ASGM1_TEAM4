@@ -517,8 +517,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: spent > goal ? 30 : 0,
-      bottomRight: spent > goal ? 30 : 0
+      topRight: 0,
+      bottomRight: 0
     },
     borderSkipped: false
   },
@@ -605,8 +605,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: spent > goal ? 30 : 30,
-      bottomRight: spent > goal ? 30 : 0
+      topRight: 0,
+      bottomRight: 0
     },
     borderSkipped: false
   },
@@ -694,8 +694,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: spent > goal ? 30 : 30,
-      bottomRight: spent > goal ? 30 : 0
+      topRight: 0,
+      bottomRight: 0
     },
     borderSkipped: false
   },

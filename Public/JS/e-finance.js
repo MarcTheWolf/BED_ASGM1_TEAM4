@@ -402,14 +402,14 @@ document.addEventListener("click", async function(event) {
 });
 
 
-document.addEventListener("click", function(event) {
+document.addEventListener("click", async function(event) {
   if (event.target.classList.contains("transaction-record")) {
     event.preventDefault();
     const recordId = event.target.getAttribute('data-id');
     const user = JSON.parse(localStorage.getItem("user"));
     console.log("Record ID clicked:", recordId);
     const popup = document.getElementById("transaction-popup");
-    const transactionData = fetch(`/getTransactionByID/${recordId}`, {
+    const transactionData = await fetch(`/getTransactionByID/${recordId}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
