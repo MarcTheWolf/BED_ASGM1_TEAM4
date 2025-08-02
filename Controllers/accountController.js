@@ -40,6 +40,30 @@ async function authenticateAccount(req, res) {
   }
 }
 
+async function updateProfile(req, res) {
+  try {
+    const accountId = parseInt(req.user.id);
+    const newDetails = req.body;
+
+
+    if (isNaN(accountId)) {
+      return res.status(400).json({ error: "Invalid account ID." });
+    }
+    if (!newDetails || Object.keys(newDetails).length === 0) {
+      return res.status(400).json({ error: "No details provided to update." });
+    }
+    const updatedAccount = await accountModel.updateProfile(accountId, newDetails);
+    if (updatedAccount) {
+      return res.status(200).json({ success: true, message: "Profile updated successfully." });
+    } else {
+      return res.status(500).json({ success: false, error: "Failed to update profile." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    return res.status(500).json({ success: false, error: "Server error." });
+  }
+}
+
 async function getAccountById(req, res) {
   try {
     const accountId = parseInt(req.user.id);
@@ -202,6 +226,28 @@ async function updateProfile(req, res) {
   }
 }
 
+
+async function updatePhoneNumber(req, res) {
+  try {
+    const accountId = parseInt(req.user.id);
+    const { newPhoneNumber } = req.body;
+
+    if (isNaN(accountId) || !newPhoneNumber) {
+      return res.status(400).json({ error: "Invalid account ID or phone number." });
+    }
+
+    const updatedAccount = await accountModel.updatePhoneNumber(accountId, newPhoneNumber);
+    if (updatedAccount) {
+      return res.status(200).json({ success: true, message: "Phone number updated successfully." });
+    } else {
+      return res.status(500).json({ success: false, error: "Failed to update phone number." });
+    }
+  } catch (error) {
+    console.error("Controller error:", error);
+    return res.status(500).json({ success: false, error: "Server error." });
+  }
+}
+
 module.exports = {
   authenticateAccount,
   getAccountById,
@@ -210,5 +256,6 @@ module.exports = {
   getPhoneByAccountID,
   updatePassword,
   forgotPassword,
-  updateProfile
+  updateProfile,
+  updatePhoneNumber
 };

@@ -1,10 +1,14 @@
 var Medication = []
 var MedicalCondition = [];
 
-
+const editProfileBtn = document.querySelector('.edit-btn');
+editProfileBtn.addEventListener('click', () => {
+  window.location.href = "e-editProfile.html";
+});
 
 
 document.addEventListener('DOMContentLoaded', async function() {
+  await reloadProfileData();
   await loadProfileInformation();
   await retrieveMedicationData();
   await retrieveMedicalConditionData();
@@ -1217,6 +1221,28 @@ medicationForm.addEventListener('submit', async (event) => {
   }
 });
 
+
+async function reloadProfileData() {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const token = user.token;
+
+  const req = await fetch("/getAccountById", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${user.token}`,
+    }
+  });
+
+  if (req.ok) {
+    const newProfile = await req.json();
+    newProfile.token = token;
+    localStorage.setItem("user", JSON.stringify(newProfile));
+    console.log("Profile reloaded successfully:", newProfile);
+  } else {
+    console.warn("Failed to reload profile:", await req.text());
+  }
+}
 
 
 

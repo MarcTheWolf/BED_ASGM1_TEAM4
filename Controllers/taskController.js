@@ -2,8 +2,9 @@ const taskModel = require("../Models/taskModel.js");
 
 // Get all tasks
 async function getTasks(req, res) {
+    const userid = req.user.id; // Assuming user ID is stored in req.user
     try {
-        const tasks = await taskModel.getTasks();
+        const tasks = await taskModel.getTasks(userid);
         res.status(200).json(tasks);
     } catch (error) {
         console.error("Controller error:", error);
@@ -13,12 +14,13 @@ async function getTasks(req, res) {
 
 // Add task
 async function addTask(req, res) {
+    const userid = req.user.id; // Assuming user ID is stored in req.user
     const taskData = req.body;
     if (!taskData.task_name || !taskData.date) {
         return res.status(400).json({ message: "Task name and date are required" });
     }
     try {
-        const taskId = await taskModel.addTask(taskData);
+        const taskId = await taskModel.addTask(taskData, userid);
         res.status(201).json({ message: "Task created successfully", taskId });
     } catch (error) {
         console.error("Controller error:", error);

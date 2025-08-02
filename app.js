@@ -60,10 +60,12 @@ app.use("/api/maps", mapRoutes);
 
 //Account Profile Endpoints (By XinHui)
 app.post("/authenticateUser", accountController.authenticateAccount);
-app.get("/getAccountById/:id", authorization.verifyJWT, accountController.getAccountById);
+app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
+app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
+app.put("/updatePhoneNumber", authorization.verifyJWT, accountController.updatePhoneNumber);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +153,7 @@ app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, noti
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
 //app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
 
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -162,10 +165,10 @@ app.post("/postImage", authorization.verifyJWT); //WIP
 
 
 // Task management API endpoints (By Yuxuan)
-app.get("/tasks", taskController.getTasks);
-app.post("/tasks", taskController.addTask);
-app.put("/tasks/:task_id", taskController.updateTask);
-app.delete("/tasks/:task_id",  taskController.deleteTask);
+app.get("/tasks", authorization.verifyJWT, taskController.getTasks);
+app.post("/tasks", authorization.verifyJWT, taskController.addTask);
+app.put("/tasks/:task_id", authorization.verifyJWT, taskController.updateTask);
+app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask);
 
 
 
