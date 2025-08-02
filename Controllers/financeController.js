@@ -502,8 +502,15 @@ async function getTransportationBarChart(req, res) {
 
     const spentAmount = parseFloat(spent.toFixed(2));
     const goalAmount = parseFloat(goal.toFixed(2));
-    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
-    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+    var spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    var remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+    var rounded = 0;
+    if (spentAmount >= goalAmount) {
+      spentPercentage = 100;
+      remainingPercentage = 0;
+      rounded = 30;
+    }
 
 const chartData = {
   type: 'bar',
@@ -517,8 +524,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: 0,
-      bottomRight: 0
+      topRight: rounded,
+      bottomRight: rounded
     },
     borderSkipped: false
   },
@@ -590,8 +597,15 @@ async function getFoodBarChart(req, res) {
 
     const spentAmount = parseFloat(spent.toFixed(2));
     const goalAmount = parseFloat(goal.toFixed(2));
-    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
-    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+    var spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    var remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+    var rounded = 0;
+    if (spentAmount >= goalAmount) {
+      spentPercentage = 100;
+      remainingPercentage = 0;
+      rounded = 30;
+    }
 
 const chartData = {
   type: 'bar',
@@ -605,8 +619,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: 0,
-      bottomRight: 0
+      topRight: rounded,
+      bottomRight: rounded
     },
     borderSkipped: false
   },
@@ -651,7 +665,6 @@ datasets: [
   }
 };
 
-
 const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' +
   encodeURIComponent(JSON.stringify(chartData));
 
@@ -679,8 +692,15 @@ async function getUtilityBarChart(req, res) {
 
     const spentAmount = parseFloat(spent.toFixed(2));
     const goalAmount = parseFloat(goal.toFixed(2));
-    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
-    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+    var spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    var remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+    var rounded = 0;
+    if (spentAmount >= goalAmount) {
+      spentPercentage = 100;
+      remainingPercentage = 0;
+      rounded = 30;
+    }
 
 const chartData = {
   type: 'bar',
@@ -694,8 +714,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: 0,
-      bottomRight: 0
+      topRight: rounded,
+      bottomRight: rounded
     },
     borderSkipped: false
   },
@@ -767,8 +787,15 @@ async function getOtherBarChart(req, res) {
 
     const spentAmount = parseFloat(spent.toFixed(2));
     const goalAmount = parseFloat(goal.toFixed(2));
-    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
-    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+    var spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    var remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+    var rounded = 0;
+    if (spentAmount >= goalAmount) {
+      spentPercentage = 100;
+      remainingPercentage = 0;
+      rounded = 30;
+    }
 
 const chartData = {
   type: 'bar',
@@ -782,8 +809,8 @@ datasets: [
     borderRadius: {
       topLeft: 30,
       bottomLeft: 30,
-      topRight: 0,
-      bottomRight: 0
+      topRight: rounded,
+      bottomRight: rounded
     },
     borderSkipped: false
   },
