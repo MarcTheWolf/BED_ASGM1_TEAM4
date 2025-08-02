@@ -196,6 +196,20 @@ async function hasSentTaskNotificationToday(taskId) {
   }
 }
 
+async function clearNotificationsByAccountId(accountId) {
+    try {
+        const pool = await getPool();
+        const result = await pool.request()
+            .input("accountId", sql.Int, accountId)
+            .query("DELETE FROM notificationList WHERE acc_id = @accountId");
+        console.log("Notifications cleared:", result.rowsAffected[0]);
+        return result;
+    } catch (error) {
+        console.error("Error clearing notifications:", error);
+        throw error;
+    }
+}
+
 module.exports = {
     getAllNotificationsByAccountId,
     getUnnotifiedByAccountId,
@@ -206,5 +220,6 @@ module.exports = {
     hasSentMedicationNotificationPerTiming,
     hasSentMedicationNotificationPerTiming,
     hasSentEventNotificationForEvent,
-    hasSentTaskNotificationToday
+    hasSentTaskNotificationToday,
+    clearNotificationsByAccountId
 };

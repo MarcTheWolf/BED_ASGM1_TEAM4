@@ -164,8 +164,9 @@ app.get("/getUnnotified", authorization.verifyJWT, notificationsController.getUn
 
 
 app.put("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
+
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
-//app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
+app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
