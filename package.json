@@ -1,38 +1,31 @@
 {
   "name": "bed_asgm1_draft",
   "version": "1.0.0",
+  "description": "- Express (express)\r - Microsoft SQL (mssql)\r - environment (dotenv)\r - bcrypt\r - jsonwebtoken\r - Joi\r - swagger (swagger-autogen & swagger-ui-express)",
   "main": "app.js",
+  "directories": {
+    "test": "tests"
+  },
   "scripts": {
     "test": "jest"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "description": "Authenticates a user's login credentials. The server checks if the phone number exists in the database and verifies the provided password. If both match, it returns the account ID.",
   "dependencies": {
     "axios": "^1.11.0",
     "bcrypt": "^6.0.0",
-    "cloudinary": "^2.7.0",
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.1",
     "express": "^5.1.0",
     "jest": "^30.0.5",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
+    "mapbox": "^1.0.0-beta10",
     "mssql": "^11.0.1",
-    "node-fetch": "^3.3.2",
     "openai": "^5.11.0",
-    "path": "^0.12.7",
+    "polyline": "^0.2.0",
     "socket.io": "^4.8.1",
     "swagger-autogen": "^2.23.7",
-    "swagger-ui-express": "^5.0.1",
-    "websocketapi": "^1.1.17"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/MarcTheWolf/BED_ASGM1_Draft.git"
-  },
-  "bugs": {
-    "url": "https://github.com/MarcTheWolf/BED_ASGM1_Draft/issues"
-  },
-  "homepage": "https://github.com/MarcTheWolf/BED_ASGM1_Draft#readme"
+    "swagger-ui-express": "^5.0.1"
+  }
 }

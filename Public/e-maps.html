@@ -7,6 +7,7 @@
         <meta name="description" content="">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link rel="stylesheet" href="CSS/e-maps.css">
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     </head>
     <body>
 
@@ -25,15 +26,135 @@
     <script src="JS/e-navbar.js"></script>
 </header>
 
-        <div class="container">
-            <h1>Map Search</h1>
-            <form id="searchForm">
-                <input type="text" id="searchInput" placeholder="Search for a location" required>
-                <button type="submit">Search</button>
-            </form>
-            <div id="results"></div>
+    <div class="map-title-container">
+        <span class="highlight-box"></span>
+        <h1 class="map-title">Mapping</h1>
+    </div>
 
-        <script src="JS/e-maps.js" async defer></script>
+    <div class="account-bar">
+
+        <div class="address-info">
+        <h2 class="account-title">Current Home Address:  </h2>
+        <h3 id="homeAddress"></h3>
+        </div>
+
+        <div class="account-actions">
+            <button id="updateAddressModalButton">Update Home Address</button>
+            <button id="deleteAddressBtn">Delete Home Address</button>
+        </div>
+    </div>
+
+    <div id="addAddressModalBackdrop" class="modal-AddAddress hidden">
+        <div class="modal-contents">
+            <form id="addAddressForm">
+                <h2 class="modal-title"><b>Add New Address</b></h2>
+
+                <div class="form-group">
+                    <h3>New Address:</h3>
+                    <input type="text" id="newAddressInput" name="address" placeholder="Enter new address, the clearer the address the clearer the location" required>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" id="closeAddAddressModal">Cancel</button>
+                    <button type="submit" id="updateAddressBtn">Update Address</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+        <div class="mapSearch-container">
+            <h1>Map Search</h1>
+            <form id="searchForm" class="searchForm">
+                <div class="form-group1">
+                    <input type="text" id="addressInput" placeholder="Enter Starting Location" required>
+                    <button type="button" id="use-home-btn" class="use-home-btn">Use Home Address</button>
+                </div>
+                <div class="form-group2">
+                    <input type="text" id="searchInput" placeholder="Search for Destination location" required>
+                    <button type="submit" class="search-btn">Search</button>
+                </div>
+            </form>
+            <div class="routeType-options">
+                    <label>
+                    <input type="radio" name="routeType" value="drive" checked>
+                    Drive
+                    </label>
+                    <label>
+                    <input type="radio" name="routeType" value="walk">
+                    Walk
+                    </label>
+                    <label>
+                    <input type="radio" name="routeType" value="cycle">
+                    Cycle
+                    </label>
+                </div>
+            </div>
+
+            <div id="map-container">
+                <div id="map"></div>       
+            </div>
+        </div>
+
+        <div id="messagePopover" class="popover hidden">
+            <span id="popoverMessage"></span>
+            <button id="closePopover" aria-label="Close">&times;</button>
+        </div>
+
+
+
+        <footer id="footer">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="stylesheet" href="CSS/footer.css">
+    <div style="text-align: center;">
+        <img src="Assets/logo-icon.png" alt="product image">
+    </div>
+    <div id="footer1" style="margin-top: 0px;">
+        <div id="part1">
+            <h1 class="signature signature_footer">SeniorSync</h1>
+            <p>Web shop fulfilled by <span style="text-decoration: underline">Star <br> Editions</span></p>
+            <div style="display: flex; justify-content: space-between">
+                <div class="part1-icon">
+                    <i class="fa-brands fa-facebook"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-instagram"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-twitter"></i>
+                </div>
+                <div class="part1-icon">
+                    <i class="fa-brands fa-linkedin-in"></i>
+                </div>
+            </div>
+        </div>
+        <div>
+            <h2>Information</h2>
+            <p>About</p>
+            <p>Contact us</p>
+            <p>FAQs</p>
+            <p>Account</p>
+        </div>
+        <div>
+            <h2>Contact</h2>
+            <p>Stanley House </p> 
+            <p>Masterlord Village,</p> 
+            <p>West Rd, Ipswich<br> 95X</p>
+        </div>
+        <div>
+            <h2>Legal</h2>
+            <p>Cookie Policy</p>
+            <p>Privacy Policy</p>
+            <p>Privacy Policy</p>
+        </div>
+        <div id="modal-placeholder"></div>
+    </div>
+
+</footer>
+
+        
+        <script src="https://unpkg.com/@mapbox/polyline"></script>
+        <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+        <script src="JS/e-maps.js"></script>
     </body>
 
         <script src="/socket.io/socket.io.js"></script>

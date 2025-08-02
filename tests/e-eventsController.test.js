@@ -267,20 +267,22 @@ describe("eventController", () => {
             req.user = { id: 14 };
         });
 
-        it("should delete and notify", async () => {
-            const eventData = { name: "To Delete" };
-            eventModel.getEventDetailsByID.mockResolvedValue(eventData);
-            eventModel.deleteEvent.mockResolvedValue(true);
-            notification.deleteEventNotification.mockResolvedValue(true);
 
-            await eventController.deleteEvent(req, res);
+    it("should delete and notify", async () => {
+        const eventData = { name: "To Delete" };
+        eventModel.getEventDetailsByID.mockResolvedValue(eventData);
+        eventModel.deleteEvent.mockResolvedValue(true);
+        notification.deleteEventNotification.mockResolvedValue(true);
 
-            expect(eventModel.getEventDetailsByID).toHaveBeenCalledWith(6);
-            expect(eventModel.deleteEvent).toHaveBeenCalledWith(6, 14);
-            expect(notification.deleteEventNotification).toHaveBeenCalledWith(6, expect.stringContaining("To Delete"));
-            expect(res.status).toHaveBeenCalledWith(200);
-            expect(res.json).toHaveBeenCalledWith({ message: "Event deleted successfully" });
-        });
+        await eventController.deleteEvent(req, res);
+
+        expect(eventModel.getEventDetailsByID).toHaveBeenCalledWith(6);
+        expect(eventModel.deleteEvent).toHaveBeenCalledWith(6, 14);
+        expect(notification.deleteEventNotification).toHaveBeenCalledWith(6, expect.stringContaining("To Delete"));
+        expect(res.status).toHaveBeenCalledWith(200);
+        expect(res.json).toHaveBeenCalledWith({ message: "Event deleted successfully" });
+    }); // ✅ THIS WAS MISSING
+
 
         it("should return 400 if deletion fails", async () => {
             eventModel.getEventDetailsByID.mockResolvedValue({ name: "Fail Delete" });
