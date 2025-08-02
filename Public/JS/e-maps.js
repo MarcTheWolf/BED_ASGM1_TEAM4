@@ -295,8 +295,10 @@ function displayMarkersAndRoute(startCoords, destCoords, routeData){
 
     map.fitBounds(routeLayer.getBounds());
 
-    L.marker([startCoords.lat, startCoords.lng]).addTo(map).bindPopup('Start').openPopup();
-    L.marker([destCoords.lat, destCoords.lng]).addTo(map).bindPopup('Destination');
+    const start_marker = L.marker([startCoords.lat, startCoords.lng]).addTo(map).bindPopup('Start').openPopup();
+    const end_marker = L.marker([destCoords.lat, destCoords.lng]).addTo(map).bindPopup('Destination');
+    routeMarkers.push(start_marker, end_marker);
+    
     // Add markers for start and destination
     map.fitBounds(routeLayer.getBounds());
     
