@@ -7,6 +7,7 @@ const socketIo = require('socket.io');
 
 dotenv.config();
 
+const {closePool} = require("./Services/pool.js");
 
 const app = express();
 
@@ -50,7 +51,12 @@ const authorization = require("./Middlewares/authorization.js");
 const {
   validateMedication,
   validateMedicalCondition,
-} = require("./Middlewares/medicalInformationValidation.js"); // import Book Validation Middleware
+} = require("./Middlewares/medicalInformationValidation.js"); 
+
+const {
+  validateTransaction,
+  validateExpenditureGoal
+} = require('./Middlewares/financeValidation.js');
 
 
 ////////////////////////////////////////////////////
@@ -130,9 +136,10 @@ app.get("/getTotalExpenditureByID", authorization.verifyJWT, financeController.g
 app.get("/getMonthlyExpenditureByID", authorization.verifyJWT, financeController.getMonthlyExpenditureByID);
 app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.getAllTransactionsByID);
 app.get("/getTransactionByID/:id", authorization.verifyJWT, financeController.getTransactionByID);
+app.get("/getTransactionsByMonth/:month", authorization.verifyJWT, financeController.getTransactionsByMonth);
 
-app.post("/addTransactionToAccount", authorization.verifyJWT, financeController.addTransactionToAccount);
-app.post("/addExpenditureGoal", authorization.verifyJWT, financeController.updateExpenditureGoal);
+app.post("/addTransactionToAccount", authorization.verifyJWT, validateTransaction, financeController.addTransactionToAccount);
+app.post("/addExpenditureGoal", authorization.verifyJWT,  financeController.updateExpenditureGoal);
 
 app.put("/updateTransaction/:id", authorization.verifyJWT, financeController.updateTransaction);
 app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.deleteTransaction);
@@ -141,6 +148,13 @@ app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.
 //Displaying data as graphs/charts, use of external API from backend (By Belle) ////////////////////////////////////////////////////////////////
 app.get("/getExpenditureByMonthBarChart/:id", authorization.verifyJWT, financeController.getExpenditureByMonthBarChart);
 app.get("/getBudgetExpenditureDoughnutChart/:month", authorization.verifyJWT, financeController.getBudgetExpenditureDoughnutChart);
+app.get('/transportBarChart/:month', authorization.verifyJWT, financeController.getTransportationBarChart);
+app.get('/getFoodBarChart/:month', authorization.verifyJWT, financeController.getFoodBarChart);
+app.get('/getUtilityBarChart/:month', authorization.verifyJWT, financeController.getUtilityBarChart);
+app.get('/getOtherBarChart/:month', authorization.verifyJWT, financeController.getOtherBarChart);
+
+app.get('/getExpenditurePerCategoryMonth/:month', authorization.verifyJWT, financeController.getExpenditureGoalPerCategoryMonth);
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -149,9 +163,10 @@ app.get("/getAllNotifications", authorization.verifyJWT, notificationsController
 app.get("/getUnnotified", authorization.verifyJWT, notificationsController.getUnnotified);
 
 
-app.delete("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
+app.put("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notificationsController.markNotificationAsNotified);
+
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
-//app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
+app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -173,19 +188,22 @@ app.delete("/tasks/:task_id", authorization.verifyJWT, taskController.deleteTask
 
 
 ////////////////////////////////////////////////////
-///////////////WebSocket API////////////////////
+///////////////WebSocket API (Belle)////////////////////
 ////////////////////////////////////////////////////
 io.on('connection', (socket) => {
   console.log('Client connected:', socket.id);
 
-  // Client must emit their accountId after connecting
+  // Prompt the client to register
+  if (!Object.keys(userSocketMap).includes(socket.id)) {
+    socket.emit('requestRegistration');
+  }
+  
   socket.on('register', (accountId) => {
     userSocketMap[accountId] = socket.id;
     console.log(`User ${accountId} registered with socket ID ${socket.id}`);
   });
 
   socket.on('disconnect', () => {
-    // Optional: Remove the mapping on disconnect
     for (const [accountId, sockId] of Object.entries(userSocketMap)) {
       if (sockId === socket.id) {
         delete userSocketMap[accountId];
@@ -211,7 +229,7 @@ server.listen(port, () => {
 // Graceful shutdown
 process.on("SIGINT", async () => {
   console.log("Server is gracefully shutting down");
-  await sql.close();
+  await closePool(); // Close the database connection pool
   console.log("Database connections closed");
   process.exit(0);
 });
@@ -235,6 +253,8 @@ app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 setInterval(() => {
   notificationEngine.run().catch(err => console.error("notificationEngine.run() error:", err));
 }, 5000);
+
+
 
 
 module.exports = { app, server, userSocketMap };

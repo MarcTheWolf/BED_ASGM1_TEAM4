@@ -1,12 +1,21 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
+const { getPool } = require('../Services/pool');
+
 async function getExpenditureGoalByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
-            .query("SELECT * FROM MonthlyExpenseGoal WHERE id = @accountId");
+            .query(`
+  SELECT 
+    month,
+    SUM(monthly_goal) AS total_goal
+  FROM MonthlyExpenseGoal
+  WHERE acc_id = @accountId AND month = FORMAT(GETDATE(), 'yyyy-MM')
+  GROUP BY month
+`);
 
             
         return result;
@@ -18,7 +27,7 @@ async function getExpenditureGoalByID(accountId) {
 
 async function getTotalExpenditureByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query("SELECT SUM(amount) AS total FROM ExpensesList WHERE acc_id = @accountId");
@@ -30,9 +39,29 @@ async function getTotalExpenditureByID(accountId) {
     }
 }
 
+async function getExpenditureGoalPerCategoryMonth(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar(7), month) // Fix: use NVarChar and specify length
+      .query(`
+        SELECT category, monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month
+      `);
+
+    return result.recordset;
+  } catch (error) {
+    console.error("Error fetching category expenditure goals:", error);
+    throw error;
+  }
+}
+
+
 async function getMonthlyExpenditureByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query(`
@@ -54,7 +83,7 @@ async function getMonthlyExpenditureByID(accountId) {
 
 async function getExpenditureForMonth(accountId, month) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("month", sql.NVarChar, month) // format: '2025-07'
@@ -66,7 +95,8 @@ async function getExpenditureForMonth(accountId, month) {
                     amount, 
                     FORMAT(date, 'yyyy-MM-dd') AS date,
                     description,
-                    cat
+                    cat,
+                    time
                 FROM ExpensesList
                 WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month
                 ORDER BY date DESC;
@@ -90,7 +120,7 @@ async function getExpenditureForMonth(accountId, month) {
 
 async function getAllTransactionsByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query(`
@@ -103,8 +133,9 @@ async function getAllTransactionsByID(accountId) {
                     cat
                 FROM ExpensesList
                 WHERE acc_id = @accountId
-                ORDER BY date DESC
+                ORDER BY time asc, date desc
             `);
+
         return result.recordset; // Return the array of transactions
     } catch (error) {
         console.error("Error fetching all transactions:", error);
@@ -112,36 +143,47 @@ async function getAllTransactionsByID(accountId) {
     }
 }
 
-async function getAccountBudget(accountId) {
+async function getAccountBudget(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
-      .query("SELECT monthly_goal FROM MonthlyExpenseGoal WHERE id = @accountId");
-    if (result.recordset.length === 0) {
-      return { monthly_goal: 0, found: false };
-    }
+      .input("month", sql.NVarChar, month) // e.g., '2025-07'
+      .query(`
+        SELECT 
+          SUM(monthly_goal) AS monthly_goal
+        FROM MonthlyExpenseGoal 
+        WHERE acc_id = @accountId AND month = @month
+      `);
 
-    return result.recordset[0]; // Return the existing budget object
+    const goal = result.recordset[0]?.monthly_goal || 0;
+    return { monthly_goal: goal, found: goal > 0 };
   } catch (error) {
     console.error("Error fetching account budget:", error);
     throw error;
   }
 }
 
+
 async function addTransactionToAccount(accountId, transaction) {
     try {
+        const pool = await getPool();
 
-        const pool = await sql.connect(dbConfig);
+        const now = new Date();
+        const dateOnly = new Date(transaction.date);
+        const currentTime = new Date(1970, 0, 1, now.getHours(), now.getMinutes(), now.getSeconds());
+        console.log(currentTime)
+
         await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("amount", sql.Decimal(10, 2), transaction.amount)
-            .input("date", sql.DateTime, transaction.date)
+            .input("date", sql.Date, dateOnly)
+            .input("time", sql.Time, currentTime)
             .input("description", sql.NVarChar, transaction.description)
             .input("category", sql.NVarChar, transaction.category)
             .query(`
-                INSERT INTO ExpensesList (acc_id, amount, date, description, cat)
-                VALUES (@accountId, @amount, @date, @description, @category)
+                INSERT INTO ExpensesList (acc_id, amount, date, time, description, cat)
+                VALUES (@accountId, @amount, @date, @time, @description, @category)
             `);
 
         return { message: "Transaction added successfully" };
@@ -151,58 +193,81 @@ async function addTransactionToAccount(accountId, transaction) {
     }
 }
 
-async function addExpenditureGoal(accountId, goal) {
+async function addExpenditureGoal(accountId, goals, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
 
-    // Check if an expenditure goal already exists for this account
-    const existingRecord = await pool.request()
-      .input("accountId", sql.Int, accountId)
-      .query("SELECT COUNT(*) AS count FROM MonthlyExpenseGoal WHERE id = @accountId");
+    for (const [category, value] of Object.entries(goals)) {
+      const formattedCategory = category.trim().toLowerCase();
+      const capitalizedCategory = formattedCategory.charAt(0).toUpperCase() + formattedCategory.slice(1);
 
-    // If the record exists, return a message
-    if (existingRecord.recordset[0].count > 0) {
-      return { message: "Expenditure goal already exists for this account" };
+      const check = await pool.request()
+        .input("accountId", sql.Int, accountId)
+        .input("category", sql.VarChar(20), capitalizedCategory)
+        .input("month", sql.VarChar(7), month)
+        .query(`
+          SELECT COUNT(*) AS count
+          FROM MonthlyExpenseGoal
+          WHERE acc_id = @accountId AND category = @category AND month = @month
+        `);
+
+      if (check.recordset[0].count === 0) {
+        await pool.request()
+          .input("accountId", sql.Int, accountId)
+          .input("goal", sql.Decimal(10, 2), value)
+          .input("category", sql.VarChar(20), capitalizedCategory)
+          .input("month", sql.VarChar(7), month)
+          .query(`
+            INSERT INTO MonthlyExpenseGoal (acc_id, monthly_goal, category, month)
+            VALUES (@accountId, @goal, @category, @month)
+          `);
+      }
     }
 
-    // Insert the new goal if no record exists
-    await pool.request()
-      .input("accountId", sql.Int, accountId)
-      .input("monthlyGoal", sql.Decimal(10, 2), goal)  // Ensure the correct property name
-      .query(`
-        INSERT INTO MonthlyExpenseGoal (id, monthly_goal)
-        VALUES (@accountId, @monthlyGoal)
-      `);
-
-    return { message: "Expenditure goal added successfully" };
+    return { message: "Expenditure goals added successfully." };
   } catch (error) {
-    console.error("Error adding expenditure goal:", error);
-    throw error;  // Let the caller handle the error
-  }
-}
-// Modify an existing expenditure goal
-async function modifyExpenditureGoal(accountId, newGoal) {
-  try {
-    const pool = await sql.connect(dbConfig);
-    await pool.request()
-      .input("accountId", sql.Int, accountId)
-      .input("newGoal", sql.Decimal(10, 2), newGoal)
-      .query(`
-        UPDATE MonthlyExpenseGoal
-        SET monthly_goal = @newGoal
-        WHERE id = @accountId
-      `);
-
-    return { message: "Expenditure goal updated successfully" };
-  } catch (error) {
-    console.error("Error updating expenditure goal:", error);
+    console.error("Error adding expenditure goals:", error);
     throw error;
   }
 }
 
+function capitalize(str) {
+  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
+}
+
+// Modify an existing expenditure goal
+async function modifyExpenditureGoal(accountId, newGoals, month) {
+  try {
+    const pool = await getPool();
+
+    for (const [category, value] of Object.entries(newGoals)) {
+      const formattedCategory = category.trim().toLowerCase();
+      const capitalizedCategory = formattedCategory.charAt(0).toUpperCase() + formattedCategory.slice(1);
+
+      await pool.request()
+        .input("accountId", sql.Int, accountId)
+        .input("goal", sql.Decimal(10, 2), value)
+        .input("category", sql.VarChar(20), capitalizedCategory)
+        .input("month", sql.VarChar(7), month)
+        .query(`
+          UPDATE MonthlyExpenseGoal
+          SET monthly_goal = @goal
+          WHERE acc_id = @accountId AND category = @category AND month = @month
+        `);
+    }
+
+    return { message: "Expenditure goals updated successfully." };
+  } catch (error) {
+    console.error("Error modifying expenditure goals:", error);
+    throw error;
+  }
+}
+
+
+
 async function getTransactionByID(accountId, transactionId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
@@ -213,7 +278,8 @@ async function getTransactionByID(accountId, transactionId) {
                     amount, 
                     date, 
                     description,
-                    cat
+                    cat,
+                    time
                 FROM ExpensesList
                 WHERE acc_id = @accountId AND entry_id = @transactionId
             `);
@@ -232,18 +298,25 @@ async function getTransactionByID(accountId, transactionId) {
 
 async function updateTransaction(accountId, transactionId, updatedTransaction) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
+
+        const now = new Date();
+        const currentTime = new Date(1970, 0, 1, now.getHours(), now.getMinutes(), now.getSeconds());
+        console.log(currentTime)
+
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
             .input("amount", sql.Decimal(10, 2), updatedTransaction.amount)
-            .input("date", sql.DateTime, updatedTransaction.date)
+            .input("date", sql.Date, new Date(updatedTransaction.date)) // only the date part
+            .input("time", sql.Time, currentTime) // new: current time
             .input("description", sql.NVarChar, updatedTransaction.description)
             .input("category", sql.NVarChar, updatedTransaction.cat)
             .query(`
                 UPDATE ExpensesList
                 SET amount = @amount,
                     date = @date,
+                    time = @time,
                     description = @description,
                     cat = @category
                 WHERE acc_id = @accountId AND entry_id = @transactionId
@@ -256,13 +329,13 @@ async function updateTransaction(accountId, transactionId, updatedTransaction) {
         return { message: "Transaction updated successfully" };
     } catch (error) {
         console.error("Error updating transaction:", error);
-        throw error; // Propagate the error to the controller
+        throw error;
     }
 }
 
 async function deleteTransaction(accountId, transactionId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
@@ -282,18 +355,184 @@ async function deleteTransaction(accountId, transactionId) {
     }
 }
 
-async function getAllUserBudget() {
-    try {
-        const pool = await sql.connect(dbConfig);
-        const result = await pool.request()
-            .query("SELECT * FROM MonthlyExpenseGoal");
+async function getAllUserBudget(month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input('month', sql.VarChar, month)
+      .query(`
+        SELECT 
+          acc_id, 
+          month, 
+          SUM(monthly_goal) AS monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE month = @month
+        GROUP BY acc_id, month
+        ORDER BY acc_id
+      `);
 
-        return result.recordset; // Return the array of all user budgets
-    } catch (error) {
-        console.error("Error fetching all user budgets:", error);
-        throw error;
-    }
+    return result.recordset; // [{ acc_id, month, total_budget }]
+  } catch (error) {
+    console.error("Error fetching total user budget for month:", error);
+    throw error;
+  }
 }
+async function getTransportationExpenditure(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT SUM(amount) AS total
+        FROM ExpensesList
+        WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month AND cat = 'transport'
+      `);
+
+    return result.recordset[0].total || 0;
+  } catch (error) {
+    console.error("Error fetching transport expenditure:", error);
+    throw error;
+  }
+}
+
+async function getTransportationGoal(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month AND category = 'Transport'
+      `);
+
+    return result.recordset[0]?.monthly_goal || 0;
+  } catch (error) {
+    console.error("Error fetching transport goal:", error);
+    throw error;
+  }
+}
+
+async function getFoodExpenditure(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT SUM(amount) AS total
+        FROM ExpensesList
+        WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month AND cat = 'food'
+      `);
+
+    return result.recordset[0].total || 0;
+  } catch (error) {
+    console.error("Error fetching food expenditure:", error);
+    throw error;
+  }
+}
+
+async function getFoodGoal(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month AND category = 'Food'
+      `);
+
+    return result.recordset[0]?.monthly_goal || 0;
+  } catch (error) {
+    console.error("Error fetching food goal:", error);
+    throw error;
+  }
+}
+
+
+async function getUtilityExpenditure(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT SUM(amount) AS total
+        FROM ExpensesList
+        WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month AND cat = 'utilities'
+      `);
+
+    return result.recordset[0].total || 0;
+  } catch (error) {
+    console.error("Error fetching utilities expenditure:", error);
+    throw error;
+  }
+}
+
+async function getUtilityGoal(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month AND category = 'Utilities'
+      `);
+
+    return result.recordset[0]?.monthly_goal || 0;
+  } catch (error) {
+    console.error("Error fetching utilities goal:", error);
+    throw error;
+  }
+}
+
+async function getOtherExpenditure(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT SUM(amount) AS total
+        FROM ExpensesList
+        WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month AND cat = 'other'
+      `);
+
+    return result.recordset[0].total || 0;
+  } catch (error) {
+    console.error("Error fetching utilities expenditure:", error);
+    throw error;
+  }
+}
+
+async function getOtherGoal(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month AND category = 'Others'
+      `);
+
+    return result.recordset[0]?.monthly_goal || 0;
+  } catch (error) {
+    console.error("Error fetching utilities goal:", error);
+    throw error;
+  }
+}
+
+
+
+
 
 
 
@@ -311,4 +550,13 @@ module.exports = {
     updateTransaction,
     deleteTransaction,
     getAllUserBudget,
+    getTransportationExpenditure,
+    getTransportationGoal,
+    getFoodExpenditure,
+    getFoodGoal,
+    getUtilityExpenditure,
+    getUtilityGoal,
+    getExpenditureGoalPerCategoryMonth,
+    getOtherExpenditure,
+    getOtherGoal
 };

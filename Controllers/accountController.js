@@ -2,6 +2,8 @@ const accountModel = require("../Models/accountModel.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
+
+
 async function authenticateAccount(req, res) {
   try {
     const { phone_number, password } = req.body;
@@ -11,11 +13,10 @@ async function authenticateAccount(req, res) {
     }
 
     const account = await accountModel.getAccountByPhone(phone_number);
-    const user = await accountModel.getAccountById(account.id);
-
-    if (!account) {
+        if (!account) {
       return res.status(404).json({ error: "Account not found." });
     }
+    const user = await accountModel.getAccountById(account.id);
 
     const isMatch = await bcrypt.compare(password, account.password);
 
@@ -248,6 +249,17 @@ async function updatePhoneNumber(req, res) {
   }
 }
 
+
+async function getAllUsers() {
+  try {
+    const users = await accountModel.getAllUsers();
+    return users;
+  } catch (error) {
+    console.error("Error fetching all users:", error);
+    throw error;
+  }
+}
+
 module.exports = {
   authenticateAccount,
   getAccountById,
@@ -257,5 +269,6 @@ module.exports = {
   updatePassword,
   forgotPassword,
   updateProfile,
-  updatePhoneNumber
+  updatePhoneNumber,
+  getAllUsers
 };

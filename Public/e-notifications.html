@@ -3,34 +3,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SeniorSync Calendar</title>
+  <title>SeniorSync Notifications</title>
   <link rel="stylesheet" href="CSS/e-notification.css" />
   <link rel="stylesheet" href="CSS/footer.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
 </head>
 <body>
 <header>
-    <link rel="stylesheet" href="CSS/e-navbar.css">
-    <nav class="navbar">
-        <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
-        <ul class="nav-links">
-            <li><a href="e-calendar.html">Calendar</a></li>
-            <li><a href="e-finance.html">Finance</a></li>
-            <li><a href="e-events.html">Events</a></li>
-            <li><a href="e-notifications.html">Notifications</a></li>
-            <li><a href="e-profile.html">Profile</a></li>
-        </ul>
-    </nav>
-    <script src="JS/e-navbar.js"></script>
+  <link rel="stylesheet" href="CSS/e-navbar.css">
+  <nav class="navbar">
+    <div class="nav-logo"><img src="Assets/logo.png" alt="SeniorSync Logo"></div>
+    <ul class="nav-links">
+      <li><a href="e-calendar.html">Calendar</a></li>
+      <li><a href="e-finance.html">Finance</a></li>
+      <li><a href="e-events.html">Events</a></li>
+      <li><a href="e-notifications.html">Notifications</a></li>
+      <li><a href="e-profile.html">Profile</a></li>
+    </ul>
+  </nav>
+  <script src="JS/e-navbar.js"></script>
 </header>
 
-  <main class="notification-page">
-  <section class="notification-header">
-    <h1>Notifications</h1>
+<main class="notification-page">
+  <section class="notification-header styled-heading">
+    <div class="heading-wrapper">
+      <div class="heading-bar"></div>
+      <h1>Notifications</h1>
+    </div>
     <p>All your notifications here in this mailbox, never miss an opportunity to forget things.</p>
   </section>
 
-  <section class="notification-group">
+  <section class="notification-updates">
+    <div class="updates-card">
+      <h2>New Updates</h2>
+
+      <!--<div class="update-item">
+        📢 New Event Added: <strong>Health & Wellness Fair 2025</strong><br />
+        <span class="update-sub">Check it out now on the Notifications page!</span>
+        <span class="update-arrow">&gt;</span>
+      </div>
+      <hr />
+      <div class="update-item">
+        📢 New Event Added: <strong>Senior Fitness Workshop</strong><br />
+        <span class="update-sub">Check it out now on the Notifications page!</span>
+        <span class="update-arrow">&gt;</span>
+      </div>
+    </div>-->
+  </section>
+
+  <div class="clear-notifications-container">
+  <button class="clear-notifications-btn">Clear All Notifications</button>
+  </div>
+
+  <!-- Notification Cards -->
+  <!--<section class="notification-group">
     <h2>3 Aug 2025</h2>
     <div class="notification-card">
       <div class="time-label">08.30am</div>
@@ -79,44 +105,43 @@
       </p>
       <a href="#" class="view-more">&gt;</a>
     </div>
-  </section>
+  </section>-->
+
+  <!--'event', 'finance', 'medication', 'announcement', 'calendar', 'social', 'profile', 'weekly'-->
+
   <p class="footer-note">You have caught up all your notifications, have a nice day!</p>
 </main>
 
-
-  <div id="footer-placeholder"></div>
-  <script src="js/footer.js"></script>
+<!-- Footer -->
+<div id="footer-placeholder"></div>
+<script src="js/footer.js"></script>
 
 <!-- Popup Modal -->
 <div id="announcementModal" class="modal">
   <div class="modal-content">
     <span class="close">&times;</span>
-    
-    <!-- announcement  header -->
-    <div class="modal-header">
-      Announcement
-    </div>
-
+    <div class="modal-header">Announcement</div>
     <h2>Quick stress fixes you can use anytime, anyway</h2>
-    <p>Overwhelmed by deadlines, demands and never-ending to-do lists? Don't worry take a deep breathe phew, you are not alone.</p>
-    <p>Join our event and walk away with a peaceful mind with us by learning strategies that fit into even the busiest schedules.</p>
+    <p>Overwhelmed by deadlines, demands and never-ending to-do lists? Don’t worry, take a deep breath — you are not alone.</p>
+    <p>Join our event and walk away with a peaceful mind by learning strategies that fit into even the busiest schedules.</p>
     <ul>
-      <li>learn how stress affects your body and mind</li>
-      <li>master smart time-management habits</li>
-      <li>Pick up 3-4 stress relief techniques you can use anytime, anywhere</li>
+      <li>Learn how stress affects your body and mind</li>
+      <li>Master smart time-management habits</li>
+      <li>Pick up 3–4 stress relief techniques you can use anytime, anywhere</li>
     </ul>
     <p><strong>Details:</strong><br>
       Name: Walk away with a peaceful mind<br>
       Date: 31 July 2025<br>
-      Time: 12pm - 2pm
+      Time: 12pm – 2pm
     </p>
-    <p><em>Limited slots are available, sign up now!<br>
+    <p><em>Limited slots available – sign up now!<br>
     Go to Events ➡️ Search “Walk away with a peaceful mind”</em></p>
   </div>
 </div>
+
 <script src="JS/e-notifications.js"></script>
-  <script src="/JS/chatbot.js" type="module"></script>
-    <script src="/socket.io/socket.io.js"></script>
-    <script src="/JS/notificationSystem.js" type="module"></script>
+<script src="/JS/chatbot.js" type="module"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/JS/notificationSystem.js" type="module"></script>
 </body>
 </html>

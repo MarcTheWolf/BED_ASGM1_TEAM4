@@ -267,6 +267,7 @@ describe("eventController", () => {
             req.user = { id: 14 };
         });
 
+
     it("should delete and notify", async () => {
         const eventData = { name: "To Delete" };
         eventModel.getEventDetailsByID.mockResolvedValue(eventData);
@@ -281,6 +282,7 @@ describe("eventController", () => {
         expect(res.status).toHaveBeenCalledWith(200);
         expect(res.json).toHaveBeenCalledWith({ message: "Event deleted successfully" });
     }); // ✅ THIS WAS MISSING
+
 
         it("should return 400 if deletion fails", async () => {
             eventModel.getEventDetailsByID.mockResolvedValue({ name: "Fail Delete" });

@@ -14,13 +14,14 @@ body{
     display: flex;
     flex-direction: row;
     text-align: left;
-    margin-top: 80px;
+    margin-top: 60px;
+    height:95px;
     align-items: center;
-    background-color: #ffffff;
+    background-color: #e2fcf6;
 }
 
 .event-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #1d3557;
 }
 
@@ -29,6 +30,7 @@ body{
     height: 50px;
     background-color: #81C7BE;
     margin: 10px;
+    margin-left: 65px;
     border-radius: 10px;
 }
 
@@ -37,7 +39,7 @@ body{
     flex-direction: row;
     justify-content: space-evenly;
     align-items: center;
-    margin-top: 20px;
+    margin-top: 30px;
     margin-bottom: 20px;
 }
 

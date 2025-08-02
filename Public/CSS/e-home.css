@@ -159,6 +159,9 @@ body::-webkit-scrollbar {
 .health {
   background-color: #6C94C9;
 }
+.profile {
+  background-color: #81C7BE;
+} 
 
 .activities {
     padding: 20px;

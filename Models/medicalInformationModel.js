@@ -1,10 +1,13 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
+const { get } = require("../Controllers/mapController");
+
+const { getPool } = require('../Services/pool');
 
 async function getMedicationByAccountID(accountId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
 
@@ -16,17 +19,13 @@ async function getMedicationByAccountID(accountId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function getMedicationByID(medicationId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("medicationId", sql.Int, medicationId);
 
@@ -38,17 +37,13 @@ async function getMedicationByID(medicationId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function getMedicalConditionByID(conditionId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("conditionId", sql.Int, conditionId);
 
@@ -60,17 +55,13 @@ async function getMedicalConditionByID(conditionId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function getWeeklyTiming(med_id) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
 
@@ -82,17 +73,13 @@ async function getWeeklyTiming(med_id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function saveWeeklyTiming(med_id, day, time) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
     request.input("day", sql.Int, day);
@@ -106,18 +93,36 @@ async function saveWeeklyTiming(med_id, day, time) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
+
+async function getWeeklyTimingsByAccountID(accountId) {
+  let connection;
+  try {
+    connection = await getPool();
+    const request = connection.request();
+    request.input("accountId", sql.Int, accountId);
+
+    const result = await request.query(`
+      SELECT w.medTime_id, w.med_id, w.day, w.time, m.name, m.frequency
+      FROM WeeklyMedicationTiming w
+      INNER JOIN MedicationList m ON w.med_id = m.med_id
+      WHERE m.account_id = @accountId
+    `);
+
+    return result.recordset;
+  } catch (error) {
+    console.error("Model error:", error);
+    throw error;
+  }
+}
+
 
 
 async function getMedicalConditionByAccountID(accountId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
 
@@ -129,17 +134,13 @@ async function getMedicalConditionByAccountID(accountId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function createMedicalCondition(accountId, condition) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
     request.input("name", sql.NVarChar, condition.name);
@@ -155,17 +156,13 @@ async function createMedicalCondition(accountId, condition) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function createMedication(accountId, medication) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
     request.input("name", sql.NVarChar, medication.name);
@@ -185,17 +182,13 @@ async function createMedication(accountId, medication) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function deleteMedication(medicationId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("medicationId", sql.Int, medicationId);
 
@@ -207,17 +200,13 @@ async function deleteMedication(medicationId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function deleteMedicalCondition(conditionId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("conditionId", sql.Int, conditionId);
 
@@ -229,17 +218,13 @@ async function deleteMedicalCondition(conditionId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function getMedicationAssociatedWithMedicalCondition(conditionId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("conditionId", sql.Int, conditionId);
 
@@ -251,17 +236,13 @@ async function getMedicationAssociatedWithMedicalCondition(conditionId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function updateMedication(med_id, data) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
     request.input("name", sql.NVarChar, data.name);
@@ -279,17 +260,13 @@ async function updateMedication(med_id, data) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function updateMedicalCondition(medc_id, data) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("medc_id", sql.Int, medc_id);
     request.input("name", sql.NVarChar, data.name);
@@ -306,17 +283,13 @@ async function updateMedicalCondition(medc_id, data) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function associateMedicationWithMedicalCondition(med_id, medc_id) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
     request.input("medc_id", sql.Int, medc_id);
@@ -338,17 +311,13 @@ async function associateMedicationWithMedicalCondition(med_id, medc_id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function deleteMedicationConditionAssociation(med_id, medc_id) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
     request.input("medc_id", sql.Int, medc_id);
@@ -361,17 +330,13 @@ async function deleteMedicationConditionAssociation(med_id, medc_id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
 async function resetWeeklyTiming(med_id) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("med_id", sql.Int, med_id);
 
@@ -383,10 +348,6 @@ async function resetWeeklyTiming(med_id) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -407,4 +368,5 @@ module.exports = {
   getWeeklyTiming,
   saveWeeklyTiming,
   resetWeeklyTiming,
+  getWeeklyTimingsByAccountID
 };

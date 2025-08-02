@@ -60,7 +60,7 @@ INSERT INTO MedicationList (account_id, name, description, dosage, time, frequen
 -- For acc_id 1
 (1, 'Lisinopril', 'Used to treat high blood pressure (Hypertension)', '2 pills', '08:00', 'D', '2025-06-01'),
 (1, 'Donepezil', 'Helps with memory and thinking problems in Dementia', '1 tablet', Null, 'W', '2025-06-01'),
-(1, 'Paracetamol', 'Take only if fever exceeds 38�C', '1 tablet', NULL, 'WR', '2025-06-01'),
+(1, 'Paracetamol', 'Take only if fever exceeds 38°C', '1 tablet', NULL, 'WR', '2025-06-01'),
 
 -- For acc_id 4
 (4, 'Insulin', 'Blood sugar management for Type 2 Diabetes', '10 units', '07:00', 'D', '2025-07-01'),
@@ -191,18 +191,35 @@ INSERT INTO MedicationConditionAssociationList (med_id, medc_id) VALUES
 (5, 4)
 
 
+
 Create table MonthlyExpenseGoal(
-	id INT PRIMARY KEY,
+	id INT IDENTITY(1,1) PRIMARY KEY,
+	acc_id INT,
 	monthly_goal DECIMAL(10, 2),
+	category varchar(20) not null,
+	month varchar(7) Not Null
 
-
-	FOREIGN KEY (id) REFERENCES AccountPassword(id)
+	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
 
-Insert INTO MonthlyExpenseGoal(id, monthly_goal)
-VALUES
-(1, 500)
+INSERT INTO MonthlyExpenseGoal (acc_id, monthly_goal, category, month) VALUES
+(1, 300.00, 'Food',      '2025-06'),
+(1, 100.00, 'Utilities', '2025-06'),
+(1, 80.00,  'Transport', '2025-06'),
+(1, 300.00, 'Others', '2025-06'),
+
+(1, 320.00, 'Food',      '2025-07'),
+(1, 110.00, 'Utilities', '2025-07'),
+(1, 90.00,  'Transport', '2025-07'),
+(1, 200.00, 'Others', '2025-07'),
+
+(1, 310.00, 'Food',      '2025-08'),
+(1, 105.00, 'Utilities', '2025-08'),
+(1, 85.00,  'Transport', '2025-08'),
+(1, 200.00, 'Others', '2025-08');
+
+
 
 
 CREATE TABLE ExpensesList (
@@ -212,79 +229,108 @@ CREATE TABLE ExpensesList (
     amount DECIMAL(10,2) NOT NULL,
     acc_id INT NOT NULL,
     date DATE NOT NULL,
+	time TIME NOT NULL,
     FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 );
 
 -- Expenses for Account ID 1
-INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
-('food', 'Tesco weekly groceries', 150.00, 1, '2025-01-05'),
-('utilities', 'January electric bill', 70.25, 1, '2025-01-10'),
-('transport', 'Petrol refill', 60.00, 1, '2025-01-18'),
+INSERT INTO ExpensesList (cat, description, amount, acc_id, date, time) VALUES
+('food', 'Tesco weekly groceries', 150.00, 1, '2025-01-05', '10:30:00'),
+('utilities', 'January electric bill', 70.25, 1, '2025-01-10', '08:45:00'),
+('transport', 'Petrol refill', 60.00, 1, '2025-01-18', '18:10:00'),
 
-('food', 'Monthly groceries', 140.00, 1, '2025-02-03'),
-('food', 'Dinner at KFC', 50.00, 1, '2025-02-10'),
-('utilities', 'Unifi monthly', 89.99, 1, '2025-02-11'),
+('food', 'Monthly groceries', 140.00, 1, '2025-02-03', '11:20:00'),
+('food', 'Dinner at KFC', 50.00, 1, '2025-02-10', '19:00:00'),
+('utilities', 'Unifi monthly', 89.99, 1, '2025-02-11', '09:00:00'),
 
-('food', 'Groceries at AEON', 160.00, 1, '2025-03-02'),
-('utilities', 'March TNB bill', 72.00, 1, '2025-03-12'),
-('entertainment', 'Netflix', 55.00, 1, '2025-03-20'),
+('food', 'Groceries at AEON', 160.00, 1, '2025-03-02', '13:00:00'),
+('utilities', 'March TNB bill', 72.00, 1, '2025-03-12', '08:15:00'),
+('entertainment', 'Netflix', 55.00, 1, '2025-03-20', '21:30:00'),
 
-('transport', 'Petrol refuel', 70.00, 1, '2025-04-01'),
-('food', 'Birthday dinner', 90.00, 1, '2025-04-15'),
-('utilities', 'April internet bill', 89.99, 1, '2025-04-11'),
+('transport', 'Petrol refuel', 70.00, 1, '2025-04-01', '17:45:00'),
+('food', 'Birthday dinner', 90.00, 1, '2025-04-15', '20:00:00'),
+('utilities', 'April internet bill', 89.99, 1, '2025-04-11', '08:00:00'),
 
-('food', 'Groceries at Giant', 130.00, 1, '2025-05-05'),
-('entertainment', 'Gym subscription', 110.00, 1, '2025-05-07'),
-('other', 'Bought office supplies', 40.00, 1, '2025-05-15'),
+('food', 'Groceries at Giant', 130.00, 1, '2025-05-05', '12:30:00'),
+('entertainment', 'Gym subscription', 110.00, 1, '2025-05-07', '07:50:00'),
+('other', 'Bought office supplies', 40.00, 1, '2025-05-15', '15:30:00'),
 
-('transport', 'Fuel top-up', 65.00, 1, '2025-06-06'),
-('food', 'Cafe with friends', 85.00, 1, '2025-06-10'),
-('utilities', 'June bill', 75.20, 1, '2025-06-15'),
+('transport', 'Fuel top-up', 65.00, 1, '2025-06-06', '18:00:00'),
+('food', 'Cafe with friends', 85.00, 1, '2025-06-10', '14:45:00'),
+('utilities', 'June bill', 75.20, 1, '2025-06-15', '09:10:00'),
 
-('food', 'Groceries at Lotus', 145.00, 1, '2025-07-01'),
-('entertainment', 'July Netflix', 55.00, 1, '2025-07-03'),
-('utilities', 'Unifi July', 89.99, 1, '2025-07-05');
+('food', 'Groceries at Lotus', 145.00, 1, '2025-07-01', '11:10:00'),
+('entertainment', 'July Netflix', 55.00, 1, '2025-07-03', '22:00:00'),
+('utilities', 'Unifi July', 89.99, 1, '2025-07-05', '08:05:00');
 
 -- Expenses for Account ID 4
-INSERT INTO ExpensesList (cat, description, amount, acc_id, date) VALUES
-('food', 'Fast food', 25.00, 4, '2025-01-15'),
-('utilities', 'Low usage', 30.00, 4, '2025-01-20'),
+INSERT INTO ExpensesList (cat, description, amount, acc_id, date, time) VALUES
+('food', 'Fast food', 25.00, 4, '2025-01-15', '13:15:00'),
+('utilities', 'Low usage', 30.00, 4, '2025-01-20', '09:20:00'),
 
-('entertainment', 'Flight tickets', 450.00, 4, '2025-03-10'),
-('entertainment', 'Hotel booking', 300.00, 4, '2025-03-12'),
-('food', 'Buffet dinner', 120.00, 4, '2025-03-13'),
+('entertainment', 'Flight tickets', 450.00, 4, '2025-03-10', '16:00:00'),
+('entertainment', 'Hotel booking', 300.00, 4, '2025-03-12', '14:30:00'),
+('food', 'Buffet dinner', 120.00, 4, '2025-03-13', '19:00:00'),
 
-('food', 'Monthly groceries', 180.00, 4, '2025-04-05'),
-('transport', 'Car petrol', 90.00, 4, '2025-04-10'),
+('food', 'Monthly groceries', 180.00, 4, '2025-04-05', '10:45:00'),
+('transport', 'Car petrol', 90.00, 4, '2025-04-10', '17:30:00'),
 
-('utilities', 'May bill', 89.99, 4, '2025-05-03'),
+('utilities', 'May bill', 89.99, 4, '2025-05-03', '08:10:00'),
 
-('other', 'New phone', 1200.00, 4, '2025-06-01'),
-('food', 'Anniversary dinner', 200.00, 4, '2025-06-06'),
+('other', 'New phone', 1200.00, 4, '2025-06-01', '13:25:00'),
+('food', 'Anniversary dinner', 200.00, 4, '2025-06-06', '20:15:00'),
 
-('transport', 'Top-up petrol', 70.00, 4, '2025-07-04'),
-('entertainment', 'Disney+', 49.99, 4, '2025-07-07');
+('transport', 'Top-up petrol', 70.00, 4, '2025-07-04', '17:40:00'),
+('entertainment', 'Disney+', 49.99, 4, '2025-07-07', '21:45:00');
+
 
 
 create table notificationList(
 	noti_id INT PRIMARY KEY IDENTITY(1,1),
-	type varchar(25) NOT NULL check (type in ('event', 'finance', 'medication', 'announcement', 'calendar', 'social', 'profile')),
+	type varchar(25) NOT NULL check (type in ('event', 'task', 'event deleted', 'event updated', 'finance', 'budget finance', 'medication', 'announcement', 'calendar', 'social', 'profile', 'weekly')),
 	time DATETIME NOT NULL,
 	description VARCHAR(255) NOT NULL,
 	acc_id INT NOT NULL,
 	notified BIT DEFAULT 0,
-	seen BIT Default 0
+	seen BIT Default 0,
+	asso_id INT NULL,
 
 
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
-drop table notificationList;
+drop table notificationList
+
+
 
 CREATE TABLE TaskList(
     task_id INT PRIMARY KEY IDENTITY(1,1),
+	acc_id INT NOT NULL,
     task_name VARCHAR(50) NOT NULL,
     date DATE NOT NULL,
     time VARCHAR(10) NULL
 );
+
+
+
+CREATE TABLE syncCodes (
+	code_id INT PRIMARY KEY IDENTITY(1,1),
+    acc_id INT,
+    code INT CHECK (code BETWEEN 0 AND 999999),
+);
+
+
+INSERT INTO syncCodes (acc_id, code) VALUES
+(2, 384729);
+
+
+
+Create Table syncAccounts (
+	sync_id INT PRIMARY KEY IDENTITY(1,1),
+	elderly_id INT,
+	caretaker_id INT,
+)
+
+INSERT INTO syncAccounts(elderly_id, caretaker_id) values
+(1, 2)
 

@@ -2,7 +2,6 @@
   let notiQueue = [];
   let isDisplaying = false;
 
-  // Connect to socket.io
   const socket = io();
 
   function injectNotificationCSS() {
@@ -11,35 +10,104 @@
     const style = document.createElement('style');
     style.id = 'notification-css';
     style.textContent = `
-      .global-notification-bar {
-        background-color: #004085;
-        color: white;
-        padding: 15px;
-        font-size: 16px;
-        text-align: center;
-        position: fixed;
-        top: 65px;
-        left: 0;
-        right: 0;
-        z-index: 1000;
-        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        animation: slideDown 0.5s ease-out;
-      }
+    .global-notification-bar {
+      background-color: #ffffffff;
+      border: 5px solid #81C7BE;
+      color: #000000;
+      font-size: 20px;
+      text-align: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4000;
+      box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      width: 80%;
+      height: 300px;
+      max-width: 500px;
+      animation: fadeInCenter 0.4s ease-out;
 
-      @keyframes slideDown {
-        from { transform: translateY(-100%); opacity: 0; }
-        to   { transform: translateY(0); opacity: 1; }
-      }
+      /* ✅ Remove padding here */
+      padding: 0;
+    }
+
+    .popup-header-bar {
+      background-color: #e0f7f4;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      border-bottom: 1px solid #d0e0dc;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
+
+    .popup-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1a2e25;
+    }
+
+    /* ✅ Add content wrapper for spacing only below the header */
+    .popup-content {
+      padding: 30px 40px;
+    }
+
+    .popup-message {
+      display: block;
+      font-size: 22px;
+      margin-top: 50px;
+      line-height: 1.6;
+    }
+
+    .popup-ok-button {
+      background-color: #e0f0ff;
+      color: #004085;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 40px;
+    }
+
+    .popup-ok-button:hover {
+      background-color: #cce4fa;
+    }
+
     `;
     document.head.appendChild(style);
   }
 
-  function createNotificationBar(message) {
-    const bar = document.createElement('div');
-    bar.className = 'global-notification-bar';
-    bar.innerText = message;
-    document.body.prepend(bar);
-    return bar;
+  async function createNotificationBar(message) {
+    injectNotificationCSS();
+
+    try {
+      const res = await fetch('../notificationPopup.html');
+      const html = await res.text();
+
+      const temp = document.createElement('div');
+      temp.innerHTML = html.trim();
+      const popup = temp.querySelector('.global-notification-bar');
+
+      popup.querySelector('.popup-message').textContent = message;
+      popup.style.display = 'block';
+
+      // Attach OK button behavior
+      const okBtn = popup.querySelector('.popup-ok-button');
+      okBtn.onclick = () => popup.remove();
+
+      document.body.appendChild(popup);
+
+      return popup;
+    } catch (err) {
+      console.error('Failed to load notification popup:', err);
+    }
   }
 
   async function displayNextNotification() {
@@ -48,11 +116,11 @@
 
     const user = JSON.parse(localStorage.getItem('user'));
     const noti = notiQueue.shift();
-    const bar = createNotificationBar(noti.description);
+    const bar = await createNotificationBar(noti.description);
 
     try {
       await fetch(`/markNotificationAsNotified/${noti.noti_id}`, {
-        method: 'DELETE',
+        method: 'PUT',
         headers: {
           'Authorization': 'Bearer ' + user.token
         }
@@ -61,26 +129,69 @@
       console.warn(`Failed to mark notification ${noti.noti_id} as notified`);
     }
 
+    // Auto-hide after 10s
     setTimeout(() => {
-      bar.remove();
+      bar?.remove();
       isDisplaying = false;
       displayNextNotification();
-    }, 5000);
+    }, 10000);
   }
 
-  // On receiving a new notification from the backend via socket
   socket.on('notification', (notification) => {
     notiQueue.push(notification);
     displayNextNotification();
   });
-  
 
-  // Send user ID to register for socket connection
-  const user = JSON.parse(localStorage.getItem('user'));
-  console.log("User ID for socket registration:", user?.id);
-  if (user?.id) {
+  socket.on('requestRegistration', () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (user?.id) {
+      socket.emit('register', user.id);
+      console.log("🔐 Responded to registration request with user ID:", user.id);
+    } else {
+      console.warn("⚠️ No user ID found in localStorage for registration");
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', async () => {
+    injectNotificationCSS();
+
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user?.token) return;
+
+    console.log("User ID for socket registration:", user?.id);
     socket.emit('register', user.id);
-  }
 
-  injectNotificationCSS();
+    try {
+      const res = await fetch("/getUnnotified", {
+        method: 'GET',
+        headers: {
+          'Authorization': 'Bearer ' + user.token
+        }
+      });
+
+      if (res.ok) {
+        const unnotified = await res.json();
+        if (Array.isArray(unnotified)) {
+          console.log("🔄 Loading unnotified notifications:", unnotified.length);
+          notiQueue.push(...unnotified);
+          displayNextNotification();
+        }
+      } else {
+        console.warn("⚠️ Failed to load unnotified notifications");
+      }
+    } catch (err) {
+      console.error("❌ Error fetching unnotified notifications:", err);
+    }
+
+    // Add test button trigger
+    const testBtn = document.getElementById('test-noti-btn');
+    testBtn?.addEventListener('click', () => {
+      window.showCustomNotification("🔔 This is a test notification!");
+    });
+  });
+
+  window.showCustomNotification = async function(message) {
+    const popup = await createNotificationBar(message);
+    setTimeout(() => popup?.remove(), 5000);
+  };
 })();

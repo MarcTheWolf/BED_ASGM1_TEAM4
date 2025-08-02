@@ -1,330 +1,585 @@
-body{
-    height: 100%;
-    margin: 0;
-    width: 100%;
+body {
+  height: 100%;
+  padding: 0;
+  margin: 0;
+  width: 100%;
 }
 
 ::-webkit-scrollbar {
-    display: none;
+  display: none;
 }
 
+/* NEW WRAPPER for header, matching Notification style */
+.finance-title-wrapper {
+  height: 90px;
+  display: flex;
+  align-items: center;
+  padding-left: 72px; /* 👈 Increase this value to move everything right */
+  margin-top: 65px;
+  width: 100vw;
+  margin-left: -7px;
+  box-sizing: border-box;
+  background-color: #e2fcf6;
+}
+
+
 .finance-title-container {
-    display: flex;
-    flex-direction: row;
-    text-align: left;
-    margin-top: 80px;
-    align-items: center;
-    background-color: #EAF8F6;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  height: 100%;
+  background-color: transparent;
+  margin-top: 0;
 }
 
 .finance-title {
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: #1d3557;
-}
-
-.budget-section {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    margin: 2rem auto;
-    text-align: center;
-}
-
-.finance-pie-chart {
-    max-width: 40%;
-    height: auto;
-    margin-bottom: 1rem;
-}
-
-.edit-budget-btn {
-    padding: 0.75rem 1.5rem;
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    font-size: 1rem;
-    transition: background-color 0.3s ease;
-}
-
-.edit-budget-btn:hover {
-    background-color: #45a049;
-}
-
-.highlight-box {
-    width: 20px;
-    height: 50px;
-    background-color: #81C7BE;
-    margin: 10px;
-    border-radius: 10px;
-}
-
-.transaction-records-header {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-    margin: 20px 0;
-}
-
-
-.transaction-records-container {
-    margin: 20px;
-    padding: 20px;
-    background-color: #f9f9f9;
-    border-radius: 10px;
-}
-
-.circle {
-    width: 40px;
-    height: 40px;
-    background-color: #81C7BE;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-size: 24px;
-    cursor: pointer;
-    outline: none;
-}
-
-.circle:hover {
-    background-color: #6ab8a7;
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
-}
-
-.transaction-record-list{
-    list-style: none;
-    padding: 0;
     margin: 0;
 }
 
+.highlight-box {
+  width: 20px;
+  height: 50px;
+  background-color: #81C7BE;
+  margin-right: 12px;
+  border-radius: 10px;
+}
+
+/* Combined layout: chart + category breakdown */
+.finance-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  gap: 2rem;
+  margin: 2rem auto;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  margin-top: 80px;
+}
+
+.chart-wrapper {
+  flex: 1;
+  min-width: 300px;
+  margin-left: 65px;
+  margin-top: -50px;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+
+.section-title {
+  font-size: 1.5rem;
+  color: #1d3557;
+  margin: 0;
+}
+
+.month-filter-label {
+  color:#1d3557;
+  font-weight: 600;
+  margin-left: 20px;
+  font-size: 1.2rem;
+}
+
+.month-select {
+  padding: 0.4rem 0.75rem;
+  border-radius: 5px;
+  border: 2px solid #ccc;
+  height:30px;
+  font-size: 12px;
+}
+
+.finance-pie-chart {
+  width: 690px;
+  height: auto;
+  margin-top: 100px;
+  margin-bottom: 1rem;
+  align-self: flex-start;
+}
+
+/* Category Breakdown Section */
+.category-breakdown {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  margin-top: 140px;
+  margin-left: 0rem;
+}
+
+.category-item {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 1rem;
+}
+
+.category-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #f2f2f2;
+  object-fit: cover;
+}
+
+.category-details {
+  flex: 1;
+}
+
+.category-label {
+  display: flex;
+  justify-content: space-between; /* 👈 push left & right content apart */
+  align-items: center;
+  width: 400px; /* or set to same width as bar image */
+}
+
+.amount-left {
+  font-size: 0.9rem;
+  color: #555;
+  font-weight: normal;
+  margin-left: 0; /* 👈 remove fixed margin */
+}
+
+
+.category-name {
+  font-weight: 600;
+  font-size: 1rem;
+  color: #222;
+}
+
+
+.bar-wrapper {
+  
+  height: 12px;
+  width: 100%;
+}
+
+.bar-base {
+  width: 400px;
+  height: 35px;
+  display: block;
+}
+
+.bar-fill {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  object-fit: none;
+  overflow: hidden;
+}
+
+/* Buttons */
+.edit-budget-btn {
+  width:130px;
+  height:35px;
+  background-color: #81C7BE;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease;
+  margin-top: 20px;
+  margin-left: 60px;
+  position: relative;
+  right: 60px;
+}
+
+.edit-budget-btn:hover {
+  background-color: #5b8882;
+}
+.transaction-record:nth-child(odd) {
+  background-color: #EAF8F6; /* White */
+}
+
+.transaction-record:nth-child(even) {
+  background-color: #ffffff; /* Light green */
+}
+
+.transaction-records-header {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  margin: 20px 0;
+}
+
+.transaction-records-container {
+  margin: 20px;
+  padding: 20px;
+  background-color: #ffffff;
+  border-radius: 10px;
+  outline: none;
+}
+
+.circle {
+  width: 40px;
+  height: 40px;
+  background-color: #81C7BE;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+  border: none;           
+  outline: none;          
+  box-shadow: none;       
+  transition: transform 0.2s ease;
+}
+
+.circle:hover {
+  background-color: #6ab8a7;
+  box-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
+}
+
+.transaction-record-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
 .transaction-record {
-    display: flex;
-    padding: 10px;
-    border-bottom: 4px;
-    background-color: #EAF8F6;
-    border-radius: 5px;
+  display: flex;
+  padding: 15px 16px; 
+  border-bottom: 4px;
+  background-color: #EAF8F6;
+  border-radius: 5px;
 }
 
 .transaction-month-header {
-  font-size: 1.1rem;
-  font-weight: 600;
-  color: #333;
-  margin-top: 2rem;
-  margin-bottom: 0.5rem;
-  padding-bottom: 4px;
-  border-bottom: 2px solid #ccc;
-  background-color: #f8f9fa;
-  padding: 8px 12px;
-  border-radius: 4px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    margin-top: 2rem;
+    margin-bottom: 0.5rem;
+    padding-bottom: 4px;
+    border-bottom: 2px solid #ccc;
+    background-color: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 4px;
 }
 
 .transaction-date {
-    font-weight: bold;
+  font-size: 1.1rem;
+  font-weight: bold;
+  margin-right: 40px;
 }
+
 
 .transaction-category {
-    margin-left: 10px;
-    overflow-x: hidden;
-    font-weight: bold;
+  overflow-x: hidden;
+  font-weight: bold;
+  font-size: 1.1rem;
+  text-transform: capitalize;
+  margin-right: 30px;
+  width:90px
+}
+.category-dropdown {
+  width: 550px;
+  margin-left: -22px;
 }
 
-.transaction-description {
-    margin-left: 10px;
-    overflow-x: hidden;
+.transaction-field {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 1rem;
 }
 
+.transaction-field label {
+  width: 100px; /* label column */
+  font-weight: bold;
+}
+
+.transaction-value,
+.edit-input {
+  width: 1000px; /* uniform width for all fields */
+  font-size: 16px;
+  padding: 6px 10px;
+  box-sizing: border-box;
+}
+
+.transaction-value {
+  color: #333;
+  background-color: #f5f5f5;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* editable input */
+.edit-input {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* buttons */
+#edit-icon,
+#close-button {
+  padding: 6px 12px;
+  margin: 10px 6px;
+  font-size: 14px;
+  border: none;
+  background-color: #81C7BE;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+#edit-icon:hover,
+#close-button:hover {
+  background-color: #6bb1a6;
+}
+
+
+#transaction-category-input {
+  padding-right: 2.5rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  height: 45px;
+  width: 5500px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+#category {
+  padding-right: 2.4rem;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  height: 45px;
+  width: 488px;
+  box-sizing: border-box;
+  position: relative;
+  left: 13px;
+}
+
+transaction-description {
+  margin-left: 10px;
+  overflow-x: hidden;
+}
 .transaction-amount {
-    margin-left: auto;
-    color: #171c19;
+  font-size: 1.1rem;
+  margin-left: auto;
+  color: #171c19;
 }
 
 .transaction-records-footer {
-    display: flex;
-    justify-content: right;
-    margin-top: 20px;
+  display: flex;
+  justify-content: right;
+  margin-top: 20px;
 }
 
 .transaction-records-footer .see-more-button {
-    color: rgb(96, 96, 96);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
+  color: rgb(96, 96, 96);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
 }
+
 .transaction-records-footer .see-more-button:hover {
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
-    transform: translateY(-2px);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+  transform: translateY(-2px);
 }
 
+/* Budget form */
 .budget-form {
-    display: flex;
-    flex-direction: column;
-    width: 400px;
-    padding: 1.5rem 2rem;
-    background: #f9f9f9;
-    border-radius: 8px;
-    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-    font-family: Arial, sans-serif;
-
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  padding: 1.5rem 2rem;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
+  border: 5px solid #81C7BE;
+  font-family: Arial, sans-serif;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .budget-form h2 {
-  margin-bottom: 1rem;
-  text-align: center;
-  color: #333;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #333;
 }
 
 .budget-form label {
-  display: block;
-  margin: 0.75rem 0 0.25rem;
-  font-weight: 600;
-  color: #555;
+    display: block;
+    margin: 0.75rem 0 0.25rem;
+    font-weight: 600;
+    margin-left: 10px;
+    color: #555;
 }
 
 .budget-form input,
 .budget-form select {
-  width: 100%;
-  padding: 0.5rem 0.75rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.3s ease;
+    width: 460px;
+    padding: 0.5rem 0.75rem;
+    font-size: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    transition: border-color 0.3s ease;
+    align-self: center;
 }
 
 .budget-form input:focus,
 .budget-form select:focus {
-  outline: none;
-  border-color: #007BFF;
-  box-shadow: 0 0 3px #007BFF;
+    outline: none;
+    border-color: #007BFF;
+    box-shadow: 0 0 3px #007BFF;
 }
 
 .budget-form button {
-  margin-top: 1.5rem;
-  width: 100%;
-  padding: 0.75rem;
-  font-size: 1.1rem;
-  font-weight: 700;
-  background-color: #007BFF;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    font-weight: 700;
+    background-color: #81C7BE;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .budget-form button:hover {
-  background-color: #0056b3;
+    background-color: #64968f;
 }
 
 .form-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 1rem;
-}
-
-.edit-budget-btn {
-  background-color: #6ab8a7;
-  color: white;
-  border: none;
-  border-radius: 5px;
-  padding: 10px 20px;
-  cursor: pointer;
-}
-
-.popup {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    padding: 20px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
-    max-width: 400px;
-    display: none; /* Hide by default */
-    z-index: 1000;
-    width: 90%;
-}
-
-.popup-header {
     display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+/* Core popup styling */
+.popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+  max-width: 500px;
+  width: 90%;
+  padding: 20px;
+  z-index: 1000;
+  display: none;
+  animation: popupFadeIn 0.3s ease-in-out;
+  color: #222; /* ✅ make text dark and readable */
+}
+
+/* Header styling */
+.popup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
 }
 
 .popup-header h2 {
-    margin: 0;
-    font-size: 1.5em;
-    color: #333;
+  margin: 0;
+  font-size: 1.5em;
+  color: #333;
 }
 
 .edit-icon {
-    cursor: pointer;
-    font-size: 1.5em;
-    color: #007bff;
+  cursor: pointer;
+  font-size: 1.5em;
+  color: #6ECDC3;
 }
 
 #edit-icon:hover {
-    color: #0056b3;
+  color: #498781;
 }
 
+/* Fix layout for info rows */
+#transaction-details p {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  font-size: 1.1rem;
+  margin-bottom: 14px;
+  color: #111;
+}
+
+/* Fix input field styling (for edit mode) */
+#transaction-details .edit-input {
+  padding: 10px;
+  font-size: 1rem;
+  width: 500px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Buttons */
 #close-button {
-    background-color: #48ceb7;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1em;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
+  background-color: #48ceb7;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
 }
 
 #close-button:hover {
-    background-color: #8affec;
+  background-color: #8affec;
 }
 
 #delete-button {
-    background-color: #ff5858;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    font-size: 1em;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
+  background-color: #ff5858;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 20px;
 }
 
 #delete-button:hover {
-    background-color: #ffa9a9;
+  background-color: #ffa9a9;
 }
 
-
-/* Optional: Add animation for opening the popup */
+/* Fade-in effect */
 @keyframes popupFadeIn {
-    from {
-        opacity: 0;
-        transform: translate(-50%, -40%);
-    }
-    to {
-        opacity: 1;
-        transform: translate(-50%, -50%);
-    }
+  from {
+    opacity: 0;
+    transform: translate(-50%, -40%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
 }
 
-.popup {
-    animation: popupFadeIn 0.3s ease-in-out;
-}
-
+/* Hide with .hidden */
 .hidden {
   display: none;
+}
+
+/* Remove number arrows */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield;
 }

@@ -22,7 +22,7 @@ async function getChatbotResponse(req, res) {
     const chatHistory = chatMemory.getHistory(accountId);
 
     const now = new Date();
-    const yearMonth = now.toISOString().slice(0, 7); // "yyyy-mm"
+    const yearMonth = now.toLocaleDateString('sv-SE').slice(0, 7); // "yyyy-mm"
 
     // Step 2: If this is the user's first message, insert a data summary
     if (chatHistory.length === 1) {

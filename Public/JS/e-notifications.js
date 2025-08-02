@@ -20,8 +20,9 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 document.addEventListener('DOMContentLoaded', async function () {
-  const container = document.querySelector('main.notification-page');
   const user = JSON.parse(localStorage.getItem('user'));
+  const container = document.querySelector('main.notification-page');
+  const updatesCard = document.querySelector('.updates-card');
 
   try {
     const res = await fetch('/getAllNotifications', {
@@ -32,31 +33,43 @@ document.addEventListener('DOMContentLoaded', async function () {
     });
 
     if (!res.ok) throw new Error('Failed to fetch notifications');
-    const notifications = await res.json(); // assuming it's an array
+    const notifications = await res.json(); // Assuming [{ time, type, description, ... }]
 
-    // Group notifications by date
     const grouped = {};
 
     notifications.forEach(noti => {
+      // Process updates into update section
+      if (['event', 'event updated', 'event deleted'].includes(noti.type)) {
+        const typeLabel = {
+          event: "New Event",
+          "event updated": "Event Updated",
+          "event deleted": "Event Cancelled"
+        }[noti.type];
+
+        const updateDiv = document.createElement('div');
+        updateDiv.classList.add('update-item');
+        updateDiv.innerHTML = `
+          📢 ${typeLabel}: <strong>${noti.description}</strong><br />
+          <span class="update-sub">${new Date(noti.time).toLocaleString('en-SG')}</span>
+          <span class="update-arrow">&gt;</span>
+        `;
+        updatesCard.appendChild(updateDiv);
+        updatesCard.appendChild(document.createElement('hr'));
+        return; // skip adding to normal group
+      }
+
+      // Otherwise, group for normal display
       const date = new Date(noti.time).toLocaleDateString('en-SG', {
-        day: '2-digit',
-        month: 'short',
-        year: 'numeric'
-      }); // e.g. "03 Aug 2025"
+        day: '2-digit', month: 'short', year: 'numeric'
+      });
 
       if (!grouped[date]) grouped[date] = [];
       grouped[date].push(noti);
     });
 
-    // Clear static notifications
-    container.innerHTML = `
-      <section class="notification-header">
-        <h1>Notifications</h1>
-        <p>All your notifications here in this mailbox, never miss an opportunity to forget things.</p>
-      </section>
-    `;
+    // Clear and re-render notification content
+    container.querySelectorAll('.notification-group, .footer-note').forEach(el => el.remove());
 
-    // Render grouped notifications
     for (const [date, items] of Object.entries(grouped)) {
       const groupSection = document.createElement('section');
       groupSection.className = 'notification-group';
@@ -64,18 +77,17 @@ document.addEventListener('DOMContentLoaded', async function () {
 
       items.forEach(noti => {
         const timeStr = new Date(noti.time).toLocaleTimeString('en-SG', {
-          hour: '2-digit',
-          minute: '2-digit',
-          hour12: true
+          hour: '2-digit', minute: '2-digit', hour12: true
         });
 
         const card = document.createElement('div');
+        console.log(noti.type);
         card.className = 'notification-card';
         card.innerHTML = `
           <div class="time-label">${timeStr}</div>
-          <span class="badge ${noti.type.toLowerCase()}">${noti.type.toUpperCase()}</span>
+          <span class="badge ${noti.type.toLowerCase()}">${noti.type == "weekly" ? "MEDICATION" : noti.type.toUpperCase()}</span>
           <p>${noti.description}</p>
-          <a href="#" class="view-more">&gt;</a>
+          <a href="#" class="view-more"${noti.type === 'announcement' ? ' id="openModalBtn30Jul"' : ''}>&gt;</a>
         `;
         groupSection.appendChild(card);
       });
@@ -87,10 +99,10 @@ document.addEventListener('DOMContentLoaded', async function () {
 
   } catch (error) {
     console.error('Failed to load notifications:', error);
-    container.innerHTML = `<p class="footer-note">Unable to load notifications.</p>`;
+    container.innerHTML += `<p class="footer-note">Unable to load notifications.</p>`;
   }
 
-  // Setup modal handler (optional enhancement)
+  // Announcement modal logic
   const modal = document.getElementById('announcementModal');
   const closeBtn = modal?.querySelector('.close');
 
@@ -100,10 +112,42 @@ document.addEventListener('DOMContentLoaded', async function () {
         e.preventDefault();
         modal.style.display = 'block';
       }
-
       if (e.target === modal || e.target === closeBtn) {
         modal.style.display = 'none';
       }
     });
   }
+
+    const clearBtn = document.querySelector('.clear-notifications-btn');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', async () => {
+      const confirmClear = confirm("Are you sure you want to clear all notifications?");
+      if (!confirmClear) return;
+
+      try {
+        const user = JSON.parse(localStorage.getItem("user"));
+        const res = await fetch('/clearNotifications', {
+          method: 'DELETE',
+          headers: {
+            'Authorization': `Bearer ${user?.token}`,
+            'Content-Type': 'application/json'
+          }
+        });
+
+        if (!res.ok) throw new Error('Failed to clear notifications');
+        
+        // Optional: Success feedback
+        alert("All notifications cleared!");
+
+        // Reload notifications from server
+        location.reload();
+      } catch (error) {
+        console.error('Error clearing notifications:', error);
+        alert("Failed to clear notifications.");
+      }
+    });
+  }
 });
+
+
+
