@@ -117,7 +117,13 @@ async function updateTransactionRecords(user, selectedMonth = null) {
     const data = await response.json();
 
     // Group by month & render (existing logic)
-    data.sort((a, b) => new Date(b.date) - new Date(a.date));
+data.sort((a, b) => {
+  const dateTimeA = new Date(`${a.date}T${new Date(a.time).toTimeString().slice(0, 8)}`);
+  const dateTimeB = new Date(`${b.date}T${new Date(b.time).toTimeString().slice(0, 8)}`);
+  return dateTimeB - dateTimeA; // latest first
+});
+
+console.log("Sorted transactions:", data);
     const grouped = {};
 
     data.forEach(record => {

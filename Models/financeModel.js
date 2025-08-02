@@ -95,7 +95,8 @@ async function getExpenditureForMonth(accountId, month) {
                     amount, 
                     FORMAT(date, 'yyyy-MM-dd') AS date,
                     description,
-                    cat
+                    cat,
+                    time
                 FROM ExpensesList
                 WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month
                 ORDER BY date DESC;
@@ -132,8 +133,9 @@ async function getAllTransactionsByID(accountId) {
                     cat
                 FROM ExpensesList
                 WHERE acc_id = @accountId
-                ORDER BY date DESC
+                ORDER BY time asc, date desc
             `);
+
         return result.recordset; // Return the array of transactions
     } catch (error) {
         console.error("Error fetching all transactions:", error);
@@ -165,17 +167,23 @@ async function getAccountBudget(accountId, month) {
 
 async function addTransactionToAccount(accountId, transaction) {
     try {
-
         const pool = await getPool();
+
+        const now = new Date();
+        const dateOnly = new Date(transaction.date);
+        const currentTime = new Date(1970, 0, 1, now.getHours(), now.getMinutes(), now.getSeconds());
+        console.log(currentTime)
+
         await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("amount", sql.Decimal(10, 2), transaction.amount)
-            .input("date", sql.DateTime, transaction.date)
+            .input("date", sql.Date, dateOnly)
+            .input("time", sql.Time, currentTime)
             .input("description", sql.NVarChar, transaction.description)
             .input("category", sql.NVarChar, transaction.category)
             .query(`
-                INSERT INTO ExpensesList (acc_id, amount, date, description, cat)
-                VALUES (@accountId, @amount, @date, @description, @category)
+                INSERT INTO ExpensesList (acc_id, amount, date, time, description, cat)
+                VALUES (@accountId, @amount, @date, @time, @description, @category)
             `);
 
         return { message: "Transaction added successfully" };
@@ -270,7 +278,8 @@ async function getTransactionByID(accountId, transactionId) {
                     amount, 
                     date, 
                     description,
-                    cat
+                    cat,
+                    time
                 FROM ExpensesList
                 WHERE acc_id = @accountId AND entry_id = @transactionId
             `);
@@ -290,17 +299,24 @@ async function getTransactionByID(accountId, transactionId) {
 async function updateTransaction(accountId, transactionId, updatedTransaction) {
     try {
         const pool = await getPool();
+
+        const now = new Date();
+        const currentTime = new Date(1970, 0, 1, now.getHours(), now.getMinutes(), now.getSeconds());
+        console.log(currentTime)
+
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
             .input("amount", sql.Decimal(10, 2), updatedTransaction.amount)
-            .input("date", sql.DateTime, updatedTransaction.date)
+            .input("date", sql.Date, new Date(updatedTransaction.date)) // only the date part
+            .input("time", sql.Time, currentTime) // new: current time
             .input("description", sql.NVarChar, updatedTransaction.description)
             .input("category", sql.NVarChar, updatedTransaction.cat)
             .query(`
                 UPDATE ExpensesList
                 SET amount = @amount,
                     date = @date,
+                    time = @time,
                     description = @description,
                     cat = @category
                 WHERE acc_id = @accountId AND entry_id = @transactionId
@@ -313,7 +329,7 @@ async function updateTransaction(accountId, transactionId, updatedTransaction) {
         return { message: "Transaction updated successfully" };
     } catch (error) {
         console.error("Error updating transaction:", error);
-        throw error; // Propagate the error to the controller
+        throw error;
     }
 }
 

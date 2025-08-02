@@ -22,7 +22,7 @@ function init(dependencies) {
 
 async function run() {
     try {
-        await scheduleFinanceNotifications();
+        await schedule80FinanceNotifications();
         await scheduleEventNotifications();
         await scheduleWeeklyNotifications();
         await scheduleMedicationNotifications();
@@ -48,7 +48,7 @@ async function scheduleMedicationNotifications() {
       if (!medications || medications.length === 0) continue;
 
       for (const medication of medications) {
-        const { name, time, frequency} = medication;
+        const { name, time, frequency, dosage} = medication;
         if (!time) continue;
 
         // Parse stored time string (e.g. "1970-01-01T09:00:00.000Z")
@@ -70,7 +70,7 @@ async function scheduleMedicationNotifications() {
             payload = {
               type: 'medication',
               acc_id: id,
-              description: `Time to take your medication: ${name}`,
+              description: `Time to take your medication: ${dosage} pills of ${name}`,
               time: now,
             };
           }
@@ -153,7 +153,7 @@ async function scheduleWeeklyNotifications() {
 
 
 
-async function scheduleFinanceNotifications() {
+async function schedule80FinanceNotifications() {
     try {
           const now = new Date();
     const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
@@ -163,9 +163,53 @@ async function scheduleFinanceNotifications() {
     for (const user of users) {
       const { id, monthly_goal, acc_id } = user;
       if (!monthly_goal) continue;
-      console.log(`📊 Checking budget for user ${acc_id} for month ${monthStr}: $${monthly_goal}`);
+
       const expenditure = await finance.getExpenditureForMonth(acc_id, monthStr);
-      console.log(`Expenditure for user ${acc_id} in ${monthStr}:`, expenditure);
+
+
+      const usageRatio = expenditure.total / monthly_goal;
+
+      const alreadyNotified = await notifications.hasSentBudgetNotificationThisMonth(acc_id);
+
+      if (usageRatio >= 0.8 && !alreadyNotified) {
+        const percentage = Math.round(usageRatio * 100);
+        const message = `You've used 80% of your monthly budget. Monitor your spending!`;
+
+        let payload = {
+            type: 'finance',
+            acc_id: acc_id,
+            description: message,
+            time: new Date(),
+        }
+
+
+        const noti_id = await notifications.createNotification(payload);
+        payload.noti_id = noti_id;
+
+        console.log(`[Finance]: Notification created for user ${id}: ${message}`);
+        await sendNotification(payload, acc_id);
+        console.log(`[Finance]: Notification Scheduled for account ${id}`);
+      }
+    }
+
+  } catch (err) {
+    console.error("Finance Notification Engine Error:", err);
+  }
+}
+
+async function schedule80FinanceNotifications() {
+    try {
+          const now = new Date();
+    const monthStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+
+    const users = await finance.getAllUserBudget(monthStr);
+
+    for (const user of users) {
+      const { id, monthly_goal, acc_id } = user;
+      if (!monthly_goal) continue;
+
+      const expenditure = await finance.getExpenditureForMonth(acc_id, monthStr);
+
 
       const usageRatio = expenditure.total / monthly_goal;
 
@@ -196,6 +240,9 @@ async function scheduleFinanceNotifications() {
     console.error("Finance Notification Engine Error:", err);
   }
 }
+
+
+
 
 async function scheduleEventNotifications() {
 

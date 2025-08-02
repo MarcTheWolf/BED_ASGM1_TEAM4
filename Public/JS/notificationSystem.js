@@ -10,50 +10,76 @@
     const style = document.createElement('style');
     style.id = 'notification-css';
     style.textContent = `
-      .global-notification-bar {
-        background-color: #004085;
-        color: white;
-        padding: 30px 40px;
-        font-size: 20px;
-        text-align: center;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        z-index: 4000;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
-        border-radius: 12px;
-        width: 80%;
-        max-width: 500px;
-        animation: fadeInCenter 0.4s ease-out;
-      }
+    .global-notification-bar {
+      background-color: #ffffffff;
+      border: 5px solid #81C7BE;
+      color: #000000;
+      font-size: 20px;
+      text-align: center;
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 4000;
+      box-shadow: 0 7px 12px rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      width: 80%;
+      height: 300px;
+      max-width: 500px;
+      animation: fadeInCenter 0.4s ease-out;
 
-      @keyframes fadeInCenter {
-        from { opacity: 0; transform: translate(-50%, -60%); }
-        to   { opacity: 1; transform: translate(-50%, -50%); }
-      }
+      /* ✅ Remove padding here */
+      padding: 0;
+    }
 
-      .popup-message {
-        display: block;
-        font-size: 22px;
-        margin-bottom: 25px;
-        line-height: 1.6;
-      }
+    .popup-header-bar {
+      background-color: #e0f7f4;
+      border-top-left-radius: 12px;
+      border-top-right-radius: 12px;
+      border-bottom: 1px solid #d0e0dc;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0;
+      padding: 0;
+      width: 100%;
+    }
 
-      .popup-ok-button {
-        background-color: #e0f0ff;
-        color: #004085;
-        border: none;
-        padding: 12px 24px;
-        font-size: 18px;
-        border-radius: 6px;
-        cursor: pointer;
-        transition: background-color 0.3s ease;
-      }
+    .popup-title {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #1a2e25;
+    }
 
-      .popup-ok-button:hover {
-        background-color: #cce4fa;
-      }
+    /* ✅ Add content wrapper for spacing only below the header */
+    .popup-content {
+      padding: 30px 40px;
+    }
+
+    .popup-message {
+      display: block;
+      font-size: 22px;
+      margin-top: 50px;
+      line-height: 1.6;
+    }
+
+    .popup-ok-button {
+      background-color: #e0f0ff;
+      color: #004085;
+      border: none;
+      padding: 12px 24px;
+      font-size: 18px;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 40px;
+    }
+
+    .popup-ok-button:hover {
+      background-color: #cce4fa;
+    }
+
     `;
     document.head.appendChild(style);
   }
