@@ -18,7 +18,7 @@ signin.addEventListener("click", function() {
 document.addEventListener("DOMContentLoaded", function() {
     const user = localStorage.getItem("user");
     if (user || user !== null) {
-        window.location.href = "e-home.html";
+        window.location.href = "index.html";
     }
     return;
 });
@@ -72,7 +72,7 @@ loginbtn.addEventListener("click", async function (e) {
                 userDetails.token = token;
                 localStorage.setItem("user", JSON.stringify(userDetails));
                 console.log("User details:", userDetails);
-                window.location.href = "e-home.html";
+                window.location.href = "index.html";
             })
             .catch(err => {
                 console.error("Error fetching user details:", err);

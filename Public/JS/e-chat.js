@@ -107,5 +107,5 @@ socket.on("connect", () => {
 
 const backButton = document.getElementById('back-button');
 backButton.addEventListener('click', () => {
-    window.location.href = '/e-home.html'; // Redirect to the main chat page
+    window.location.href = '/index.html'; // Redirect to the main chat page
 });

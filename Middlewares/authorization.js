@@ -25,10 +25,21 @@ function authorization(req, res, next) {
 
   const authorizedRoles = {
         "POST /createEvent": ["o"], 
-
         "PUT /updateEvent/:event_id": ["o"], 
-
         "DELETE /deleteEvent/:event_id": ["o"], 
+
+        "DELETE /deleteMedication/:id": ["e", "c"],
+        "DELETE /deleteMedicalCondition/:id": ["e", "c"],
+        "PUT /updateMedication/:id" : ["e", "c"],
+        "PUT /updateMedicalCondition/:id": ["e", "c"],
+        "POST /createMedication": ["e", "c"],
+        "POST /createMedicalCondition": ["e", "c"],
+
+        "POST /addTransactionToAccount": ["e"],
+        "PUT /updateExpenditureGoal": ["e"],
+        "PUT /updateTransaction/:id": ["e"],
+        "DELETE /deleteTransaction/:id": ["e"],
+
     };
 
   const requestedEndpoint = `${req.method} ${req.route.path}`;

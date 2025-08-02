@@ -388,8 +388,8 @@ document.addEventListener("click", async function(event) {
     };
 
     try {
-      const response = await fetch("/addExpenditureGoal", {
-        method: "POST",
+      const response = await fetch("/updateExpenditureGoal", {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "authorization": `Bearer ${user.token}`

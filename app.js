@@ -88,17 +88,17 @@ app.get("/getWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationC
 app.get("/getMedicalConditionByAccountID", authorization.verifyJWT, medicalInformationController.getMedicalConditionByAccountID);
 app.get("/getMedicationAssociatedWithMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.getMedicationAssociatedWithMedicalCondition);
 
-app.post("/createMedication", authorization.verifyJWT, validateMedication, medicalInformationController.createMedication);
-app.post("/createMedicalCondition", authorization.verifyJWT, validateMedicalCondition, medicalInformationController.createMedicalCondition);
+app.post("/createMedication", authorization.verifyJWT, authorization.authorization, validateMedication, medicalInformationController.createMedication);
+app.post("/createMedicalCondition", authorization.verifyJWT, authorization.authorization, validateMedicalCondition, medicalInformationController.createMedicalCondition);
 app.post("/associateMedicationWithMedicalCondition", authorization.verifyJWT, medicalInformationController.associateMedicationWithMedicalCondition);
 app.post("/saveWeeklyTiming", authorization.verifyJWT, medicalInformationController.saveWeeklyTiming);
 
-app.put("/updateMedication/:id", authorization.verifyJWT, medicalInformationController.updateMedication);
-app.put("/updateMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.updateMedicalCondition);
+app.put("/updateMedication/:id", authorization.verifyJWT, authorization.authorization, medicalInformationController.updateMedication);
+app.put("/updateMedicalCondition/:id", authorization.verifyJWT, authorization.authorization, medicalInformationController.updateMedicalCondition);
 
 
-app.delete("/deleteMedication/:id", authorization.verifyJWT, medicalInformationController.deleteMedication);
-app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.deleteMedicalCondition);
+app.delete("/deleteMedication/:id", authorization.verifyJWT, authorization.authorization, medicalInformationController.deleteMedication);
+app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, authorization.authorization, medicalInformationController.deleteMedicalCondition);
 app.delete("/deleteMedicationConditionAssociation", authorization.verifyJWT, medicalInformationController.deleteMedicationConditionAssociation);
 app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationController.resetWeeklyTiming);
 
@@ -144,11 +144,11 @@ app.get("/getAllTransactionsByID/", authorization.verifyJWT, financeController.g
 app.get("/getTransactionByID/:id", authorization.verifyJWT, financeController.getTransactionByID);
 app.get("/getTransactionsByMonth/:month", authorization.verifyJWT, financeController.getTransactionsByMonth);
 
-app.post("/addTransactionToAccount", authorization.verifyJWT, validateTransaction, financeController.addTransactionToAccount);
-app.post("/addExpenditureGoal", authorization.verifyJWT,  financeController.updateExpenditureGoal);
+app.post("/addTransactionToAccount", authorization.verifyJWT, authorization.authorization, validateTransaction, financeController.addTransactionToAccount);
+app.put("/updateExpenditureGoal", authorization.verifyJWT, authorization.authorization, financeController.updateExpenditureGoal);
 
-app.put("/updateTransaction/:id", authorization.verifyJWT, financeController.updateTransaction);
-app.delete("/deleteTransaction/:id", authorization.verifyJWT, financeController.deleteTransaction);
+app.put("/updateTransaction/:id", authorization.verifyJWT, authorization.authorization, financeController.updateTransaction);
+app.delete("/deleteTransaction/:id", authorization.verifyJWT, authorization.authorization, financeController.deleteTransaction);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Displaying data as graphs/charts, use of external API from backend (By Belle) ////////////////////////////////////////////////////////////////
@@ -226,7 +226,6 @@ io.on('connection', (socket) => {
 });
 
 
-
 ////////////////////////////////////////////////////
 /////////////Create Express app////////////////
 ////////////////////////////////////////////////////
@@ -234,7 +233,7 @@ io.on('connection', (socket) => {
 server.listen(port, () => {
   console.log(`Server running on port ${port}`);
   console.log(`API documentation: http://localhost:${port}/api-docs`);
-  console.log(`Index page: http://localhost:${port}/login.html`);
+  console.log(`Index page: http://localhost:${port}/index.html`);
 });
 
 // Graceful shutdown

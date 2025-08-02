@@ -101,9 +101,9 @@ async function createAccount(req, res) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     const accountId = await accountModel.createAccount(phone_number, hashedPassword);
+    console.log("Account created with ID:", accountId);
     const payload = {
       id: accountId,
-      role: account.account_type,
     };
     const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "3600s" });
 
@@ -117,9 +117,8 @@ async function createAccount(req, res) {
 async function initializeAccountDetails(req, res) {
   try {
     const accountId = parseInt(req.params.id);
-    const userId = parseInt(req.user.id);
 
-    if (isNaN(accountId) || accountId !== userId) {
+    if (isNaN(accountId)) {
       return res.status(403).json({ error: "Unauthorized to edit this profile."});
     }
 

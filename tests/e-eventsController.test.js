@@ -302,5 +302,5 @@ describe("eventController", () => {
             expect(res.status).toHaveBeenCalledWith(500);
             expect(res.json).toHaveBeenCalledWith({ message: "Internal server error" });
         });
-    });
+    }); // 👈 This closes describe("deleteEvent", ...)
 });

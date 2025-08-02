@@ -71,7 +71,7 @@ async function scheduleMedicationNotifications() {
             payload = {
               type: 'medication',
               acc_id: id,
-              description: `Time to take your medication: ${dosage} pills of ${name}`,
+              description: `Time to take your medication: ${dosage} of ${name}`,
               time: now,
             };
           }
