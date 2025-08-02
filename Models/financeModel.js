@@ -1,9 +1,11 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
+const { getPool } = require('../Services/pool');
+
 async function getExpenditureGoalByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query(`
@@ -25,7 +27,7 @@ async function getExpenditureGoalByID(accountId) {
 
 async function getTotalExpenditureByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query("SELECT SUM(amount) AS total FROM ExpensesList WHERE acc_id = @accountId");
@@ -39,7 +41,7 @@ async function getTotalExpenditureByID(accountId) {
 
 async function getExpenditureGoalPerCategoryMonth(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar(7), month) // Fix: use NVarChar and specify length
@@ -59,7 +61,7 @@ async function getExpenditureGoalPerCategoryMonth(accountId, month) {
 
 async function getMonthlyExpenditureByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query(`
@@ -81,7 +83,7 @@ async function getMonthlyExpenditureByID(accountId) {
 
 async function getExpenditureForMonth(accountId, month) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("month", sql.NVarChar, month) // format: '2025-07'
@@ -117,7 +119,7 @@ async function getExpenditureForMonth(accountId, month) {
 
 async function getAllTransactionsByID(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query(`
@@ -141,7 +143,7 @@ async function getAllTransactionsByID(accountId) {
 
 async function getAccountBudget(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month) // e.g., '2025-07'
@@ -164,7 +166,7 @@ async function getAccountBudget(accountId, month) {
 async function addTransactionToAccount(accountId, transaction) {
     try {
 
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("amount", sql.Decimal(10, 2), transaction.amount)
@@ -185,7 +187,7 @@ async function addTransactionToAccount(accountId, transaction) {
 
 async function addExpenditureGoal(accountId, goals, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
 
     for (const [category, value] of Object.entries(goals)) {
       const formattedCategory = category.trim().toLowerCase();
@@ -228,7 +230,7 @@ function capitalize(str) {
 // Modify an existing expenditure goal
 async function modifyExpenditureGoal(accountId, newGoals, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
 
     for (const [category, value] of Object.entries(newGoals)) {
       const formattedCategory = category.trim().toLowerCase();
@@ -253,14 +255,11 @@ async function modifyExpenditureGoal(accountId, newGoals, month) {
   }
 }
 
-// Utility function to match DB casing
-function capitalize(str) {
-  return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
-}
+
 
 async function getTransactionByID(accountId, transactionId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
@@ -290,7 +289,7 @@ async function getTransactionByID(accountId, transactionId) {
 
 async function updateTransaction(accountId, transactionId, updatedTransaction) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
@@ -320,7 +319,7 @@ async function updateTransaction(accountId, transactionId, updatedTransaction) {
 
 async function deleteTransaction(accountId, transactionId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .input("transactionId", sql.Int, transactionId)
@@ -342,7 +341,7 @@ async function deleteTransaction(accountId, transactionId) {
 
 async function getAllUserBudget() {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .query("SELECT * FROM MonthlyExpenseGoal");
 
@@ -355,7 +354,7 @@ async function getAllUserBudget() {
 
 async function getTransportationExpenditure(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)
@@ -374,7 +373,7 @@ async function getTransportationExpenditure(accountId, month) {
 
 async function getTransportationGoal(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)
@@ -393,7 +392,7 @@ async function getTransportationGoal(accountId, month) {
 
 async function getFoodExpenditure(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)
@@ -412,7 +411,7 @@ async function getFoodExpenditure(accountId, month) {
 
 async function getFoodGoal(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)
@@ -432,7 +431,7 @@ async function getFoodGoal(accountId, month) {
 
 async function getUtilityExpenditure(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)
@@ -451,7 +450,7 @@ async function getUtilityExpenditure(accountId, month) {
 
 async function getUtilityGoal(accountId, month) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
       .input("accountId", sql.Int, accountId)
       .input("month", sql.NVarChar, month)

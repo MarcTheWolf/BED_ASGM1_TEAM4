@@ -1,11 +1,13 @@
 const sql = require("mssql");
 const dbConfig = require("../dbConfig");
+const { getPool } = require('../Services/pool');
+
 
 
 
 async function getAllNotificationsByAccountId(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query("SELECT * FROM notificationList WHERE acc_id = @accountId ORDER BY time desc");
@@ -19,7 +21,7 @@ async function getAllNotificationsByAccountId(accountId) {
 
 async function getUnnotifiedByAccountId(accountId) {
     try {
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("accountId", sql.Int, accountId)
             .query("SELECT * FROM notificationList WHERE acc_id = @accountId AND notified = 0 ORDER BY time desc");
@@ -35,7 +37,7 @@ async function getUnnotifiedByAccountId(accountId) {
 async function markNotificationAsNotified(notiId, accountId) {
     try {
         console.log(notiId)
-        const pool = await sql.connect(dbConfig);
+        const pool = await getPool();
         const result = await pool.request()
             .input("notiId", sql.Int, notiId)
             .input("accountId", sql.Int, accountId)
@@ -54,7 +56,7 @@ async function createNotification(payload) {
   }
 
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const request = pool.request();
 
     request
@@ -93,7 +95,7 @@ async function createNotification(payload) {
 }
 
 async function hasSentBudgetNotificationThisMonth(accountId) {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const result = await pool.request()
         .input("accountId", sql.Int, accountId)
         .query(`
@@ -107,7 +109,7 @@ async function hasSentBudgetNotificationThisMonth(accountId) {
 
 async function hasSentMedicationNotificationToday(med_id) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const request = pool.request();
 
     request.input("med_id", sql.Int, med_id);
@@ -131,7 +133,7 @@ async function hasSentMedicationNotificationToday(med_id) {
 
 async function hasSentMedicationNotificationPerTiming(medTime_id) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const request = pool.request();
 
     request.input("medTime_id", sql.Int, medTime_id);
@@ -153,7 +155,7 @@ async function hasSentMedicationNotificationPerTiming(medTime_id) {
 
 async function hasSentEventNotificationForEvent(eventId, accountId) {
   try {
-    const pool = await sql.connect(dbConfig);
+    const pool = await getPool();
     const request = pool.request();
 
     request.input("event_id", sql.Int, eventId);
@@ -174,7 +176,26 @@ async function hasSentEventNotificationForEvent(eventId, accountId) {
     throw err;
   }
 }
-  
+
+async function hasSentTaskNotificationToday(taskId) {
+  try {
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("task_id", sql.Int, taskId);
+    const result = await request.query(`
+      SELECT 1
+      FROM notificationList
+      WHERE type = 'task'
+        AND asso_id = @task_id
+        AND CAST(DATEADD(HOUR, 8, time) AS DATE) = CAST(GETDATE() AS DATE)
+    `);
+    return result.recordset.length > 0;
+  } catch (err) {
+    console.error("Error checking task notification:", err);
+    throw err;
+  }
+}
+
 module.exports = {
     getAllNotificationsByAccountId,
     getUnnotifiedByAccountId,
@@ -184,5 +205,6 @@ module.exports = {
     hasSentMedicationNotificationToday,
     hasSentMedicationNotificationPerTiming,
     hasSentMedicationNotificationPerTiming,
-    hasSentEventNotificationForEvent
+    hasSentEventNotificationForEvent,
+    hasSentTaskNotificationToday
 };

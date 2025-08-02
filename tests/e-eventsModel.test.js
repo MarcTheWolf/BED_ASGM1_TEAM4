@@ -1,4 +1,4 @@
-const eventModel = require('../../Models/eventModel.js');
+const eventModel = require('../Models/eventModel.js');
 const sql = require('mssql');
 
 jest.mock('mssql');
@@ -31,13 +31,11 @@ describe('eventModel', () => {
             expect(sql.connect).toHaveBeenCalled();
             expect(mockRequest.input).toHaveBeenCalledWith('account_id', expect.anything(), 123);
             expect(result).toEqual(fakeEvents);
-            expect(mockConnection.close).toHaveBeenCalled();
         });
 
         it('should throw error on query failure', async () => {
             mockRequest.query.mockRejectedValue(new Error('DB error'));
             await expect(eventModel.getEventRegisteredByID(1)).rejects.toThrow('DB error');
-            expect(mockConnection.close).toHaveBeenCalled();
         });
     });
 

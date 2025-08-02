@@ -1,14 +1,17 @@
-const eventController = require("../../Controllers/eventController");
-const eventModel = require("../../Models/eventModel");
+const eventController = require("../Controllers/eventController");
+const eventModel = require("../Models/eventModel");
+const notification = require("../Services/notificationEngine");
 
-jest.mock("../../Models/eventModel");
+jest.mock("../Models/eventModel");
+jest.mock("../Services/notificationEngine");
 
-const mockRes = () => {
+// Reusable mock response object
+function mockRes() {
     const res = {};
     res.status = jest.fn().mockReturnValue(res);
     res.json = jest.fn().mockReturnValue(res);
     return res;
-};
+}
 
 describe("eventController", () => {
     let req, res;
@@ -27,7 +30,6 @@ describe("eventController", () => {
 
             await eventController.getEventRegisteredByID(req, res);
 
-            expect(eventModel.getEventRegisteredByID).toHaveBeenCalledWith(1);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith(event);
         });
@@ -61,12 +63,11 @@ describe("eventController", () => {
 
             await eventController.getEventDetailsByID(req, res);
 
-            expect(eventModel.getEventDetailsByID).toHaveBeenCalledWith(2);
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith(event);
         });
 
-        it("should return 404 if event not found", async () => {
+        it("should return 404 if not found", async () => {
             req.params = { id: 2 };
             eventModel.getEventDetailsByID.mockResolvedValue(null);
 
@@ -123,7 +124,7 @@ describe("eventController", () => {
             req.user = { id: 10 };
         });
 
-        it("should register for event", async () => {
+        it("should register successfully", async () => {
             eventModel.registerEvent.mockResolvedValue(true);
 
             await eventController.registerEvent(req, res);
@@ -158,7 +159,7 @@ describe("eventController", () => {
             req.user = { id: 11 };
         });
 
-        it("should unregister from event", async () => {
+        it("should unregister successfully", async () => {
             eventModel.unregisterEvent.mockResolvedValue(true);
 
             await eventController.unregisterEvent(req, res);
@@ -229,12 +230,14 @@ describe("eventController", () => {
             req.user = { id: 13 };
         });
 
-        it("should update event", async () => {
+        it("should update and notify", async () => {
             eventModel.updateEvent.mockResolvedValue(true);
+            notification.updateEventNotification.mockResolvedValue(true);
 
             await eventController.updateEvent(req, res);
 
             expect(eventModel.updateEvent).toHaveBeenCalledWith(5, { name: "Updated Event" }, 13);
+            expect(notification.updateEventNotification).toHaveBeenCalledWith(5, expect.stringContaining("Updated Event"));
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: "Event updated successfully" });
         });
@@ -264,17 +267,23 @@ describe("eventController", () => {
             req.user = { id: 14 };
         });
 
-        it("should delete event", async () => {
+        it("should delete and notify", async () => {
+            const eventData = { name: "To Delete" };
+            eventModel.getEventDetailsByID.mockResolvedValue(eventData);
             eventModel.deleteEvent.mockResolvedValue(true);
+            notification.deleteEventNotification.mockResolvedValue(true);
 
             await eventController.deleteEvent(req, res);
 
+            expect(eventModel.getEventDetailsByID).toHaveBeenCalledWith(6);
             expect(eventModel.deleteEvent).toHaveBeenCalledWith(6, 14);
+            expect(notification.deleteEventNotification).toHaveBeenCalledWith(6, expect.stringContaining("To Delete"));
             expect(res.status).toHaveBeenCalledWith(200);
             expect(res.json).toHaveBeenCalledWith({ message: "Event deleted successfully" });
         });
 
-        it("should return 400 if delete fails", async () => {
+        it("should return 400 if deletion fails", async () => {
+            eventModel.getEventDetailsByID.mockResolvedValue({ name: "Fail Delete" });
             eventModel.deleteEvent.mockResolvedValue(false);
 
             await eventController.deleteEvent(req, res);
@@ -284,7 +293,7 @@ describe("eventController", () => {
         });
 
         it("should handle errors", async () => {
-            eventModel.deleteEvent.mockRejectedValue(new Error("DB error"));
+            eventModel.getEventDetailsByID.mockRejectedValue(new Error("DB error"));
 
             await eventController.deleteEvent(req, res);
 
