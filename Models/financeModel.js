@@ -380,7 +380,7 @@ async function getTransportationGoal(accountId, month) {
       .query(`
         SELECT monthly_goal
         FROM MonthlyExpenseGoal
-        WHERE acc_id = @accountId AND month = @month AND category = 'transport'
+        WHERE acc_id = @accountId AND month = @month AND category = 'Transport'
       `);
 
     return result.recordset[0]?.monthly_goal || 0;
@@ -418,7 +418,7 @@ async function getFoodGoal(accountId, month) {
       .query(`
         SELECT monthly_goal
         FROM MonthlyExpenseGoal
-        WHERE acc_id = @accountId AND month = @month AND category = 'food'
+        WHERE acc_id = @accountId AND month = @month AND category = 'Food'
       `);
 
     return result.recordset[0]?.monthly_goal || 0;
@@ -457,7 +457,7 @@ async function getUtilityGoal(accountId, month) {
       .query(`
         SELECT monthly_goal
         FROM MonthlyExpenseGoal
-        WHERE acc_id = @accountId AND month = @month AND category = 'utilities'
+        WHERE acc_id = @accountId AND month = @month AND category = 'Utilities'
       `);
 
     return result.recordset[0]?.monthly_goal || 0;
@@ -466,6 +466,45 @@ async function getUtilityGoal(accountId, month) {
     throw error;
   }
 }
+
+async function getOtherExpenditure(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT SUM(amount) AS total
+        FROM ExpensesList
+        WHERE acc_id = @accountId AND FORMAT(date, 'yyyy-MM') = @month AND cat = 'other'
+      `);
+
+    return result.recordset[0].total || 0;
+  } catch (error) {
+    console.error("Error fetching utilities expenditure:", error);
+    throw error;
+  }
+}
+
+async function getOtherGoal(accountId, month) {
+  try {
+    const pool = await getPool();
+    const result = await pool.request()
+      .input("accountId", sql.Int, accountId)
+      .input("month", sql.NVarChar, month)
+      .query(`
+        SELECT monthly_goal
+        FROM MonthlyExpenseGoal
+        WHERE acc_id = @accountId AND month = @month AND category = 'Others'
+      `);
+
+    return result.recordset[0]?.monthly_goal || 0;
+  } catch (error) {
+    console.error("Error fetching utilities goal:", error);
+    throw error;
+  }
+}
+
 
 
 
@@ -492,5 +531,7 @@ module.exports = {
     getFoodGoal,
     getUtilityExpenditure,
     getUtilityGoal,
-    getExpenditureGoalPerCategoryMonth
+    getExpenditureGoalPerCategoryMonth,
+    getOtherExpenditure,
+    getOtherGoal
 };

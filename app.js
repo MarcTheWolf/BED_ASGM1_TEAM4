@@ -151,6 +151,7 @@ app.get("/getBudgetExpenditureDoughnutChart/:month", authorization.verifyJWT, fi
 app.get('/transportBarChart/:month', authorization.verifyJWT, financeController.getTransportationBarChart);
 app.get('/getFoodBarChart/:month', authorization.verifyJWT, financeController.getFoodBarChart);
 app.get('/getUtilityBarChart/:month', authorization.verifyJWT, financeController.getUtilityBarChart);
+app.get('/getOtherBarChart/:month', authorization.verifyJWT, financeController.getOtherBarChart);
 
 app.get('/getExpenditurePerCategoryMonth/:month', authorization.verifyJWT, financeController.getExpenditureGoalPerCategoryMonth);
 

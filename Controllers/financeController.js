@@ -756,6 +756,94 @@ const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' 
     res.status(500).json({ message: "Failed to generate utilities bar chart" });
   }
 }
+
+async function getOtherBarChart(req, res) {
+    try {
+    const userId = req.user.id;
+    const month = req.params.month;
+
+    const spent = await financeModel.getOtherExpenditure(userId, month) || 0;
+    const goal = await financeModel.getOtherGoal(userId, month) || 0;
+
+    const spentAmount = parseFloat(spent.toFixed(2));
+    const goalAmount = parseFloat(goal.toFixed(2));
+    const spentPercentage = goalAmount > 0 ? (spentAmount / goalAmount * 100) : 0;
+    const remainingPercentage = Math.max(0, 100 - spentPercentage);
+
+const chartData = {
+  type: 'bar',
+  data: {
+    labels: [''],
+datasets: [
+  {
+    data: [spentPercentage],
+    backgroundColor: '#A0DDBD',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: 30,
+      bottomLeft: 30,
+      topRight: 0,
+      bottomRight: 0
+    },
+    borderSkipped: false
+  },
+  {
+    data: [remainingPercentage],
+    backgroundColor: '#e0e0e0',
+    stack: 'stack1',
+    borderRadius: {
+      topLeft: spent == 0 || goal == 0 ? 30 : 0,
+      bottomLeft: spent == 0 || goal == 0 ? 30 : 0,
+      topRight: 30,
+      bottomRight: 30
+    },
+    borderSkipped: false
+  }
+]
+
+  },
+  options: {
+    indexAxis: 'y',
+    responsive: true,
+    maintainAspectRatio: false,
+    scales: {
+      x: {
+        stacked: true,
+        min: 0,
+        max: 100,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      },
+      y: {
+        stacked: true,
+        grid: { display: false, drawTicks: false, drawBorder: false },
+        ticks: { display: false }
+      }
+    },
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false },
+      title: { display: false }
+    }
+  }
+};
+
+
+const chartUrl = 'https://quickchart.io/chart?width=500&height=50&version=4&c=' +
+  encodeURIComponent(JSON.stringify(chartData));
+
+    res.json({
+      chartUrl,
+      spent: spentAmount.toFixed(2),
+      goal: goalAmount.toFixed(2) == 0 ? "No Goal Set" : goalAmount.toFixed(2),
+      spentPercentage: spentPercentage.toFixed(2)
+    });
+
+  } catch (error) {
+    console.error("Error generating transportation bar chart:", error);
+    res.status(500).json({ message: "Failed to generate transportation bar chart" });
+  }
+}
 module.exports = {
     getTransactionsByMonth,
     getExpenditureGoalByID,
@@ -772,5 +860,6 @@ module.exports = {
     getTransportationBarChart,
     getFoodBarChart,
     getUtilityBarChart,
-    getExpenditureGoalPerCategoryMonth
+    getExpenditureGoalPerCategoryMonth,
+    getOtherBarChart
 };
