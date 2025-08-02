@@ -85,7 +85,7 @@ document.addEventListener('DOMContentLoaded', async function () {
         card.className = 'notification-card';
         card.innerHTML = `
           <div class="time-label">${timeStr}</div>
-          <span class="badge ${noti.type.toLowerCase()}">${noti.type.toUpperCase()}</span>
+          <span class="badge ${noti.type.toLowerCase()}">${noti.type == "weekly" ? "MEDICATION" : noti.type.toUpperCase()}</span>
           <p>${noti.description}</p>
           <a href="#" class="view-more"${noti.type === 'announcement' ? ' id="openModalBtn30Jul"' : ''}>&gt;</a>
         `;

@@ -189,7 +189,7 @@ html, body {
   margin-bottom: 10px;
 }
 
-.badge.medication {
+.badge.medication, .badge.weekly {
   background-color: #d6bdff;
   color: black;
 }
