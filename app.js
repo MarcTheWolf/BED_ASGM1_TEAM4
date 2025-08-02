@@ -45,6 +45,8 @@ const mapRoutes = require('./Controllers/mapController.js');
 
 const chatbotController = require("./Controllers/chatbotController.js");
 
+const liveChatController = require("./Controllers/liveChatController.js");
+
 
 
 const authorization = require("./Middlewares/authorization.js");
@@ -171,6 +173,11 @@ app.put("/markNotificationAsNotified/:noti_id", authorization.verifyJWT, notific
 
 //app.delete("/deleteNotification/:id", authorization.verifyJWT, notificationsController.deleteNotification);
 app.delete("/clearNotifications", authorization.verifyJWT, notificationsController.clearNotifications);
+
+
+//Live Chat API Endpoints (By Belle)
+app.post("/sendMessage", authorization.verifyJWT, liveChatController.sendMessage);
+app.get("/messages/:with_id", authorization.verifyJWT, liveChatController.getMessages);
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -79,6 +79,11 @@ async function fetchEventData() {
     }
 }
 
+const chatbtn = document.getElementById("chat-btn");
+chatbtn.addEventListener("click", function () {
+  window.location.href = "e-chat.html"; // Redirect to chat page
+});
+
 async function getFinanceBarChart() {
   const userRaw = localStorage.getItem("user");
 

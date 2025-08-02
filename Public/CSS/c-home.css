@@ -1,0 +1,264 @@
+body {
+  background-color: rgb(255, 255, 255);
+  overflow-x: hidden;
+  margin:0px;
+
+}
+
+body::-webkit-scrollbar {
+  display: none;
+}
+
+.hero {
+    display: flex;
+    align-items:center;
+    justify-content: space-between;
+    background-color: #eafaf7;
+    height:380px;
+    margin-top: 65px; /* adjust to match navbar height */
+    overflow: hidden;
+}
+
+.hero-text h2 {
+    margin-bottom: -70px;
+    margin-left: 250px;
+    font-size: 45px;
+    font-weight:200;
+    color: #1d3557;
+}
+
+.hero-logo {
+  width:300px;
+  height: auto;
+  margin-left: 250px;
+  margin-bottom: -40px;
+}
+
+
+.hero-text button {
+    margin-top: 25px;
+    padding: 10px 15px;
+    margin-left: 420px;
+    width:185px;
+    height: 40px;
+    background-color: #6ECDC3;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+#contact{
+    font-size: 25px;
+    line-height: 10px;
+}
+
+
+.hero-image img {
+    height: 450px;
+    margin-left: -620px;
+    bottom: -20px;
+}
+.circle-bg {
+  width: 420px;
+  height: 420px;
+  background-color: #97d3c8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  margin-left: -600px;
+  margin-top: 70px;
+}
+
+.circle-bg img {
+  height: 100%;
+  object-fit: cover;
+  margin-left: 10px;
+}
+
+
+
+.categories {
+  padding: 20px;
+  margin-top: 70px;
+}
+
+.section-header {
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+.category-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-left: 30px;
+  
+}
+
+.category {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 150px;
+  height: 150px;
+  border: none;
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+  font-size: 15px;
+  cursor: pointer;
+  text-align: center;
+}
+
+/* icon box */
+.category-icon {
+  background-color: white;
+  color: black;
+  width: 60px;
+  height: 60px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  margin-bottom: 10px;
+  margin-left: -40px;
+}
+
+/* label */
+.category-label {
+  line-height: 1.2;
+  margin-top: 10px;     /* spacing below icon */
+  text-align: left;   /* ensures center alignment */
+}
+
+
+/* individual button colors */
+.appointment {
+  background-color: #4F7A87;
+}
+
+.clinics {
+  background-color: #8CB9A6;
+}
+
+.health {
+  background-color: #6D91C5;
+}
+
+/* Semantic coloring */
+.appointment {
+  background-color: #557A8C;
+}
+
+.clinics {
+  background-color: #8AB6A4;
+}
+
+.health {
+  background-color: #6C94C9;
+}
+.profile {
+  background-color: #81C7BE;
+} 
+
+.activities {
+    padding: 20px;
+}
+
+.date-tag {
+    background-color: #e0f7fa;
+    padding: 5px 10px;
+    display: inline-block;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    margin-left:30px;
+}
+
+.activity {
+    background-color: #fff;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 2);
+    width: 50%;
+    margin-left:30px;
+}
+
+.medication {
+    border-left: 5px solid #d63031;
+    margin-left:30px;
+}
+
+.event {
+        border-left: 5px solid #30d6c0;
+        margin-left:30px;
+}
+
+.activity.past {
+  opacity: 0.5;
+  background-color: #f0f0f0;
+}
+
+.spending {
+    padding: 20px;
+    
+}
+
+.spending img {
+    display: block;
+    padding-left: 3%;
+    width: 44%;
+    margin-top: 40px; /* ⬅️ adjust this value to move it lower */
+}
+
+.emoji {
+    font-size: 24px;
+    margin-top: 10px;
+}
+
+
+.section-header {
+    display: block;
+    padding: 10px;
+    border-left: 20px solid #81C7BE;
+    margin-left: 30px;
+}
+
+
+.elderly-list {
+  margin: 2rem auto;
+  max-width: 90%;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 2rem;
+}
+.elderly-item {
+  display: flex;
+  align-items: center;
+  background: #d7f5f4;
+  margin-bottom: 1rem;
+  padding: 0.8rem;
+  border-radius: 10px;
+  justify-content: space-between;
+}
+.elderly-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 1rem;
+}
+.view-btn {
+  background: #55dbc2;
+  color: white;
+  border: none;
+  padding: 0.4rem 1rem;
+  border-radius: 8px;
+  cursor: pointer;
+}

@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SeniorSync Chat</title>
+  <link rel="stylesheet" href="CSS/c-chat.css">
+</head>
+<body>
+  <div class="chat-wrapper">
+    <!-- Left Sidebar -->
+<div class="chat-sidebar">
+  <div class="sidebar-header">
+    <button id="back-button" class="back-icon">←</button>
+    <h2 class="sidebar-title">Chats</h2>
+  </div>
+  <ul id="contact-list" class="contact-list">
+    <!-- Filled dynamically with synced accounts -->
+  </ul>
+</div>
+
+    <!-- Right Chat Panel -->
+    <div class="chat-panel">
+        <div class="chat-header">
+        <span id="chat-partner-name">Select a conversation</span>
+        </div>
+      <div id="chat-messages" class="chat-messages"></div>
+      <div class="chat-input">
+        <input type="text" id="chat-message-input" placeholder="Type your message..." disabled>
+        <button id="chat-send-button" disabled>Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="JS/c-chat.js" type="module"></script>
+</body>
+</html>
