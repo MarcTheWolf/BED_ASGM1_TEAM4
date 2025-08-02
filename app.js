@@ -38,6 +38,7 @@ const eventController = require("./Controllers/eventController.js");
 const financeController = require("./Controllers/financeController.js");
 const taskController = require("./Controllers/taskController.js");
 const notificationsController = require("./Controllers/notificationsController.js");
+const syncingController = require("./Controllers/syncingController.js");
 
 
 const mapRoutes = require('./Controllers/mapController.js');
@@ -99,6 +100,9 @@ app.delete("/deleteMedication/:id", authorization.verifyJWT, medicalInformationC
 app.delete("/deleteMedicalCondition/:id", authorization.verifyJWT, medicalInformationController.deleteMedicalCondition);
 app.delete("/deleteMedicationConditionAssociation", authorization.verifyJWT, medicalInformationController.deleteMedicationConditionAssociation);
 app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInformationController.resetWeeklyTiming);
+
+//Account Syncing Endpoints (By Marcus)
+app.get("/getSyncedAccounts", authorization.verifyJWT, syncingController.getSyncedAccounts);
 
 
 //Medical Information Autocomplete, Use of external API from backend (By Marcus)
