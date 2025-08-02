@@ -8,6 +8,16 @@ const finance = require("../Models/financeModel.js");
 const task = require("../Models/taskModel.js");
 const notifications = require("../Models/notificationsModel.js");
 
+
+let io = null;
+let sockets = {};
+
+function init(dependencies) {
+  io = dependencies.io;
+  sockets = dependencies.userSocketMap;
+}
+
+
 async function run() {
     //console.log("Scheduling notifications...");
     try {
@@ -55,6 +65,7 @@ async function scheduleFinanceNotifications() {
 
 
         await notifications.createNotification(payload);
+        await sendNotification(payload, id);
         console.log(`[Finance]: Notification Scheduled for account ${id}`);
       }
     }
@@ -74,6 +85,26 @@ async function scheduleTaskNotifications() {
 
 
 
+
+async function sendNotification(payload, accountId) {
+  const socketId = sockets[accountId];
+
+  if (io && socketId) {
+    io.to(socketId).emit("notification", payload);
+    console.log(`✅ Notification sent to user ${accountId}`);
+  } else {
+    console.warn(`⚠️ No socket found for user ${accountId}`);
+  }
+}
+
+
+
+
+
+
+
+
 module.exports = {
-    run
+  init,
+  run
 };
