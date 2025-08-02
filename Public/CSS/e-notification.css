@@ -189,6 +189,11 @@ html, body {
   margin-bottom: 10px;
 }
 
+.badge.medication {
+  background-color: #d6bdff;
+  color: black;
+}
+
 .badge.event {
   background-color: #8bd3c7;
   color: black;
@@ -199,7 +204,7 @@ html, body {
   color: black;
 }
 
-.badge.calendar {
+.badge.task {
   background-color: #d89fa6;
   color: black;
 }

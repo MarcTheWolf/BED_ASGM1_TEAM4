@@ -211,6 +211,9 @@ async function displayBarCharts(user, selectedMonth = null) {
   const utilitiesContainer = document.querySelector('#utilities-bar');
   const utilitiesTextContainer = document.querySelector('#utilities-data');
 
+      const otherContainer = document.querySelector('#others-bar');
+    const otherTextContainer = document.querySelector('#others-data');
+
   try {
     const response = await fetch(`/transportBarChart/${month}`, {
       method: 'GET',
@@ -257,6 +260,21 @@ async function displayBarCharts(user, selectedMonth = null) {
     utilitiesTextContainer.textContent = `$${data.spent}/${data.goal}`;
   } catch (error) {
     console.error("Utilities chart error:", error);
+  }
+
+  try {
+    const response = await fetch(`/getOtherBarChart/${month}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${user.token}`
+      }
+    });
+    const data = await response.json();
+    otherContainer.src = data.chartUrl;
+    otherTextContainer.textContent = `$${data.spent}/${data.goal}`;
+  } catch (error) {
+    console.error("Other chart error:", error);
   }
 }
 

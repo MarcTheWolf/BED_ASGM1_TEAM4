@@ -51,8 +51,24 @@ async function markNotificationAsNotified(req, res) {
     }
 }
 
+async function clearNotifications(req, res) {
+    try {
+        const accountId = req.user.id;
+        const result = await notificationModel.clearNotificationsByAccountId(accountId);
+        if (result.rowsAffected[0] === 0) {
+            return res.status(404).json({ message: "No notifications to clear." });
+        }
+        res.status(200).json({ message: "All notifications cleared." });
+    } catch (error) {
+        console.error("Error clearing notifications:", error);
+        res.status(500).json({ message: "Internal server error." });
+    }
+}
+    
+
 module.exports = {
     getAllNotifications,
     getUnnotified,
     markNotificationAsNotified,
+    clearNotifications
 };
