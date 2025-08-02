@@ -2,6 +2,7 @@ const sql = require("mssql");
 const dbConfig = require("../dbConfig");
 
 const { getPool } = require('../Services/pool');
+const { get } = require("../Controllers/mapController");
 
 
 async function getAccountByPhone(phone_number) {
@@ -249,7 +250,7 @@ async function updatePhoneNumber(accountId, newPhoneNumber) {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("id", sql.Int, accountId);
     request.input("phone_number", sql.VarChar, newPhoneNumber);
@@ -262,10 +263,6 @@ async function updatePhoneNumber(accountId, newPhoneNumber) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
@@ -274,7 +271,7 @@ async function getAllUsers() {
   let connection;
 
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
 
     const result = await request.query("SELECT * FROM AccountProfile");
@@ -283,10 +280,6 @@ async function getAllUsers() {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 module.exports = {
@@ -299,7 +292,7 @@ module.exports = {
   updatePasswordByPhone,
   updateProfile,
   updatePhoneNumber,
-  getAllUsers
+  getAllUsers,
   updateProfile,
   updatePhoneNumber,
   getAllUsers

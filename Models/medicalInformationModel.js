@@ -120,7 +120,7 @@ async function getWeeklyTimingsByAccountID(accountId) {
 async function getWeeklyTimingsByAccountID(accountId) {
   let connection;
   try {
-    connection = await sql.connect(dbConfig);
+    connection = await getPool();
     const request = connection.request();
     request.input("accountId", sql.Int, accountId);
 
@@ -135,10 +135,6 @@ async function getWeeklyTimingsByAccountID(accountId) {
   } catch (error) {
     console.error("Model error:", error);
     throw error;
-  } finally {
-    if (connection) {
-      connection.close();
-    }
   }
 }
 
