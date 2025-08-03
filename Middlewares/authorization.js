@@ -44,10 +44,13 @@ function authorization(req, res, next) {
         "PUT /updateTransaction/:id": ["e"],
         "DELETE /deleteTransaction/:id": ["e"],
 
+        "PUT /account/password": ["o", "e", "c"]
+
     };
 
-  const requestedEndpoint = `${req.method} ${req.route.path}`;
-  const userRole = req.user.role; // Assuming user role is stored in the JWT token
+  const path = req.originalUrl.split("?")[0]; // Remove query string
+  const requestedEndpoint = `${req.method} ${path}`;
+  const userRole = req.user.role;
 
   
   console.log("Authorization check");

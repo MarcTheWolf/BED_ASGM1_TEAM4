@@ -260,5 +260,4 @@ module.exports = {
   updateProfile,
   updatePhoneNumber,
   getAllUsers,
-  updateProfile,
 };
