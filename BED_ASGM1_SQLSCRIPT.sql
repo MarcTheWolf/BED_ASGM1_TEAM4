@@ -192,6 +192,7 @@ INSERT INTO MedicationConditionAssociationList (med_id, medc_id) VALUES
 
 
 
+
 Create table MonthlyExpenseGoal(
 	id INT IDENTITY(1,1) PRIMARY KEY,
 	acc_id INT,
@@ -218,7 +219,6 @@ INSERT INTO MonthlyExpenseGoal (acc_id, monthly_goal, category, month) VALUES
 (1, 105.00, 'Utilities', '2025-08'),
 (1, 85.00,  'Transport', '2025-08'),
 (1, 200.00, 'Others', '2025-08');
-
 
 
 
@@ -287,7 +287,7 @@ INSERT INTO ExpensesList (cat, description, amount, acc_id, date, time) VALUES
 
 create table notificationList(
 	noti_id INT PRIMARY KEY IDENTITY(1,1),
-	type varchar(25) NOT NULL check (type in ('event', 'task', 'event deleted', 'event updated', 'finance', 'budget finance', 'medication', 'announcement', 'calendar', 'social', 'profile', 'weekly')),
+	type varchar(25) NOT NULL check (type in ('event', 'event deleted', 'finance', 'budget finance', 'event updated', 'medication', 'announcement', 'calendar', 'social', 'profile', 'weekly', 'task')),
 	time DATETIME NOT NULL,
 	description VARCHAR(255) NOT NULL,
 	acc_id INT NOT NULL,
@@ -298,9 +298,6 @@ create table notificationList(
 
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
-
-drop table notificationList
-
 
 
 CREATE TABLE TaskList(
@@ -313,15 +310,13 @@ CREATE TABLE TaskList(
 
 
 
+
 CREATE TABLE syncCodes (
-	code_id INT PRIMARY KEY IDENTITY(1,1),
-    acc_id INT,
-    code INT CHECK (code BETWEEN 0 AND 999999),
+  code_id INT PRIMARY KEY IDENTITY(1,1),
+  acc_id INT,
+  code VARCHAR(6) NOT NULL,
 );
 
-
-INSERT INTO syncCodes (acc_id, code) VALUES
-(2, 384729);
 
 
 
@@ -331,6 +326,8 @@ Create Table syncAccounts (
 	caretaker_id INT,
 )
 
+
 INSERT INTO syncAccounts(elderly_id, caretaker_id) values
-(1, 2)
+(1, 2),
+(4, 2)
 

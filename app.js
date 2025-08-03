@@ -104,6 +104,8 @@ app.delete("/resetWeeklyTiming/:med_id", authorization.verifyJWT, medicalInforma
 
 //Account Syncing Endpoints (By Marcus)
 app.get("/getSyncedAccounts", authorization.verifyJWT, syncingController.getSyncedAccounts);
+app.post("/createSyncRequest", authorization.verifyJWT, syncingController.createSyncRequest);
+app.post("/linkFromCode", authorization.verifyJWT, syncingController.linkFromCode);
 
 
 //Medical Information Autocomplete, Use of external API from backend (By Marcus)

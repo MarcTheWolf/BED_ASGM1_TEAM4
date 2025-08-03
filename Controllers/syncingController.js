@@ -1,4 +1,5 @@
 const syncingModel = require("../Models/syncingModel.js");
+const twilio = require("../Services/twilioMessaging.js");
 
 async function getSyncedAccounts(req, res) {
     try {
@@ -12,6 +13,68 @@ async function getSyncedAccounts(req, res) {
 }
 
 
+async function createSyncRequest(req, res) {
+    const id = req.user.id;
+    const {phone_number} = req.body;
+
+    if (!phone_number) {
+        return res.status(400).json({ error: "Phone number is required." });
+    }
+
+        let syncCode;
+        do {
+        syncCode = generate6DigitCode();
+        console.log("Generated sync code:", syncCode);
+        } while (await syncingModel.checkSyncCodeExists(syncCode));
+        console.log("Generated new unique sync code:", syncCode);
+
+
+    try {
+
+        await syncingModel.createSyncRequest(id, syncCode);
+
+        // Send SMS via Twilio
+        const message = `To sync your account with a caretaker, please ask them to enter this code: ${syncCode}`;
+        await twilio.sendSMS(phone_number, message);
+
+        res.status(201).json({ message: "Sync request created successfully.", syncCode });
+    } catch (error) {
+        console.error("Error creating sync request:", error);
+        res.status(500).json({ error: "Failed to create sync request." });
+    }
+}
+
+function generate6DigitCode() {
+  return Math.floor(100000 + Math.random() * 900000);
+}
+
+
+async function linkFromCode(req, res) {
+    const { syncCode } = req.body;
+    const userId = req.user.id;
+
+
+    if (!syncCode) {
+        return res.status(400).json({ error: "Sync code is required." });
+    }
+
+    try {
+        const isValid = await syncingModel.checkSyncCodeExists(syncCode);
+        if (!isValid) {
+            return res.status(400).json({ error: "Invalid sync code." });
+        }
+
+        await syncingModel.linkAccounts(isValid.acc_id, userId);;
+        res.status(200).json({ message: "Accounts linked successfully." });
+    } catch (error) {
+        console.error("Error linking accounts:", error);
+        res.status(500).json({ error: "Failed to link accounts." });
+    }
+}
+
+
 module.exports = {
-    getSyncedAccounts
+    getSyncedAccounts,
+    createSyncRequest,
+    linkFromCode
 };
