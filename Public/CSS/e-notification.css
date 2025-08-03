@@ -26,7 +26,7 @@ html, body {
   align-items: center;
   background-color: #e2fcf6;
   padding: 20px 20px 20px 30px;
-  padding-left: 70px;
+  padding-left: 140px;
   border-radius: 8px;
   width:1700px;
   margin-left: -200px;
@@ -49,13 +49,13 @@ html, body {
 }
 
 .styled-heading p {
-  margin-left: -125px;
+  margin-left: -60px;
   color: #555;
 }
 
 .notification-header {
-  margin-left: -200px;
-  font-size: 2rem;
+  margin-left: -190px;
+  font-size: 1.8rem;
   margin-bottom: 6px;
   color: #000;
 }
@@ -68,7 +68,7 @@ html, body {
 
 .notification-updates {
   margin-bottom: 50px;
-  margin-left: -328px;
+  margin-left: -250px;
 }
 
 .updates-card {
@@ -117,7 +117,7 @@ html, body {
   display: flex;
   justify-content: flex-start;
   padding: 0 0 20px 2px; /* bottom spacing before date headers */
-  margin-left: 30px;     /* aligns with date headers */
+  margin-left: 100px;     /* aligns with date headers */
 }
 
 .clear-notifications-btn {
@@ -139,7 +139,7 @@ html, body {
 
 /* Date Grouping */
 .notification-group {
-  margin-left: -330px;
+  margin-left: -250px;
   margin-bottom: 30px;
 }
 

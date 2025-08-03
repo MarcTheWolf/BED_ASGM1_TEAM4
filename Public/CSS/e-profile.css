@@ -227,27 +227,29 @@ body {
 .caretaker-list {
   margin-top: 1rem;
 }
-
 .caretaker-item {
   display: flex;
-  align-items: left;
+  align-items: center;
+  justify-content: space-between;
   background: #d7f5f4;
   margin-bottom: 1rem;
   padding: 0.8rem;
   border-radius: 10px;
-  justify-content: space-between;
 }
 
-.view-btn {
-  background: #55dbc2;
-  color: white;
-  border: none;
-  padding: 0.4rem 1rem;
-  border-radius: 8px;
-  height: 50px;
-  top: 25px;
-  position: relative;
+.caretaker-item img.avatar {
+  margin-right: 1rem;
 }
+
+.caretaker-item div {
+  flex-grow: 1;
+}
+
+.caretaker-item button.view-btn {
+  height: fit-content;
+  align-self: center;
+}
+
 
 footer {
   background: #eaf4f3;
@@ -593,7 +595,6 @@ body {
   padding: 0.4rem 1rem;
   border-radius: 8px;
   height: 50px;
-  top: 25px;
   position: relative;
 }
 
