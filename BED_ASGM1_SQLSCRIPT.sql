@@ -299,7 +299,7 @@ create table notificationList(
 	FOREIGN KEY (acc_id) REFERENCES AccountPassword(id)
 )
 
-
+DROP TABLE IF EXISTS TaskList;
 CREATE TABLE TaskList(
     task_id INT PRIMARY KEY IDENTITY(1,1),
 	acc_id INT NOT NULL,
