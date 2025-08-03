@@ -41,7 +41,7 @@
   </section>
 
   <section class="care-taker">
-    <h3>Elderly <button class="add-btn">Add</button></h3>
+    <h3>Elderly <button id="openLinkModal" class="caretaker-add add-btn">Add</button></h3>
     <div class="caretaker-list">
       <div class="caretaker-item">
         <img src="https://via.placeholder.com/50" class="avatar">
@@ -61,6 +61,19 @@
       </div>
     </div>
   </section>
+
+
+<div id="pairingModal" class="modal">
+  <div class="modal-content">
+    <span class="caretaker-close-btn">&times;</span>
+    <h2>Enter Elderly Pairing Code</h2>
+    <form id="pairingForm">
+      <input type="text" id="syncCodeInput" name="syncCode" placeholder="Enter 6-digit code" required />
+      <button class="caretaker-submit">Link Account</button>
+      <p id="confirmationMsg" class="success-message hidden">Account linked successfully!</p>
+    </form>
+  </div>
+</div>
 
 
   <div id="footer-placeholder"></div>

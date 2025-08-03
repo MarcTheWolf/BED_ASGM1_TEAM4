@@ -77,7 +77,7 @@
   </section>
 
   <section class="care-taker">
-    <h3>Care Taker <button class="add-btn">Add</button></h3>
+    <h3>Care Taker <button class="add-btn caretaker-add">Add</button></h3>
     <div class="caretaker-list">
       <div class="caretaker-item">
         <img src="https://via.placeholder.com/50" class="avatar">
@@ -293,6 +293,17 @@
       </div>
       </div>
     </div>
+</div>
+
+
+<div id="pairingModal" class="modal" style="display: none;">
+  <div class="modal-content">
+    <span class="caretaker-close-btn">&times;</span>
+    <h2>Generate Pairing Code</h2>
+    <p>A code will be sent to your phone_number with instructions</p>
+    <button type="submit" class="caretaker-submit">Send Code</button>
+    <p id="confirmationMsg" class="hidden">📩 Instructions sent via SMS, check your phone.</p>
+  </div>
 </div>
 
 

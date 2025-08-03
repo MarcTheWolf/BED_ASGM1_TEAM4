@@ -35,6 +35,10 @@ function authorization(req, res, next) {
         "POST /createMedication": ["e", "c"],
         "POST /createMedicalCondition": ["e", "c"],
 
+        "GET /getSyncedAccounts": ["e", "c"],
+        "POST /createSyncRequest": ["e"],
+        "POST /linkFromCode": ["c"],
+
         "POST /addTransactionToAccount": ["e"],
         "PUT /updateExpenditureGoal": ["e"],
         "PUT /updateTransaction/:id": ["e"],

@@ -15,27 +15,33 @@ async function getSyncedAccounts(req, res) {
 
 async function createSyncRequest(req, res) {
     const id = req.user.id;
-    const {phone_number} = req.body;
+    const { phone_number } = req.body;
 
     if (!phone_number) {
         return res.status(400).json({ error: "Phone number is required." });
     }
 
-        let syncCode;
-        do {
-        syncCode = generate6DigitCode();
-        console.log("Generated sync code:", syncCode);
-        } while (await syncingModel.checkSyncCodeExists(syncCode));
-        console.log("Generated new unique sync code:", syncCode);
-
+    let syncCode;
+    let isUnique = false;
 
     try {
+        // Loop until a unique sync code is generated
+        while (!isUnique) {
+            syncCode = generate6DigitCode();
+            const exists = await syncingModel.checkSyncCodeExists(syncCode); // returns true/false
+            if (!exists) {
+                isUnique = true;
+            }
+        }
 
+        console.log("Generated new unique sync code:", syncCode);
+
+        // Store syncCode and elderly's account ID
         await syncingModel.createSyncRequest(id, syncCode);
 
         // Send SMS via Twilio
         const message = `To sync your account with a caretaker, please ask them to enter this code: ${syncCode}`;
-        await twilio.sendSMS(phone_number, message);
+        await twilio.sendTwilioMessage(phone_number, message);
 
         res.status(201).json({ message: "Sync request created successfully.", syncCode });
     } catch (error) {
@@ -59,12 +65,17 @@ async function linkFromCode(req, res) {
     }
 
     try {
-        const isValid = await syncingModel.checkSyncCodeExists(syncCode);
+        const isValid = await syncingModel.checkSyncCodeValid(syncCode);
         if (!isValid) {
             return res.status(400).json({ error: "Invalid sync code." });
         }
+        const elderlyId = isValid.acc_id;
+        const linked = await syncingModel.linkAccounts(elderlyId, userId);
 
-        await syncingModel.linkAccounts(isValid.acc_id, userId);;
+        if (linked) {
+        console.log(`Accounts linked: Elderly ID ${elderlyId}, Caretaker ID ${userId}`);
+        await syncingModel.deleteSyncCode(syncCode);
+        }
         res.status(200).json({ message: "Accounts linked successfully." });
     } catch (error) {
         console.error("Error linking accounts:", error);

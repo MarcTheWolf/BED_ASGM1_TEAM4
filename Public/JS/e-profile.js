@@ -1,5 +1,6 @@
 var Medication = []
 var MedicalCondition = [];
+var phone_number = ''
 
 const editProfileBtn = document.querySelector('.edit-btn');
 editProfileBtn.addEventListener('click', () => {
@@ -17,6 +18,63 @@ document.addEventListener('DOMContentLoaded', async function() {
   console.log(Medication);
   console.log(MedicalCondition);
 });
+
+
+const modal = document.getElementById('pairingModal');
+const openBtn = document.querySelector('.caretaker-add');
+const closeBtn = document.querySelector('.caretaker-close-btn');
+const form = document.getElementById('pairingForm');
+const confirmation = document.getElementById('confirmationMsg');
+const user = JSON.parse(localStorage.getItem("user"));
+const submitBtn = document.querySelector('.caretaker-submit');
+
+openBtn.onclick = () => {
+  modal.style.display = 'flex';
+  confirmation.classList.add('hidden');
+};
+
+closeBtn.onclick = () => {
+  modal.style.display = 'none';
+};
+
+window.onclick = e => {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+};
+
+submitBtn.addEventListener('click', async e => {
+  e.preventDefault();
+
+  try {
+    const res = await fetch("/createSyncRequest", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify({
+        phone_number: phone_number
+      })
+    });
+
+    if (res.ok) {
+      // Status code 2xx
+      const data = await res.json(); // optional: access `data.syncCode` if needed
+      alert("A code has been sent to your phone number with instructions.");
+      confirmation.classList.remove('hidden');
+    } else {
+      // Handle client or server error
+      const error = await res.json();
+      alert(`Error: ${error.error || "Failed to send pairing code."}`);
+    }
+
+  } catch (err) {
+    console.error("Network error:", err);
+    alert("Network error: Unable to send pairing code.");
+  }
+});
+
 
 document.addEventListener("DOMContentLoaded", () => {
   const inputs = document.querySelectorAll(".medc-autocomplete");
@@ -188,7 +246,7 @@ async function loadProfileInformation() {
     if (!response.ok) throw new Error('Failed to fetch phone number.');
 
     const data = await response.json();
-
+    phone_number = data.phone_number || 'Unknown';
     profilePhone.innerHTML = `<strong>Phone:</strong> ${data.phone_number || 'Unknown'}`;
   } catch (error) {
     console.error('Error loading phone number:', error);
