@@ -371,7 +371,7 @@ async function updateEventNotification(event_id, changes) {
       const payload = {
         type: 'event updated',
         acc_id: account_id,
-        description: `Announcement: ${changes}`,
+        description: `${changes}`,
         asso_id: event_id,
         time: new Date(),
       };
