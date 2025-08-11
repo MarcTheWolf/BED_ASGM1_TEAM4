@@ -143,11 +143,23 @@ function renderTasks(selector, tasks) {
     card.className = 'task-card';
     const taskDate = new Date(task.date);
     const formattedDate = taskDate.toLocaleDateString(undefined, {year: 'numeric', month: 'long', day: 'numeric'});
-    const formattedTime = taskDate.toLocaleTimeString(undefined, {hour: '2-digit', minute: '2-digit'});
+
+    const dateForEdit = taskDate.toISOString().split('T')[0];
+    
+    let timeDisplay = '';
+    if (task.time && task.time.trim() !== '') {
+      const timeParts = task.time.split(':');
+      if (timeParts.length >= 2) {
+        timeDisplay = `${timeParts[0]}:${timeParts[1]}`;
+      } else {
+        timeDisplay = task.time;
+      }
+    }
+    
     card.innerHTML = `
       <strong>${task.task_name}</strong>
-      <span>${formattedDate} ${formattedTime || ''}</span>
-      <button class="edit-task" data-id="${task.task_id}" data-name="${task.task_name}" data-date="${task.date}" data-time="${task.time || ''}">Edit ✏️</button>
+      <span>${formattedDate} ${timeDisplay ? `at ${timeDisplay}` : ''}</span>
+      <button class="edit-task" data-id="${task.task_id}" data-name="${task.task_name}" data-date="${dateForEdit}" data-time="${task.time || ''}">Edit ✏️</button>
       <button class="delete-task" data-id="${task.task_id}">Delete ❌</button>
     `;
     container.appendChild(card);
@@ -272,7 +284,18 @@ document.addEventListener('click', async function(e) {
     document.getElementById('edit-task-id').value = taskId;
     document.getElementById('edit-task-name').value = taskName;
     document.getElementById('edit-task-date').value = taskDate;
-    document.getElementById('edit-task-time').value = taskTime;
+    
+    // 确保时间格式正确用于编辑表单
+    let timeForEdit = '';
+    if (taskTime && taskTime.trim() !== '') {
+      const timeParts = taskTime.split(':');
+      if (timeParts.length >= 2) {
+        timeForEdit = `${timeParts[0]}:${timeParts[1]}`; // 只保留 HH:MM 格式
+      } else {
+        timeForEdit = taskTime;
+      }
+    }
+    document.getElementById('edit-task-time').value = timeForEdit;
     
     // Show edit form
     toggleEditTaskForm();
