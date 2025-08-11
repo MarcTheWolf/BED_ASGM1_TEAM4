@@ -26,61 +26,41 @@ async function getSyncedAccounts(userId) {
 }
 
 async function checkSyncCodeExists(syncCode) {
-  try {
     const pool = await getPool();
     const request = pool.request();
-    console.log("Checking sync code existence:", syncCode);
-request.input("syncCode", sql.VarChar(6), syncCode.toString());
+    request.input("syncCode", sql.VarChar(6), syncCode.toString());
     const result = await request.query(`
-      SELECT COUNT(*) AS count
-      FROM syncCodes
-      WHERE code = @syncCode
+        SELECT COUNT(*) AS count
+        FROM syncCodes
+        WHERE code = @syncCode
     `);
     return result.recordset[0].count > 0;
-  } catch (error) {
-    console.error("Error checking sync code existence:", error);
-    throw new Error("Database query failed");
-  }
 }
 
-async function createSyncRequest(userId, syncCode) {
-  try {
-    const syncCodeInt = parseInt(syncCode, 10); // ensure number
+async function createSyncRequest(accountId, syncCode) {
     const pool = await getPool();
     const request = pool.request();
-    request.input("userId", sql.Int, userId);
-    request.input("syncCode", sql.Int, syncCodeInt);
+
+    request.input("code", sql.VarChar(6), syncCode.toString()); // ✅ convert to string
+    request.input("acc_id", sql.Int, accountId);
+
     await request.query(`
-      INSERT INTO syncCodes (acc_id, code)
-      VALUES (@userId, @syncCode)
+        INSERT INTO syncCodes (code, acc_id)
+        VALUES (@code, @acc_id)
     `);
-    return true;
-  } catch (error) {
-    console.error("Error creating sync request in database:", error);
-    throw new Error("Database query failed");
-  }
 }
 
+async function checkSyncCodeValid(syncCode) {
+  const pool = await getPool();
+  const request = pool.request();
+  request.input("syncCode", sql.VarChar(6), syncCode.toString());
+  const result = await request.query(`
+    SELECT acc_id
+    FROM syncCodes
+    WHERE code = @syncCode
+  `);
 
-async function checkSyncCodeExists(syncCode) {
-  try {
-    const pool = await getPool();
-    const request = pool.request();
-    request.input("syncCode", sql.VarChar, syncCode);
-    const result = await request.query(`
-      SELECT *
-      FROM syncCodes
-      WHERE code = @syncCode
-    `);
-    if (result.recordset.length > 0) {
-      return result.recordset[0];
-    } else {
-      return false;
-    }
-  } catch (error) {
-    console.error("Error checking sync code existence:", error);
-    throw new Error("Database query failed");
-  }
+  return result.recordset[0] || null; // return the record (with acc_id), or null
 }
 
 async function linkAccounts(elderly_id, caretaker_id) {
@@ -89,19 +69,34 @@ async function linkAccounts(elderly_id, caretaker_id) {
     const request = pool.request();
     request.input("elderly_id", sql.Int, elderly_id);
     request.input("caretaker_id", sql.Int, caretaker_id);
-    await request.query(`
+
+    const result = await request.query(`
       INSERT INTO syncAccounts (elderly_id, caretaker_id)
       VALUES (@elderly_id, @caretaker_id)
     `);
+
+    return result.rowsAffected[0] > 0; // returns true if insert succeeded
   } catch (error) {
     console.error("Error linking accounts in database:", error);
     throw new Error("Database query failed");
   }
+}
+async function deleteSyncCode(syncCode) {
+
+    const pool = await getPool();
+    const request = pool.request();
+    request.input("syncCode", sql.VarChar(6), syncCode.toString());
+    await request.query(`
+        DELETE FROM syncCodes
+        WHERE code = @syncCode
+    `);
 }
 
 module.exports = {
     getSyncedAccounts,
     checkSyncCodeExists,
     createSyncRequest,
-    linkAccounts
+    linkAccounts,
+    checkSyncCodeValid,
+    deleteSyncCode
 };

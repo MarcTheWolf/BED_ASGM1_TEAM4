@@ -29,5 +29,13 @@
     "swagger-autogen": "^2.23.7",
     "swagger-ui-express": "^5.0.1",
     "twilio": "^5.8.0"
-  }
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/MarcTheWolf/BED_ASGM1_Draft.git"
+  },
+  "bugs": {
+    "url": "https://github.com/MarcTheWolf/BED_ASGM1_Draft/issues"
+  },
+  "homepage": "https://github.com/MarcTheWolf/BED_ASGM1_Draft#readme"
 }

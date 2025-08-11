@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', async function () {
 
     notifications.forEach(noti => {
       // Process updates into update section
-      if (['event', 'event updated', 'event deleted'].includes(noti.type)) {
+      if (['event updated', 'event deleted'].includes(noti.type)) {
         const typeLabel = {
           event: "New Event",
           "event updated": "Event Updated",

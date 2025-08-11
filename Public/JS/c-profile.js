@@ -13,6 +13,61 @@ document.addEventListener('DOMContentLoaded', async function() {
   await loadElderlyList();
 });
 
+const modal = document.getElementById('pairingModal');
+const openBtn = document.querySelector('.caretaker-add');
+const closeBtn = document.querySelector('.caretaker-close-btn');
+const form = document.getElementById('pairingForm');
+const confirmation = document.getElementById('confirmationMsg');
+const submitBtn = document.querySelector('.caretaker-submit');
+const user = JSON.parse(localStorage.getItem("user"));
+
+openBtn.onclick = () => {
+  modal.style.display = 'flex';
+  confirmation.classList.add('hidden');
+  form.reset();
+};
+
+closeBtn.onclick = () => {
+  modal.style.display = 'none';
+};
+
+window.onclick = e => {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
+};
+
+submitBtn.addEventListener('click', async e => {
+  e.preventDefault();
+
+  const syncCode = document.getElementById("syncCodeInput").value.trim();
+
+  try {
+    const res = await fetch("/linkFromCode", {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${user.token}`
+      },
+      body: JSON.stringify({
+        syncCode
+      })
+    });
+
+    if (res.ok) {
+      alert("Account successfully linked!");
+      confirmation.classList.remove('hidden');
+    } else {
+      const error = await res.json();
+      alert(`Error: ${error.error || "Invalid or expired code."}`);
+    }
+  } catch (err) {
+    console.error("Network error:", err);
+    alert("Network error. Try again.");
+  }
+});
+
+
 async function loadProfileInformation() {
   const user = JSON.parse(localStorage.getItem("user"));
   const profileImg = document.querySelector('.avatar');

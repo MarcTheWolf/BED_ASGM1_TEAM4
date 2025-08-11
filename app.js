@@ -70,11 +70,12 @@ const {
 app.post("/authenticateUser", accountController.authenticateAccount);
 app.get("/getAccountById", authorization.verifyJWT, accountController.getAccountById);
 app.post("/createAccount", accountController.createAccount);
+app.post("/account/forgot-password", accountController.forgotPassword);
 app.post("/initializeAccountDetails/:id", accountController.initializeAccountDetails);
 app.get("/getPhoneByAccountID", authorization.verifyJWT, accountController.getPhoneByAccountID);
 app.put("/updateProfile", authorization.verifyJWT, accountController.updateProfile);
 app.put("/updatePhoneNumber", authorization.verifyJWT, accountController.updatePhoneNumber);
-
+app.put("/account/password", authorization.verifyJWT, authorization.authorization, accountController.updatePassword);
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
